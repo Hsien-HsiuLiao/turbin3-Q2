@@ -1,8 +1,8 @@
 # turbin3-Q2
 
-install nvm - curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh | bash
+install nvm ```curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh | bash```
 
-install node - nvm install node
+install node ```nvm install node```
 
-install yarn - npm install --global yarn
+install yarn ```npm install --global yarn```
 
