@@ -4,3 +4,5 @@ install nvm - curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/master/insta
 
 install node - nvm install node
 
+install yarn - npm install --global yarn
+
