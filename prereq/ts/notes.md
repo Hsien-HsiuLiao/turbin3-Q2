@@ -1,4 +1,8 @@
+```yarn keygen```
+
 You've generated a new Solana wallet:  4aceMBu9SXiRNvw1CrYjGnXoUraitRRndBawFvSJUSgw
+
+```yarn airdrop```
 
 airdrop - https://explorer.solana.com/address/4aceMBu9SXiRNvw1CrYjGnXoUraitRRndBawFvSJUSgw?cluster=devnet
 
