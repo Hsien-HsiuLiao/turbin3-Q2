@@ -3,3 +3,5 @@ node_modules
 *wallet.json
 
 target
+
+yarn.lock
