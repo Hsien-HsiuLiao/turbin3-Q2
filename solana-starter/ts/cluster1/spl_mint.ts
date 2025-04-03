@@ -12,10 +12,13 @@ const connection = new Connection("https://api.devnet.solana.com", commitment);
 const token_decimals = 1_000_000n;
 
 // Mint address
-const mint = new PublicKey("86ShV2WpW1LKfMDJKaeeqj8kSYZFSNDe8PXQP4PwxJDV");
+const mint = new PublicKey("H3yGGGSFLjbFBWPYT2Mg69TJteKnZmFGNBWULrPtFrit");
 
 (async () => {
     try {
+        //https://spl.solana.com/associated-token-account
+        //https://solanahowitworks.xyz/#chapter6
+        
         // Create an ATA
         const ata = await getOrCreateAssociatedTokenAccount(connection, 
             keypair, mint, keypair.publicKey )
@@ -25,6 +28,9 @@ const mint = new PublicKey("86ShV2WpW1LKfMDJKaeeqj8kSYZFSNDe8PXQP4PwxJDV");
         const mintTx = await mintTo(connection, keypair, mint, ata.address, 
             keypair.publicKey, 1n * token_decimals)
          console.log(`Your mint txid: ${mintTx}`);
+         //https://explorer.solana.com/address/86ShV2WpW1LKfMDJKaeeqj8kSYZFSNDe8PXQP4PwxJDV?cluster=devnet
+         //https://explorer.solana.com/tx/2RgiwseF7sV6c7HCiDzhA9vsUomdowTSP1W7jEnRG8knr8PqM7XqP7dGhThu3QMJfpPQBWdPLGgsst9wmXn5KHqx?cluster=devnet
+//Done in 15.47s.
     } catch(error) {
         console.log(`Oops, something went wrong: ${error}`)
     }
