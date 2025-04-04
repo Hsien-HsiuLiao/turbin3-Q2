@@ -26,8 +26,8 @@ const to = new PublicKey("8rhBeTmTAimzbmfXUBC2mVhUSwT7LQM1KfwCcKPkZVHk"); //from
         // Transfer the new token to the "toTokenAccount" we just created
         const signature = await transfer(connection, keypair, fromATA.address, toATA.address, keypair.publicKey, 101);
 
-        console.log(`trasnsfer: ${signature}`); //5CWtstGdWKFCUaZWhwEYHehjpguKCdQiDWoCuXZRhwgVLRjJZ85HL9zdwLKdk7Mopp8TEhsT4Vvmw7AwoRqf3a44
- 
+        console.log(`transfer: ${signature}`); //5CWtstGdWKFCUaZWhwEYHehjpguKCdQiDWoCuXZRhwgVLRjJZ85HL9zdwLKdk7Mopp8TEhsT4Vvmw7AwoRqf3a44
+        //https://explorer.solana.com/tx/uCBo2PVEM3w6G8R8ddnAaWujzJRXk99cyUCsKoqtUqagFNJ4puS34gzgPS67Pw9ULtpZgaXzCvZdFs9ei3kqcDv?cluster=devnet
 
     } catch(e) {
         console.error(`Oops, something went wrong: ${e}`)
