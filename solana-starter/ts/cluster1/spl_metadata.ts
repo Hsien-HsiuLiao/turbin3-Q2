@@ -9,6 +9,14 @@ import {
 import { createSignerFromKeypair, signerIdentity, publicKey } from "@metaplex-foundation/umi";
 import { bs58 } from "@coral-xyz/anchor/dist/cjs/utils/bytes";
 
+//https://developers.metaplex.com/token-metadata/token-standard - lists standards and fields
+//https://github.com/Web3-Builders-Alliance/cohort-helper/tree/main/BonusResources/umi
+//https://developers.metaplex.com/umi
+//https://solana.fm/address/5ZVfRygrr7Tbgs5ugageBhUFWNvVjaWtbtV5SRSthUMF?cluster=mainnet-alpha
+//https://solscan.io/token/5fYNGms2jMJeCs8uLpdJvDU6jvjEJJpqBA4kKk4BiAuW#metadata
+
+
+
 // Define our Mint address
 const mint = publicKey("H3yGGGSFLjbFBWPYT2Mg69TJteKnZmFGNBWULrPtFrit")
 
