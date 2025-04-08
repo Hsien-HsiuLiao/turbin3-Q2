@@ -5,3 +5,11 @@ node_modules
 target
 
 yarn.lock
+
+.anchor
+.DS_Store
+target
+**/*.rs.bk
+node_modules
+test-ledger
+.yarn
