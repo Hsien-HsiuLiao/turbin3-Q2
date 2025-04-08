@@ -20,3 +20,5 @@ solana cli cmds - https://gist.github.com/Dev750wala/d34a2ab7794ee38dc57b9814157
 instal avm - ```cargo install --git https://github.com/coral-xyz/anchor avm --force```
 
 https://solanahowitworks.xyz/#chapter6
+
+https://www.anchor-lang.com/docs/quickstart/local
