@@ -90,17 +90,20 @@ impl<'info> Deposit<'info> {
 pub struct Withdraw<'info> {
     #[account(mut)]
     pub signer: Signer<'info>,
+
     #[account(
         mut,
         seeds = [b"vault", vault_state.key().as_ref()],
         bump = vault_state.vault_bump,
     )]
     pub vault: SystemAccount<'info>,
+
     #[account(
         seeds = [b"state", signer.key().as_ref()],
         bump = vault_state.state_bump,
     )]
-    pub vault_state: Account<'info, VaultState>,
+    pub vault_state: Account<'info, VaultState>, //this is here for vault acct
+
     pub system_program: Program<'info, System>
 }
 
@@ -114,13 +117,13 @@ impl<'info> Withdraw<'info> {
             to: self.signer.to_account_info()
         };
 
-        //from Deposit::vault account seeds -         seeds = [b"vault", vault_state.key().as_ref()], (line 59)
+        //from withdraw::vault account seeds -         seeds = [b"vault", vault_state.key().as_ref()], (line 96,97)
         let pda_signing_seeds = [b"vault", 
         self.vault_state.to_account_info().key.as_ref(),
         &[self.vault_state.vault_bump]
         ];
-        let seeds = &[&pda_signing_seeds[..]];
-        let cpi_ctx = CpiContext::new_with_signer(cpi_program, cpi_account, seeds);
+        let signer_seeds = &[&pda_signing_seeds[..]];
+        let cpi_ctx = CpiContext::new_with_signer(cpi_program, cpi_account, signer_seeds);
 
         transfer(cpi_ctx, amount)?;
 
