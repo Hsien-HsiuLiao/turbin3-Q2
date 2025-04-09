@@ -20,6 +20,10 @@ pub mod vault {//instructions go here
         ctx.accounts.withdraw(amount)
     }
 
+    pub fn close(ctx: Context<Close>) -> Result<()> {
+        ctx.accounts.close()
+    }
+
 }
 
 #[derive(Accounts)] //custom derive macro, - augments struct,does not alter  , adds impl, ex #[derive(Debug)]
@@ -131,6 +135,52 @@ impl<'info> Withdraw<'info> {
     }
 }
 
+#[derive(Accounts)]
+pub struct Close<'info> {
+    #[account(mut)]
+    pub signer: Signer<'info>,
+
+    #[account(
+        mut,
+        seeds = [b"vault", vault_state.key().as_ref()],
+        bump = vault_state.vault_bump,
+    )]
+    pub vault: SystemAccount<'info>,
+
+    #[account(
+        mut, 
+        seeds = [b"state", signer.key().as_ref()],
+        bump = vault_state.state_bump,
+        close = signer //who will receive funds upon closing, zeroes out data
+    )]
+    pub vault_state: Account<'info, VaultState>, //this is here for vault acct
+
+    pub system_program: Program<'info, System>
+}
+
+impl<'info> Close<'info> {
+    pub fn close(&mut self) -> Result<()> {
+        //close vault_state and vault
+
+        let cpi_program = self.system_program.to_account_info();
+
+        let cpi_account = Transfer {
+            from: self.vault.to_account_info(),
+            to: self.signer.to_account_info()
+        };
+
+        //from withdraw::vault account seeds -         seeds = [b"vault", vault_state.key().as_ref()], (line 96,97)
+        let pda_signing_seeds = [b"vault", 
+        self.vault_state.to_account_info().key.as_ref(),
+        &[self.vault_state.vault_bump]
+        ];
+        let signer_seeds = &[&pda_signing_seeds[..]];
+        let cpi_ctx = CpiContext::new_with_signer(cpi_program, cpi_account, signer_seeds);
+
+        transfer(cpi_ctx, self.vault.lamports())
+
+    }
+}
 
 
 #[account]
