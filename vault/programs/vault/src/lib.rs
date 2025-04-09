@@ -1,10 +1,10 @@
 #![allow(unexpected_cfgs)]
 use anchor_lang::{prelude::*, system_program::{Transfer, transfer}};
 
-declare_id!("AQk9Bz8M6HHuEnQh682XXyq79DEFmF17p3MFip6yZBrM");
+declare_id!("AQk9Bz8M6HHuEnQh682XXyq79DEFmF17p3MFip6yZBrM");//function-like macro
 
-#[program]
-pub mod vault {
+#[program]//attribute-like macro, can insert or remove fields
+pub mod vault {//instructions go here
 
 
     use super::*;
@@ -22,7 +22,7 @@ pub mod vault {
 
 }
 
-#[derive(Accounts)]
+#[derive(Accounts)] //custom derive macro, - augments struct,does not alter  , adds impl, ex #[derive(Debug)]
 pub struct Initialize<'info> {
     #[account(mut)]
     pub signer: Signer<'info>,
@@ -59,7 +59,7 @@ pub struct Deposit<'info> {
         seeds = [b"vault", vault_state.key().as_ref()],
         bump = vault_state.vault_bump,
     )]
-    pub vault: SystemAccount<'info>,
+    pub vault: SystemAccount<'info>,//vault balance will increase due to deposit, so must be mutable
     #[account(
         seeds = [b"state", signer.key().as_ref()],
         bump = vault_state.state_bump,
@@ -113,9 +113,14 @@ impl<'info> Withdraw<'info> {
             from: self.vault.to_account_info(),
             to: self.signer.to_account_info()
         };
-        let pda_signer_seeds = b"pda signer";
-        let signer_seeds = &[&pda_signer_seeds[..]];
-        let cpi_ctx = CpiContext::new_with_signer(cpi_program, cpi_account, signer_seeds);
+
+        //from Deposit::vault account seeds -         seeds = [b"vault", vault_state.key().as_ref()], (line 59)
+        let pda_signing_seeds = [b"vault", 
+        self.vault_state.to_account_info().key.as_ref(),
+        &[self.vault_state.vault_bump]
+        ];
+        let seeds = &[&pda_signing_seeds[..]];
+        let cpi_ctx = CpiContext::new_with_signer(cpi_program, cpi_account, seeds);
 
         transfer(cpi_ctx, amount)?;
 
