@@ -34,8 +34,12 @@ associated_token::token_program = token_program,
     pub maker_ata_b: InterfaceAccount<'info, TokenAccount>, //derive b ata
 
     #[account(
-        mut, 
-        associated_token::mint = mint_a, 
+        init_if_needed, //if taker_ata_a doesn't exist, create it and taker will pay for transaction 
+        payer = taker, 
+/*         init_if_needed requires that anchor-lang be imported with the init-if-needed cargo feature enabled. 
+Carefully read the init_if_needed docs before using this feature to make sure you know how to protect yourself 
+against re-initialization attacks.rust-analyzer
+ */        associated_token::mint = mint_a, 
         associated_token::authority = taker, 
         associated_token::token_program = token_program,
             )]
@@ -68,30 +72,21 @@ associated_token::token_program = token_program,
 }
 
 impl<'info> Take<'info> {
-    pub fn init_escrow(&mut self, seed: u64, receive: u64, bumps: &MakeBumps) -> Result<()> {
-        self.escrow.set_inner(Escrow{
-            seed,
-            maker: self.maker.key(), 
-            mint_a: self.mint_a.key(), 
-            mint_b: self.mint_b.key(),
-            receive, 
-            bump: bumps.escrow
-        });
+    pub fn deposit(&mut self) -> Result<()> {
+        let transfer_acccounts = TransferChecked {
+            from: self.taker_ata_b.to_account_info(), //since we are transferring tokens 
+            mint: self.mint_b.to_account_info(), 
+            to: self.maker_ata_b.to_account_info(), 
+            authority: self.taker.to_account_info()
+        };
+
+        let cpi_ctx = CpiContext::new(self.token_program.to_account_info(), transfer_acccounts);
+
+        transfer_checked(cpi_ctx, self.escrow.receive, self.mint_b.decimals)?;
+
+        
 Ok(())
     }
 
-    pub fn deposit(&mut self, deposit: u64) -> Result<()>{
-        let transfer_acccounts = TransferChecked {
-            from: self.maker_ata_a.to_account_info(), //since we are transferring tokens 
-            mint: self.mint_a.to_account_info(), 
-            to: self.vault.to_account_info(), 
-            authority: self.maker.to_account_info()
-        };
-
-        let cpi_ctx = CpiContext::new(self.token_program.to_account_info(), accounts)?; //where does accounts come from?
-
-        transfer_checked(cpi_ctx, deposit, self.mint_a.decimals)?;
-        Ok(())
-
-    }
+  
 }
