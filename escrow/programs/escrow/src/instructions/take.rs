@@ -64,6 +64,9 @@ against re-initialization attacks.rust-analyzer
 
     #[account(
         mut,
+        has_one = mint_a,
+        has_one = mint_b, 
+        has_one = maker,
         seeds = [b"maker", escrow.maker.key().as_ref(), escrow.seed.to_le_bytes().as_ref()], 
         bump = escrow.bump, 
         close = maker //who should receive funds after escrow account closes?
@@ -119,7 +122,7 @@ Ok(())
              accounts, 
              &signer_seeds);
 
-        transfer_checked(cpi_ctx, self.vault.amount, self.mint_a.decimals);
+        transfer_checked(cpi_ctx, self.vault.amount, self.mint_a.decimals)?;
 
         let accounts = CloseAccount{
             account: self.vault.to_account_info(),
