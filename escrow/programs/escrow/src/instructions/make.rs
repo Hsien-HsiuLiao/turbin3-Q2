@@ -1,7 +1,6 @@
 use anchor_lang::prelude::*;
 use anchor_spl::{
-    associated_token::AssociatedToken, 
-    token_interface::{Mint, TokenAccount, TokenInterface, TransferChecked}, };
+    associated_token::AssociatedToken, token_interface::{transfer_checked, Mint, TokenAccount, TokenInterface, TransferChecked} };
 
 use crate::state::Escrow;
 
@@ -68,7 +67,16 @@ Ok(())
 
     pub fn deposit(&mut self, deposit: u64) -> Result<()>{
         let transfer_acccounts = TransferChecked {
+            from: self.maker_ata_a.to_account_info(), //since we are transferring tokens 
+            mint: self.mint_a.to_account_info(), 
+            to: self.vault.to_account_info(), 
+            authority: self.maker.to_account_info()
+        };
 
-        }
+        let cpi_ctx = CpiContext::new(self.token_program.to_account_info(), accounts)?; //where does accounts come from?
+
+        transfer_checked(cpi_ctx, deposit, self.mint_a.decimals)?;
+        Ok(())
+
     }
 }
