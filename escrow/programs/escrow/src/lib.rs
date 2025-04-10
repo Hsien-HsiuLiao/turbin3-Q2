@@ -18,8 +18,8 @@ pub mod escrow {
     }
 
     pub fn take(ctx: Context<Take>, seed: u64, receive: u64, deposit: u64) -> Result<()> {
-        deposit();
-        withdraw_and_close();
+        ctx.accounts.deposit()?;
+//        ctx.accounts.withdraw_and_close()?;
         Ok(())
     }
 }
