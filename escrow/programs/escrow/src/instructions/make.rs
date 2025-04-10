@@ -73,7 +73,7 @@ Ok(())
             authority: self.maker.to_account_info()
         };
 
-        let cpi_ctx = CpiContext::new(self.token_program.to_account_info(), accounts)?; //where does accounts come from?
+        let cpi_ctx = CpiContext::new(self.token_program.to_account_info(), transfer_acccounts); 
 
         transfer_checked(cpi_ctx, deposit, self.mint_a.decimals)?;
         Ok(())
