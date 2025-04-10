@@ -1,6 +1,15 @@
 use anchor_lang::prelude::*;
 use anchor_spl::{
-    associated_token::AssociatedToken, token_interface::{transfer_checked, Mint, TokenAccount, TokenInterface, TransferChecked} };
+    associated_token::AssociatedToken, 
+    token_interface::{
+        close_account,
+        transfer_checked, 
+        Mint, 
+        TokenAccount, 
+        TokenInterface, 
+        TransferChecked, 
+        CloseAccount
+    } };
 
 use crate::state::Escrow;
 
@@ -54,8 +63,10 @@ against re-initialization attacks.rust-analyzer
     pub taker_ata_b: InterfaceAccount<'info, TokenAccount>, //transfer b tokens from taker to maker
 
     #[account(
+        mut,
         seeds = [b"maker", escrow.maker.key().as_ref(), escrow.seed.to_le_bytes().as_ref()], 
-        bump = escrow.bump
+        bump = escrow.bump, 
+        close = maker //who should receive funds after escrow account closes?
     )]
     pub escrow: Account<'info, Escrow>,
 
@@ -86,6 +97,42 @@ impl<'info> Take<'info> {
 
         
 Ok(())
+    }
+
+    pub fn withdraw_and_close(&mut self) -> Result<()> {
+        let signer_seeds: [&[&[u8]]; 1]    = [&[
+            b"escrow", 
+            self.maker.to_account_info().key.as_ref(), // why maker
+            &self.escrow.seed.to_le_bytes()[..], //[..] use the whole array
+            &[self.escrow.bump]
+        ]];
+
+        let accounts = TransferChecked{
+            from: self.vault.to_account_info(),
+            mint: self.mint_a.to_account_info(), //vault only has mint a tokens
+            to: self.taker_ata_a.to_account_info(),
+            authority: self.escrow.to_account_info()
+        };
+
+        let cpi_ctx = CpiContext::new_with_signer(
+             self.token_program.to_account_info(), 
+             accounts, 
+             &signer_seeds);
+
+        transfer_checked(cpi_ctx, self.vault.amount, self.mint_a.decimals);
+
+        let accounts = CloseAccount{
+            account: self.vault.to_account_info(),
+            destination: self.maker.to_account_info(), //design decision?
+            authority: self.escrow.to_account_info(),
+        };
+
+        let ctx = CpiContext::new_with_signer(self.token_program.to_account_info(), 
+        accounts, 
+        &signer_seeds);
+
+        close_account(ctx)
+
     }
 
   
