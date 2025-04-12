@@ -27,15 +27,13 @@ pub mod amm {
     }
 
     pub fn deposit(
-        ctx: Context<Initialize>,
+        ctx: Context<Deposit>,
         amount: u64, //amount of lp tokens that depositor wants to get back 
         max_x: u64, //max x tokens depositor willing to deposit
         max_y: u64 //max y tokens depositor willing to deposit
                     //these are needed to avois slippage
     ) -> Result<()> {
-        ctx.accounts.deposit(amount, max_x, max_y {
-            
-        })?;
+        ctx.accounts.deposit(amount, max_x, max_y)?;
 
         Ok(())
     }
