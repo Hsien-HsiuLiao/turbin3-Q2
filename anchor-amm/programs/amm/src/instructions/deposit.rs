@@ -2,15 +2,12 @@ use anchor_lang::prelude::*;
 
 use anchor_spl::{
     associated_token::AssociatedToken,
-    token::{Mint, Token, TokenAccount, Transfer, transfer}
+    token::{Mint, Token, TokenAccount, Transfer, transfer, MintTo, mint_to}
 };
 use constant_product_curve::ConstantProduct;
 
 use crate::state::Config;
 
-// Anchor programs always use 8 bits for the discriminator
-pub const ANCHOR_DISCRIMINATOR_SIZE: usize = 8; // written to every account on the blockchain by anchor, specifies the type of account, used by anchor for some of its checks
-                                                // so this will be 8 bytes
 
 #[derive(Accounts)]                                                
 pub struct Deposit<'info> {
@@ -64,6 +61,16 @@ pub struct Deposit<'info> {
     )]
     pub config: Account<'info, Config>,
 
+    #[account(
+       
+        init_if_needed,
+        payer = user,
+        associated_token::mint = mint_lp,
+        associated_token::authority = user,
+
+    )]
+    pub user_lp: Account<'info, TokenAccount>, 
+
     pub token_program: Program<'info, Token>,
     pub associated_token_program: Program<'info, AssociatedToken>,
     pub system_program: Program<'info, System>
@@ -95,7 +102,7 @@ impl<'info> Deposit<'info> {
         assert!(x <= max_x && y <= max_y);
         self.deposit_tokens(true, x )?;
         self.deposit_tokens(false, y)?;
-
+        self.mint_lp_tokens(amount)?; 
 
         Ok(())
     }
@@ -117,6 +124,30 @@ impl<'info> Deposit<'info> {
         let ctx = CpiContext::new(cpi_program, cpi_accounts);
 
         transfer(ctx, amount)
+    }
+
+    pub fn mint_lp_tokens(&self, amount: u64) -> Result<()> {
+        let cpi_program = self.token_program.to_account_info();
+
+        let cpi_accounts = MintTo{ //since we authority, it will allow us to mint
+            mint: self.mint_lp.to_account_info(),
+            to: self.user_lp.to_account_info(),
+            authority: self.config.to_account_info(),
+        };
+
+        let seeds = &[
+            &b"config"[..],
+            &self.config.seed.to_le_bytes(),
+            &[self.config.config_bump]
+        ];
+
+        let signer_seeds = &[&seeds[..]];
+
+        let ctx = CpiContext::new_with_signer(cpi_program, cpi_accounts, signer_seeds);
+
+        mint_to(ctx, amount)?;
+
+        Ok(())
     }
 
 }
