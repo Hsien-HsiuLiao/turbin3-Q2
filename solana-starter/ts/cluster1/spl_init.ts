@@ -1,6 +1,5 @@
 import { Keypair, Connection, Commitment } from "@solana/web3.js";
 import { createMint } from '@solana/spl-token';
-//npm i --legacy-peer-deps
 
 //https://docs.anza.xyz/runtime/programs/
 
