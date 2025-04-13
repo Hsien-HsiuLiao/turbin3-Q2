@@ -1,3 +1,5 @@
+https://solana.com/docs/core
+
 https://spl.solana.com/
 
 
@@ -5,7 +7,13 @@ spl_init - create a mint acct
 
 spl_mint - create ATA and use the mint acct to send tokens to ATA
 
+https://spl.solana.com/associated-token-account
+
 spl_metadata - create token metadata with umi
+
+https://developers.metaplex.com/token-metadata/token-standard
+
+https://github.com/Web3-Builders-Alliance/cohort-helper/tree/main/BonusResources/umi
 
 spl_transfer - transfer tokens to a receiver ata
 
