@@ -4,6 +4,8 @@ import { Vault } from "../target/types/vault";
 import { Keypair, PublicKey, SystemProgram, LAMPORTS_PER_SOL, sendAndConfirmTransaction, Transaction } from '@solana/web3.js';
 import {  createAccount, getMinimumBalanceForRentExemptMint, MINT_SIZE, TOKEN_2022_PROGRAM_ID } from "@solana/spl-token";
 import { confirmTransaction } from "@solana-developers/helpers";
+import { assert } from "chai";
+
 
 //https://www.anchor-lang.com/docs/basics/program-structure#declare_id-macro
 //anchor keys sync
@@ -88,8 +90,9 @@ describe("vault", async () => {
       systemProgram: SystemProgram.programId,      
      }
     
+     const amount = new anchor.BN(1_500_000_000);
     const depositTx = await program.methods
-    .deposit(new anchor.BN(7))
+    .deposit(amount)
     .accounts({
       ...accounts            })
     .signers([payer])
@@ -98,7 +101,8 @@ describe("vault", async () => {
     //get deposit value
     const vault_balance = await connection.getBalance(vault);
 
-    console.log("vault balance after deposit: ",vault_balance);
+    //console.log("vault balance after deposit: ",);
+    assert.equal(vault_balance, 3_500_000_000);
 
   });
 });
