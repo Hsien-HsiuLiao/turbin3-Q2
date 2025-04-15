@@ -5,7 +5,8 @@ import { Keypair, PublicKey, SystemProgram, LAMPORTS_PER_SOL, sendAndConfirmTran
 import {  createAccount, getMinimumBalanceForRentExemptMint, MINT_SIZE, TOKEN_2022_PROGRAM_ID } from "@solana/spl-token";
 import { confirmTransaction } from "@solana-developers/helpers";
 
-
+//https://www.anchor-lang.com/docs/basics/program-structure#declare_id-macro
+//anchor keys sync
 const vaultAddress = new PublicKey("3YJsLgDvMoRHr5ttc19ZVdvTVfFHWE81FVcBgWLBKTFb");
 
 const provider = anchor.AnchorProvider.env();
@@ -44,14 +45,21 @@ describe("vault", async () => {
 
     console.log("Your transaction signature", initTx);
 
-      const balance = await connection.getBalance(payer.publicKey);
-      console.log(`Payer balance: ${balance}`);
 
-      [vault_state, bump] = PublicKey.findProgramAddressSync([
-        Buffer.from("state"),
-        payer.publicKey.toBuffer(),
-    ], program.programId);
+
+
     
+  });
+
+  it("make a deposit into vault", async () => {
+    const balance = await connection.getBalance(payer.publicKey);
+    console.log(`Payer balance: ${balance}`);
+
+    [vault_state, bump] = PublicKey.findProgramAddressSync([
+      Buffer.from("state"),
+      payer.publicKey.toBuffer(),
+  ], program.programId);
+  
     [vault, bump] = PublicKey.findProgramAddressSync([
       Buffer.from("vault"),
       vault_state.toBuffer(),
@@ -73,20 +81,24 @@ describe("vault", async () => {
  /*  console.log(`🪂 Airdropped ${sol} SOL to ${vault.toBase58()}`);
   console.log("✅ Tx Signature: ", confirmedAirdrop); */
 
-        const accounts = {
-          signer: payer.publicKey,
-          vaultState: vault_state,
-          vault: vault,
-          systemProgram: SystemProgram.programId,      
-         }
+    const accounts = {
+      signer: payer.publicKey,
+      vaultState: vault_state,
+      vault: vault,
+      systemProgram: SystemProgram.programId,      
+     }
+    
+    const depositTx = await program.methods
+    .deposit(new anchor.BN(7))
+    .accounts({
+      ...accounts            })
+    .signers([payer])
+    .rpc();
 
-      const depositTx = await program.methods
-      .deposit(new anchor.BN(7))
-      .accounts({
-        ...accounts            })
-      .signers([payer])
-      .rpc();
+    //get deposit value
+    const vault_balance = await connection.getBalance(vault);
 
+    console.log("vault balance after deposit: ",vault_balance);
 
   });
 });
