@@ -3,7 +3,8 @@ use anchor_lang::{prelude::*, system_program::{Transfer, transfer}};
 
 //https://gist.github.com/bergabman/3387abe5bcaf8a9e86aeee24577b5719
 
-declare_id!("AQk9Bz8M6HHuEnQh682XXyq79DEFmF17p3MFip6yZBrM");//function-like macro
+//anchor keys sync
+declare_id!("3YJsLgDvMoRHr5ttc19ZVdvTVfFHWE81FVcBgWLBKTFb");//function-like macro
 
 #[program]//attribute-like macro, can insert or remove fields
 pub mod vault {//instructions go here
