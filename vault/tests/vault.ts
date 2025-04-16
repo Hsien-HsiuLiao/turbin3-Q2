@@ -1,8 +1,8 @@
 import * as anchor from "@coral-xyz/anchor";
 import { Program } from "@coral-xyz/anchor";
 import { Vault } from "../target/types/vault";
-import { Keypair, PublicKey, SystemProgram, LAMPORTS_PER_SOL, sendAndConfirmTransaction, Transaction } from '@solana/web3.js';
-import {  createAccount, getMinimumBalanceForRentExemptMint, MINT_SIZE, TOKEN_2022_PROGRAM_ID } from "@solana/spl-token";
+import { Keypair, PublicKey, SystemProgram, LAMPORTS_PER_SOL, Transaction } from '@solana/web3.js';
+import {  getMinimumBalanceForRentExemptMint, MINT_SIZE,  } from "@solana/spl-token";
 import { confirmTransaction } from "@solana-developers/helpers";
 import { assert } from "chai";
 
@@ -32,31 +32,23 @@ describe("vault", async () => {
     // Add your test here.
    // const tx = await program.methods.initialize().rpc();
 
-   //try catch
    const initTx = await program.methods
    .initialize()
    .accounts({
        //signer: program.provider.publicKey,
        signer: payer.publicKey,
-    //   vault,
-   //    vaultState: vaultState.publicKey,
-     //  systemProgram: SystemProgram.programId,
    })
    .signers([payer])
    .rpc();
 
     console.log("Your transaction signature", initTx);
-
-
-
-
     
   });
 
   it("make a deposit into vault", async () => {
     const balance = await connection.getBalance(payer.publicKey);
     console.log(`Payer balance: ${balance}`);
-
+//https://solana.com/developers/cookbook/accounts/create-pda-account#generating-a-pda
     [vault_state, bump] = PublicKey.findProgramAddressSync([
       Buffer.from("state"),
       payer.publicKey.toBuffer(),
@@ -67,7 +59,8 @@ describe("vault", async () => {
       vault_state.toBuffer(),
     ], program.programId);
 
-      /*  */
+      /*  https://solana.com/developers/cookbook/development/test-sol  */
+      //https://solana.com/developers/cookbook/accounts/create-account
         let sol = 2;
         let vault_airdrop_tx_sig = await connection.requestAirdrop(
           vault,
@@ -99,6 +92,7 @@ describe("vault", async () => {
     .rpc();
 
     //get deposit value
+    //https://solana.com/developers/cookbook/accounts/get-account-balance
     const vault_balance = await connection.getBalance(vault);
 
     //console.log("vault balance after deposit: ",);
