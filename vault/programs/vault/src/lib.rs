@@ -124,10 +124,11 @@ impl<'info> Withdraw<'info> {
             to: self.signer.to_account_info()
         };
 
-        //from withdraw::vault account seeds -         seeds = [b"vault", vault_state.key().as_ref()], (line 96,97)
-        let pda_signing_seeds = [b"vault", 
-        self.vault_state.to_account_info().key.as_ref(),
-        &[self.vault_state.vault_bump]
+        //from withdraw::vault account seeds -         seeds = [b"vault", vault_state.key().as_ref()], 
+        let pda_signing_seeds = [
+            b"vault", 
+            self.vault_state.to_account_info().key.as_ref(),
+            &[self.vault_state.vault_bump]
         ];
         let signer_seeds = &[&pda_signing_seeds[..]];
         let cpi_ctx = CpiContext::new_with_signer(cpi_program, cpi_account, signer_seeds);
