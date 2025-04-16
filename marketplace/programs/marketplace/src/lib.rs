@@ -1,4 +1,14 @@
+#![allow(unexpected_cfgs)]
+
 use anchor_lang::prelude::*;
+
+
+mod instructions;
+mod state;
+
+use instructions::*;
+use state::*;
+
 
 declare_id!("FXUQwDsKJNrYFsfiUokPbH4BSrZtoC9m8HpoiMvYxtSE");
 
@@ -12,5 +22,4 @@ pub mod marketplace {
     }
 }
 
-#[derive(Accounts)]
-pub struct Initialize {}
+//get markeetplace pda, pda will save configuration for marketplace (admin, fee, ...)
