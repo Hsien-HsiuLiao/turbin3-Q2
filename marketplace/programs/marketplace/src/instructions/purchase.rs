@@ -1,12 +1,12 @@
-use anchor_lang::prelude::*;
+use anchor_lang::{prelude::*, system_program::{Transfer, transfer}};
 
 use anchor_spl::{associated_token::AssociatedToken, 
     metadata::{MasterEditionAccount, Metadata, MetadataAccount}, 
      
-    token_interface::{Mint, TokenAccount, TokenInterface, transfer_checked, TransferChecked}};
+    token_interface::{Mint, TokenAccount, TokenInterface}};
 
 
-use crate::state::{Listing, Marketplace};
+use crate::{marketplace, state::{Listing, Marketplace}};
 
 #[derive(Accounts)]
 pub struct Purchase<'info> {
@@ -21,6 +21,15 @@ pub struct Purchase<'info> {
         bump, 
     )]
     pub marketplace: Account<'info, Marketplace>,
+
+
+    #[account(
+        init_if_needed, 
+        payer = taker, 
+        associated_token::mint = maker_mint,
+        associated_token::authority = taker
+    )]
+    pub taker_ata: InterfaceAccount<'info, TokenAccount>,
     #[account(
         mut,
         seeds = [b"tresury", marketplace.key().as_ref()], //make a little generic so people can find it
@@ -51,6 +60,7 @@ pub struct Purchase<'info> {
     )]
     pub vault: InterfaceAccount<'info, TokenAccount>,
     pub maker_mint: InterfaceAccount<'info, Mint>,
+    pub associated_token_program: Program<'info, AssociatedToken>,
 
     pub system_program: Program<'info, System>,
     pub token_program: Interface<'info, TokenInterface>
@@ -58,5 +68,30 @@ pub struct Purchase<'info> {
 }
 
 impl <'info> Purchase<'info> {
-    
+    pub fn send_sol(&self) -> Result<()> {
+        let marketplace_fee = (self.marketplace.fee as u64)
+            .checked_mul(self.listing.price)
+            .unwrap()
+            .checked_div(10000_u64)
+            .unwrap();
+
+        let cpi_program = self.system_program.to_account_info();
+
+        let cpi_account = Transfer{
+            from: todo!(),
+            to: todo!(),
+        };
+
+        
+
+        Ok(())
+    }
+
+    pub fn send_nft() -> Result<()> {
+        Ok(())
+    }
+
+    pub fn close_mint_vault() -> Result<()> {
+        Ok(())
+    }
 }
