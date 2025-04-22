@@ -1,9 +1,6 @@
 use anchor_lang::{prelude::*, system_program::{Transfer, transfer}};
 
-use anchor_spl::{associated_token::AssociatedToken, 
-    metadata::{MasterEditionAccount, Metadata, MetadataAccount}, 
-     
-    token_interface::{Mint, TokenAccount, TokenInterface}};
+use anchor_spl::{associated_token::AssociatedToken, metadata::{MasterEditionAccount, Metadata, MetadataAccount}, token::{close_account, transfer_checked, CloseAccount, TransferChecked}, token_interface::{Mint, TokenAccount, TokenInterface}};
 
 
 use crate::{marketplace, state::{Listing, Marketplace}};
@@ -52,7 +49,7 @@ pub struct Purchase<'info> {
         bump,
         close = maker
     )]
-    pub listing: Account<'info, Listing>,
+    pub listing: Account<'info, Listing>,   //authority to close mint vault
     #[account(
         mut, //will need to move things
         associated_token::mint = maker_mint,
@@ -82,19 +79,71 @@ impl <'info> Purchase<'info> {
             to: self.maker.to_account_info(),
         };
 
-        let cpi_ctx = CpiContext::new(cpi_program, cpi_account);
+        let cpi_ctx: CpiContext<'_, '_, '_, '_, Transfer<'_>> = CpiContext::new(cpi_program, cpi_account);
 
-        let amount = 
-        
+        let amount = self.listing.price.checked_sub(marketplace_fee).unwrap();
 
-        Ok(())
+        transfer(cpi_ctx, amount)?;
+
+        let cpi_program = self.system_program.to_account_info();
+
+        let cpi_account = Transfer{
+            from: self.taker.to_account_info(),
+            to: self.treasury.to_account_info(),
+        };
+
+        let cpi_ctx: CpiContext<'_, '_, '_, '_, Transfer<'_>> = CpiContext::new(cpi_program, cpi_account);
+
+        transfer(cpi_ctx, marketplace_fee)
+
     }
 
-    pub fn send_nft() -> Result<()> {
-        Ok(())
+    pub fn send_nft(&mut self) -> Result<()> {
+        let seeds = &[
+        &self.marketplace.key().to_bytes()[..],
+        &self.maker_mint.key().to_bytes()[..],
+        &[self.listing.bump],
+        ];
+
+        let signer_seeds = &[&seeds[..]];
+
+        let cpi_program  = self.token_program.to_account_info(); //we are transferring tokens (nft) so we use token_program instead of system_program
+
+        let cpi_acounts = TransferChecked{
+            from: self.vault.to_account_info(),
+            mint: self.maker_mint.to_account_info(),
+            to: self.taker_ata.to_account_info(),
+            authority: self.listing.to_account_info(), //why listing
+        };
+
+        let cpi_ctx = CpiContext::new_with_signer(cpi_program, cpi_acounts, signer_seeds);
+
+        transfer_checked(cpi_ctx, 1, self.maker_mint.decimals)
+
     }
 
-    pub fn close_mint_vault() -> Result<()> {
-        Ok(())
+    pub fn close_mint_vault(&mut self) -> Result<()> {
+        let seeds = &[
+        &self.marketplace.key().to_bytes()[..],
+        &self.maker_mint.key().to_bytes()[..],
+        &[self.listing.bump],
+        ];
+
+        let signer_seeds = &[&seeds[..]];
+
+        let cpi_program = self.token_program.to_account_info();
+
+        let close_accounts = CloseAccount{
+            account: self.vault.to_account_info(),
+            destination: self.maker.to_account_info(), //send back to maker since they set it up
+            authority: self.listing.to_account_info(),
+        };
+
+        let cpi_ctx = CpiContext::new_with_signer(cpi_program, close_accounts, signer_seeds);
+
+        close_account(cpi_ctx)
+
+
+
     }
 }
