@@ -1,4 +1,4 @@
-use anchor_lang::{prelude::*, solana_program::secp256k1_program, system_program::Transfer};
+use anchor_lang::{prelude::*,  system_program::Transfer};
 
 use anchor_spl::{associated_token::AssociatedToken, 
     metadata::{MasterEditionAccount, Metadata, MetadataAccount}, 
@@ -23,15 +23,15 @@ pub struct List<'info> {
     #[account(
         mut, 
         associated_token::mint = maker_mint,
-        associated_token::authority = maker
+        associated_token::authority = maker//owner
     )]
-    pub maker_ata: InterfaceAccount<'info, TokenAccount>,
+    pub maker_ata: InterfaceAccount<'info, TokenAccount>,//ata for maker_mint
     #[account(
         init, 
         payer = maker,
         associated_token::mint = maker_mint,
-        associated_token::authority = listing
-    )]
+        associated_token::authority = listing//owner
+    )]                                                //the vault token account is created to hold marketplace items to sell
     pub vault: InterfaceAccount<'info, TokenAccount>, //token accounts have predetermined size, no need to specify space
     #[account(
         init,
@@ -40,7 +40,7 @@ pub struct List<'info> {
         bump,
         space = 8 + Listing::INIT_SPACE
     )]
-    pub listing: Account<'info, Listing>,
+    pub listing: Account<'info, Listing>, //listing acct associated with maker_mint in seed
 
     pub collection_mint: InterfaceAccount<'info, Mint>,
     #[account(
@@ -107,5 +107,10 @@ impl <'info> List<'info> {
         transfer_checked(cpi_ctx, 1, self.maker_mint.decimals)?;
         
         Ok(())       
+    }
+
+    pub fn delete_listing(&mut self) -> Result<()> {
+        todo!();
+//        self.listing.close(sol_destination)
     }
 }
