@@ -7,7 +7,7 @@ mod instructions;
 mod state;
 
 use instructions::*;
-use state::*;
+//use state::*;
 
 
 declare_id!("FXUQwDsKJNrYFsfiUokPbH4BSrZtoC9m8HpoiMvYxtSE");
@@ -27,10 +27,10 @@ pub mod marketplace {
         Ok(())
     }
 
-    /* pub fn purchase(ctx: Context<Purchase>, ) -> Result<()> {
+    pub fn purchase(ctx: Context<Purchase>, ) -> Result<()> {
         
         Ok(())
-    } */
+    }
 }
 
 //get marketplace pda, pda will save configuration for marketplace (admin, fee, ...)
