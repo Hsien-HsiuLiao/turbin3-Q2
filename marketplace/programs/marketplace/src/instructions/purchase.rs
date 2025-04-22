@@ -29,7 +29,7 @@ pub struct Purchase<'info> {
         associated_token::mint = maker_mint,
         associated_token::authority = taker
     )]
-    pub taker_ata: InterfaceAccount<'info, TokenAccount>,
+    pub taker_ata: InterfaceAccount<'info, TokenAccount>,//receive nft while purchasing
     #[account(
         mut,
         seeds = [b"tresury", marketplace.key().as_ref()], //make a little generic so people can find it
@@ -54,7 +54,7 @@ pub struct Purchase<'info> {
     )]
     pub listing: Account<'info, Listing>,
     #[account(
-        mut,
+        mut, //will need to move things
         associated_token::mint = maker_mint,
         associated_token::authority = listing
     )]
@@ -78,10 +78,13 @@ impl <'info> Purchase<'info> {
         let cpi_program = self.system_program.to_account_info();
 
         let cpi_account = Transfer{
-            from: todo!(),
-            to: todo!(),
+            from: self.taker.to_account_info(),
+            to: self.maker.to_account_info(),
         };
 
+        let cpi_ctx = CpiContext::new(cpi_program, cpi_account);
+
+        let amount = 
         
 
         Ok(())
