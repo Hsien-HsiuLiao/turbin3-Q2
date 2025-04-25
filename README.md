@@ -22,3 +22,10 @@ instal avm - ```cargo install --git https://github.com/coral-xyz/anchor avm --fo
 https://solanahowitworks.xyz/#chapter6
 
 https://www.anchor-lang.com/docs/quickstart/local
+
+https://www.colosseum.org/breakout
+
+https://arena.colosseum.org/forums/public
+
+https://www.coinbase.com/learn/wallet/tokenomics-101
+
