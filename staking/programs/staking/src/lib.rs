@@ -1,5 +1,8 @@
 use anchor_lang::prelude::*;
 
+mod instructions;
+mod state;
+
 declare_id!("G7G4byox21m78MTkm4DNnfpyqAWXiYEHZTuRcnmJFyJm");
 
 #[program]
@@ -12,5 +15,3 @@ pub mod staking {
     }
 }
 
-#[derive(Accounts)]
-pub struct Initialize {}
