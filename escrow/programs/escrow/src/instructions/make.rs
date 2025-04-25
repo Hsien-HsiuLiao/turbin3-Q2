@@ -33,7 +33,7 @@ associated_token::token_program = token_program,
     #[account(
         init,
         payer = maker,
-        seeds = [b"maker", maker.key().as_ref(), seed.to_le_bytes().as_ref()], 
+        seeds = [b"escrow", maker.key().as_ref(), seed.to_le_bytes().as_ref()], 
         space = 8 + Escrow::INIT_SPACE ,
         bump
     )]
