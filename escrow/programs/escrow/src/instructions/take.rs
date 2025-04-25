@@ -14,7 +14,7 @@ use anchor_spl::{
 use crate::state::Escrow;
 
 #[derive(Accounts)]
-#[instruction(seed: u64)]
+//#[instruction(seed: u64)]
 pub struct Take<'info> {
     #[account(mut)]
     pub taker : Signer<'info>,
@@ -35,10 +35,11 @@ pub struct Take<'info> {
     pub mint_b: InterfaceAccount<'info, Mint>, //to derive ata
 
     #[account(
-mut, 
-associated_token::mint = mint_b, 
-associated_token::authority = maker, 
-associated_token::token_program = token_program,
+        init_if_needed,
+        payer = taker, 
+        associated_token::mint = mint_b, 
+        associated_token::authority = maker, 
+        associated_token::token_program = token_program,
     )]
     pub maker_ata_b: InterfaceAccount<'info, TokenAccount>, //derive b ata
 
@@ -67,13 +68,14 @@ against re-initialization attacks.rust-analyzer
         has_one = mint_a,
         has_one = mint_b, 
         has_one = maker,
-        seeds = [b"maker", escrow.maker.key().as_ref(), escrow.seed.to_le_bytes().as_ref()], 
+        seeds = [b"escrow", escrow.maker.key().as_ref(), escrow.seed.to_le_bytes().as_ref()], 
         bump = escrow.bump, 
         close = maker //who should receive funds after escrow account closes?
     )]
     pub escrow: Account<'info, Escrow>,
 
     #[account(
+        mut,
         associated_token::mint = mint_a, 
         associated_token::authority = escrow, 
         associated_token::token_program = token_program
@@ -103,12 +105,14 @@ Ok(())
     }
 
     pub fn withdraw_and_close(&mut self) -> Result<()> {
+        msg!("withdraw and close");
         let signer_seeds: [&[&[u8]]; 1]    = [&[
             b"escrow", 
             self.maker.to_account_info().key.as_ref(), // why maker
             &self.escrow.seed.to_le_bytes()[..], //[..] use the whole array
             &[self.escrow.bump]
         ]];
+        msg!("signer seeds");
 
         let accounts = TransferChecked{
             from: self.vault.to_account_info(),
@@ -116,23 +120,30 @@ Ok(())
             to: self.taker_ata_a.to_account_info(),
             authority: self.escrow.to_account_info()
         };
+        msg!("accounts");
 
         let cpi_ctx = CpiContext::new_with_signer(
              self.token_program.to_account_info(), 
              accounts, 
              &signer_seeds);
+             
+        msg!("cpictx");
+        msg!("Attempting to transfer {} tokens from vault.", self.vault.amount);
 
         transfer_checked(cpi_ctx, self.vault.amount, self.mint_a.decimals)?;
+        msg!("transferchecked");
 
         let accounts = CloseAccount{
             account: self.vault.to_account_info(),
             destination: self.maker.to_account_info(), //design decision?
             authority: self.escrow.to_account_info(),
         };
+        msg!("closeacct");
 
         let ctx = CpiContext::new_with_signer(self.token_program.to_account_info(), 
         accounts, 
         &signer_seeds);
+        msg!("cpictx");
 
         close_account(ctx)
 
