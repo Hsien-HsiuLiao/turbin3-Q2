@@ -3,9 +3,13 @@
 https://turbin3.com/
 
 week 1 
-- Account model, Programs, Rent, Compute, IDL, PDA, CPI, @solana/spl-token library (create mint account and ATA)
-- Metaplex, Master Edition, Collections, UMI, create token metadata with umi and transfer token
-- Create and mint NFT with UMI
+- Account model (https://solanahowitworks.xyz/#chapter6), 
+Programs, Rent, Compute, IDL, PDA, CPI, 
+[@solana/spl-token library](https://spl.solana.com/) 
+([create mint account and ATA](/solana-starter/ts/cluster1/spl_notes.md))
+- Metaplex, Master Edition, Collections, UMI, 
+[create token metadata with umi and transfer token](/solana-starter/ts/cluster1/spl_notes.md)
+- [Create and mint NFT with UMI](/solana-starter/ts/cluster1/nft_notes.md)
 
 week 2
 - Vault
@@ -25,7 +29,7 @@ week 4
 https://www.worldtimebuddy.com/
 
 
-https://solanahowitworks.xyz/#chapter6
+
 
 https://www.anchor-lang.com/docs/quickstart/local
 
