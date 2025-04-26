@@ -1,16 +1,34 @@
+#![allow(unexpected_cfgs)]
+
 use anchor_lang::prelude::*;
 
-declare_id!("A8q87wCYFZjR61Xjr34kcbxHSeoWUr2bZcLRMwLUDwrN");
+
+mod instructions;
+mod state;
+
+use instructions::*;
+
+
+declare_id!("FXUQwDsKJNrYFsfiUokPbH4BSrZtoC9m8HpoiMvYxtSE");
 
 #[program]
-pub mod sol_parking {
+pub mod marketplace {
     use super::*;
 
-    pub fn initialize(ctx: Context<Initialize>) -> Result<()> {
-        msg!("Greetings from: {:?}", ctx.program_id);
+    pub fn initialize(ctx: Context<Initialize>, name: String, fee:u16) -> Result<()> {
+        ctx.accounts.init(name, fee, &ctx.bumps)?;
+        Ok(())
+    }
+
+    pub fn list(ctx: Context<List>, price: u64) -> Result<()> {
+        ctx.accounts.create_listing(price, &ctx.bumps)?;
+        Ok(())
+    }
+
+    pub fn purchase(ctx: Context<Purchase>, ) -> Result<()> {
+        
         Ok(())
     }
 }
 
-#[derive(Accounts)]
-pub struct Initialize {}
+//get marketplace pda, pda will save configuration for marketplace (admin, fee, ...)
