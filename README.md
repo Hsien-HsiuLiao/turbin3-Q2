@@ -1,4 +1,11 @@
-# turbin3-Q2
+# Turbin3 Q2 2025 Builders Cohort
+
+https://turbin3.com/
+
+week 1 - @solana/spl-token library
+week 2 - Vault, Escrow, AMM
+week 3 - NFT Marketplace, Staking, Architecture Diagram
+week 4 - Governance, Capstone deep dive, How to write Anchor tests
 
 https://www.worldtimebuddy.com/
 
