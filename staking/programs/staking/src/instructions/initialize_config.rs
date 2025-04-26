@@ -14,7 +14,7 @@ pub struct InitializeConfig<'info> {
     #[account(
         init, 
         payer = admin, 
-        seeds = [b"config".as_ref()],
+        seeds = [b"config"],
         bump, 
         space = 8 + StakeConfig::INIT_SPACE
     )]
@@ -23,7 +23,7 @@ pub struct InitializeConfig<'info> {
     #[account(
         init, 
         payer = admin, 
-        seeds = [b"rewards".as_ref(), config.key().as_ref()],
+        seeds = [b"rewards", config.key().as_ref()],
         bump, 
         mint::decimals = 6,
         mint::authority = config            //stake config
