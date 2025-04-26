@@ -28,18 +28,34 @@ describe("vault", async () => {
   const user = (provider.wallet as anchor.Wallet).payer;
   const payer = user;
 
+  const confirm = async (signature: string): Promise<string> => {
+    const block = await connection.getLatestBlockhash();
+    await connection.confirmTransaction({
+      signature,
+      ...block,
+    });
+    return signature;
+  };
+
+  const log = async (signature: string): Promise<string> => {
+    console.log(
+      `Your transaction signature: https://explorer.solana.com/transaction/${signature}?cluster=custom&customUrl=${connection.rpcEndpoint}`
+    );
+    return signature;
+  };
+
   it("Is initialized!", async () => {
     // Add your test here.
    // const tx = await program.methods.initialize().rpc();
 
    const initTx = await program.methods
-   .initialize()
-   .accounts({
-       //signer: program.provider.publicKey,
-       signer: payer.publicKey,
-   })
-   .signers([payer])
-   .rpc();
+      .initialize()
+      .accounts({
+          //signer: program.provider.publicKey,
+          signer: payer.publicKey,
+      })
+      .signers([payer])
+      .rpc();
 
     console.log("Your transaction signature", initTx);
     
@@ -48,11 +64,12 @@ describe("vault", async () => {
   it("make a deposit into vault", async () => {
     const balance = await connection.getBalance(payer.publicKey);
     console.log(`Payer balance: ${balance}`);
-//https://solana.com/developers/cookbook/accounts/create-pda-account#generating-a-pda
+
+    //https://solana.com/developers/cookbook/accounts/create-pda-account#generating-a-pda
     [vault_state, bump] = PublicKey.findProgramAddressSync([
       Buffer.from("state"),
       payer.publicKey.toBuffer(),
-  ], program.programId);
+      ], program.programId);
   
     [vault, bump] = PublicKey.findProgramAddressSync([
       Buffer.from("vault"),
