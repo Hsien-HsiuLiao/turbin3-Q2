@@ -1,7 +1,13 @@
 //1:04:00 video
 use anchor_lang::prelude::*;
 
-use anchor_spl::token::{Mint, Token, TokenAccount};
+use anchor_spl::{
+    metadata::{mpl_token_metadata::instructions::{FreezeDelegatedAccountCpi, FreezeDelegatedAccountCpiAccounts},
+    MasterEditionAccount, 
+    Metadata,
+    MetadataAccount},
+    token::{approve, Approve, Mint, Token, TokenAccount}
+};
 //add imports 1:17;00
 
 use crate::state::StakeAccount;
@@ -78,8 +84,66 @@ pub struct Stake<'info> {
 }
 
 impl <'info> Stake<'info> {
-    pub fn stake(&mut self, ) -> Result<()>{
+    pub fn stake(&mut self, bumps: &StakeBumps) -> Result<()>{
 
+        assert!(self.user_account.amount_staked <= self.config.max_staked);
+
+        let cpi_program = self.token_program.to_account_info();
+
+        //give authority to stake_account
+        let cpi_accounts = Approve{
+            to: self.mint_ata.to_account_info(),
+            delegate: self.stake_account.to_account_info(),
+            authority: self.user.to_account_info(),//give authority to
+        };
+
+        let cpi_ctx = CpiContext::new(cpi_program, cpi_accounts);
+
+        //hover over approve and click on Approve
+        //then at   line 100, go to definition for approve  let ix = spl_token::instruction::approve(
+        //hover over Approve and read     let data = TokenInstruction::Approve { amount }.pack();
+
+
+        approve(cpi_ctx, 1)?;
+        //end give authority to stake_account
+
+        let delegate = &self.stake_account.to_account_info();
+        let token_account = &self.mint_ata.to_account_info();
+        let edition = &self.master_edition.to_account_info();
+        let mint = &self.mint.to_account_info();
+        let token_program = &self.token_program.to_account_info();
+        let metadata = &self.metadata.to_account_info();
+
+        let seeds = &[
+            b"stake",
+            self.config.to_account_info(),
+            self.mint.to_account_info(),
+            &[self.stake_account.bump]
+        ];
+
+        let signer_seeds = &[&seeds[..]];
+
+        //use authority to freeze token account
+        FreezeDelegatedAccountCpi::new(
+            metadata, 
+            FreezeDelegatedAccountCpiAccounts { 
+                delegate, 
+                token_account, 
+                edition, 
+                mint,
+                token_program
+            }
+        ).invoke_signed(signer_seeds);
+
+        self.stake_account.set_inner(StakeAccount { 
+            owner: self.user.key(), 
+            mint: self.mint.key(), 
+            staked_at: Clock::get()?.unix_timestamp, 
+            bump: bumps.stake_account 
+        });
+
+        self.user_account.amount_staked += 1;
+        //1:35:00 discussion delegate vs freeze
         
         Ok(())
     }

@@ -13,5 +13,8 @@ pub mod staking {
         msg!("Greetings from: {:?}", ctx.program_id);
         Ok(())
     }
+    //stake()
+    //unstake()
+    //purchase()
 }
 
