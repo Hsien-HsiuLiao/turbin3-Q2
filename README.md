@@ -2,10 +2,25 @@
 
 https://turbin3.com/
 
-week 1 - @solana/spl-token library
-week 2 - Vault, Escrow, AMM
-week 3 - NFT Marketplace, Staking, Architecture Diagram
-week 4 - Governance, Capstone deep dive, How to write Anchor tests
+week 1 
+- Account model, Programs, Rent, Compute, IDL, PDA, CPI, @solana/spl-token library (create mint account and ATA)
+- Metaplex, Master Edition, Collections, UMI, create token metadata with umi and transfer token
+- Create and mint NFT with UMI
+
+week 2
+- Vault
+- Escrow
+- AMM
+
+week 3 
+- NFT Marketplace
+- Staking
+- Architecture Diagram
+
+week 4 
+- Governance
+- Capstone deep dive
+- How to write Anchor tests
 
 https://www.worldtimebuddy.com/
 
