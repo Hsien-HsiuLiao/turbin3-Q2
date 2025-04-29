@@ -11,7 +11,8 @@ describe("parking space marketplace", () => {
   it("Is initialized!", async () => {
     // Add your test here.
     const listing_fee = 0.1;
-    const tx = await program.methods.initialize("sol-parking", listing_fee, ).rpc();
+    const marketplace_name = "Rent-a-parking-space";
+    const tx = await program.methods.initialize(marketplace_name, listing_fee, ).rpc();
     console.log("Your transaction signature", tx);
   });
 });
