@@ -11,6 +11,7 @@ import {
 import {
   MINT_SIZE,
   TOKEN_2022_PROGRAM_ID,
+  ASSOCIATED_TOKEN_PROGRAM_ID,
   // TOKEN_PROGRAM_ID,
   createAssociatedTokenAccountIdempotentInstruction,
   createInitializeMint2Instruction,
@@ -19,6 +20,9 @@ import {
   getMinimumBalanceForRentExemptMint,
 } from "@solana/spl-token";
 import { randomBytes } from "crypto";
+import { machine } from "os";
+import { Metadata, MPL_TOKEN_METADATA_PROGRAM_ID } from "@metaplex-foundation/mpl-token-metadata";
+
 
 
 describe("marketplace", () => {
@@ -35,6 +39,8 @@ describe("marketplace", () => {
 
   const programId = program.programId;
   const tokenProgram = TOKEN_2022_PROGRAM_ID;
+  const metadataProgram = MPL_TOKEN_METADATA_PROGRAM_ID;
+  const associatedTokenProgram = ASSOCIATED_TOKEN_PROGRAM_ID;
 
   const confirm = async (signature: string): Promise<string> => {
     const block = await connection.getLatestBlockhash();
@@ -54,7 +60,7 @@ describe("marketplace", () => {
 
   //const seed = new BN(randomBytes(8));
 
-  const [maker, taker, mintA, mintB] = Array.from({ length: 4 }, () =>
+  const [maker, taker, mintA, mintB, maker_mint] = Array.from({ length: 5 }, () =>
     Keypair.generate()
   );
   const [makerAtaA, makerAtaB, takerAtaA, takerAtaB] = [maker, taker]
@@ -65,12 +71,28 @@ describe("marketplace", () => {
     )
     .flat();
 
-  /* const escrow = PublicKey.findProgramAddressSync(
-    [Buffer.from("escrow"), maker.publicKey.toBuffer(), seed.toArrayLike(Buffer, "le", 8)],
-    program.programId
-  )[0]; */
+    //maker_mint, maker
+  const [makerAta] = [maker]
+    .map((a) =>
+    [maker_mint].map((m) =>
+      getAssociatedTokenAddressSync(m.publicKey, a.publicKey, false, tokenProgram)
+      )
+    )
+    .flat();
 
- // const vault = getAssociatedTokenAddressSync(mintA.publicKey, escrow, true, tokenProgram);
+  const marketplace_name = "MyMarketPlace";
+
+  const marketplace = PublicKey.findProgramAddressSync(
+    [Buffer.from("marketplace"), Buffer.from(marketplace_name) ],
+    program.programId
+  )[0];
+
+  const listing = PublicKey.findProgramAddressSync(
+    [marketplace.toBuffer(), maker.publicKey.toBuffer()],
+    program.programId
+  )[0];
+
+  const vault = getAssociatedTokenAddressSync(maker_mint.publicKey, listing, true, tokenProgram);
 
   // Accounts
   const accounts = {
@@ -82,31 +104,53 @@ describe("marketplace", () => {
     makerAtaB,
     takerAtaA,
     takerAtaB,
-  //  escrow,
-  //marketplace
-  //  vault,
+    marketplace,
+    vault,
     tokenProgram,
 
     //admin
 //treasury
 //rewards_mint
 //maker_mint
-//maker_ata
+makerAta,
 //taker_ata
-//listing
+listing,
 //collection_mint
-//metadata
-//master_edition
-//metadata_program
+//metadata,
+//masterEdition,
+metadataProgram
 //associated_token_program
   }
 
   it("Is initialized!", async () => {
     // Add your test here.
     const tx = await program.methods
-                .initialize("MyMarketplace", 0.1)
+                .initialize(marketplace_name, 0.1)
                 .accounts({...accounts})
                 .rpc();
     console.log("Your transaction signature", tx);
+  });
+
+  it("list NFT on marketplace", async () => {
+    let nft_price = new BN(1234);
+
+    const tx = await program.methods
+                .list(nft_price)
+                .accountsPartial({
+                  maker: maker.publicKey,
+                  makerMint: maker_mint.publicKey,
+                  makerAta,
+                  marketplace: marketplace,
+                  // metadata: metadata,
+                  // collectionMint: 
+                  // masterEdition: masterEdition,
+                  metadataProgram,
+                  tokenProgram,
+                  associatedTokenProgram,
+                })
+                .signers([maker])
+                .rpc();
+    console.log("Your transaction signature", tx);
+    
   });
 });
