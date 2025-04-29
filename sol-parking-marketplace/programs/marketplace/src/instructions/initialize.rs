@@ -1,6 +1,6 @@
 use anchor_lang::prelude::*;
 
-use anchor_spl::token_interface::{Mint, TokenInterface};
+//use anchor_spl::token_interface::{Mint, TokenInterface};
 
 use crate::state::Marketplace;
 
@@ -30,10 +30,7 @@ impl <'info> Initialize<'info> {
             admin: self.admin.key(),
             fee,
             bump: bumps.marketplace,
-      ///      treasury_bump: bumps.treasury,
-         //   rewards_bump: bumps.rewards_mint,
             name
-
         });
 
         Ok(())
