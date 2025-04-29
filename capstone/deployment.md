@@ -1,0 +1,1 @@
+https://www.anchor-lang.com/docs/quickstart/local#deploy-to-devnet
