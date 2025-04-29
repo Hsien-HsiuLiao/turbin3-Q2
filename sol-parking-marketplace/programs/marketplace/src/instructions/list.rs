@@ -1,13 +1,14 @@
 use anchor_lang::{prelude::*,  system_program::Transfer};
 
-use anchor_spl::{associated_token::AssociatedToken, 
+/* use anchor_spl::{associated_token::AssociatedToken, 
     metadata::{MasterEditionAccount, Metadata, MetadataAccount}, 
      
-    token_interface::{Mint, TokenAccount, TokenInterface, transfer_checked, TransferChecked}};
+    token_interface::{Mint, TokenAccount, TokenInterface, transfer_checked, TransferChecked}}; */
 
 use crate::state::{Listing, Marketplace};
 
 #[derive(Accounts)]
+#[instruction(sensor_id: u64)]
 pub struct List<'info> {
    #[account(mut)]
    pub maker: Signer<'info>,
@@ -25,18 +26,18 @@ pub struct List<'info> {
         payer = maker,
         associated_token::mint = maker_mint,
         associated_token::authority = listing//owner
-    )]                                                //the vault token account is created to hold marketplace items to sell
-    pub vault: InterfaceAccount<'info, TokenAccount>, //token accounts have predetermined size, no need to specify space */
+    )]                                                
+    pub vault: InterfaceAccount<'info, TokenAccount>,  */
     #[account(
         init,
         payer = maker, 
       //  seeds = [marketplace.key().as_ref(), maker_mint.key().as_ref()], //mint is unique
-        seeds = [marketplace.key().as_ref(), ], //mint is unique
+        seeds = [marketplace.key().as_ref(), &sensor_id.to_le_bytes()], //listing sensor_id
 
         bump,
         space = 8 + Listing::INIT_SPACE
     )]
-    pub listing: Account<'info, Listing>, //listing acct associated with maker_mint in seed
+    pub listing: Account<'info, Listing>, //
 
     
     
