@@ -6,7 +6,7 @@ use anchor_spl::{associated_token::AssociatedToken, metadata::{MasterEditionAcco
 use crate::{marketplace, state::{Listing, Marketplace}};
 
 #[derive(Accounts)]
-pub struct Rent<'info> {
+pub struct Reserve<'info> {
    #[account(mut)]
    pub renter: Signer<'info>,
    #[account(mut)]
@@ -44,7 +44,7 @@ pub struct Rent<'info> {
 
 }
 
-impl <'info> Rent<'info> {
+impl <'info> Reserve<'info> {
     pub fn send_sol(&self) -> Result<()> {
       Ok(())
     }

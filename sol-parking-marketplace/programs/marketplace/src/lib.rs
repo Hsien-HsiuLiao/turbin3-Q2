@@ -15,7 +15,7 @@ declare_id!("FXUQwDsKJNrYFsfiUokPbH4BSrZtoC9m8HpoiMvYxtSE");
 pub mod marketplace {
     use super::*;
 
-   /*  pub fn initialize(ctx: Context<Initialize>, name: String, fee:u16) -> Result<()> {
+     pub fn initialize(ctx: Context<Initialize>, name: String, fee:u16) -> Result<()> {
         ctx.accounts.init(name, fee, &ctx.bumps)?;
         Ok(())
     }
@@ -25,10 +25,10 @@ pub mod marketplace {
         Ok(())
     }
 
-    pub fn rent(ctx: Context<Rent>, ) -> Result<()> {
+    pub fn reserve(ctx: Context<Reserve>, ) -> Result<()> {
         
         Ok(())
-    } */
+    }
 }
 
 //get marketplace pda, pda will save configuration for marketplace (admin, fee, ...)
