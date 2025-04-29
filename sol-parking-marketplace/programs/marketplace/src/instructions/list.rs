@@ -50,7 +50,13 @@ impl <'info> List<'info> {
             maker: self.maker.key(), 
         //    mint: self.maker_mint.key(), 
             price, 
-            bump: bumps.listing 
+            bump: bumps.listing,
+            address: todo!(),
+            rental_rate: todo!(),
+            sensor_id: todo!(),
+            reserved_by: todo!(),
+            reservation_duration: todo!(),
+            parking_space_status: todo!(), 
         });
 
       
