@@ -2,7 +2,7 @@ import * as anchor from "@coral-xyz/anchor";
 import { Program } from "@coral-xyz/anchor";
 import { Marketplace } from "../target/types/marketplace";
 
-describe("marketplace", () => {
+describe("parking space marketplace", () => {
   // Configure the client to use the local cluster.
   anchor.setProvider(anchor.AnchorProvider.env());
 
@@ -10,7 +10,8 @@ describe("marketplace", () => {
 
   it("Is initialized!", async () => {
     // Add your test here.
-    const tx = await program.methods.initialize().rpc();
+    const listing_fee = 0.1;
+    const tx = await program.methods.initialize("sol-parking", listing_fee, ).rpc();
     console.log("Your transaction signature", tx);
   });
 });
