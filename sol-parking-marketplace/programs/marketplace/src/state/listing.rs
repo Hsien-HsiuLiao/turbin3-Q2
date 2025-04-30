@@ -10,11 +10,9 @@ pub struct Listing {
     pub address: String,
     pub rental_rate: u64,
     pub sensor_id: u64, 
-    pub reserved_by: Pubkey, 
-    pub reservation_duration: u64,  
+    pub reserved_by: Option<Pubkey>, 
+    pub reservation_duration: Option<u64>,
     pub parking_space_status:ParkingSpaceStatus, 
-    
-    
 }
 
 #[derive(Debug, Clone, Copy, AnchorSerialize, AnchorDeserialize)]
