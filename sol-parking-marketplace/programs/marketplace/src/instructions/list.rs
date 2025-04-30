@@ -67,7 +67,15 @@ impl <'info> List<'info> {
     }   
 
     
-        
+    pub fn update_listing(&mut self) -> Result<()> {
+        todo!();
+    }
+
+    pub fn reserve_listing(&mut self) -> Result<()> {
+        todo!();
+    }
+
+
     pub fn delete_listing(&mut self) -> Result<()> {
         todo!();
 //        self.listing.close(sol_destination)
