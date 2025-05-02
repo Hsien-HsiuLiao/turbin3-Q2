@@ -37,3 +37,14 @@ https://docs.helium.com/iot/devices
 https://docs.helium.com/network-iot/devices/ready-to-use/bosch/tps110/
 
 https://docs.helium.com/network-iot/devices/ready-to-use/nwave/nps310sm/
+
+https://www.thethingsnetwork.org/device-repository/tags/distance/
+
+DDS45-LB LoRaWAN Distance Detection Sensor - https://shop.dragino.com/index.php?rt=product/product&product_id=198
+
+https://dragino.com/products/distance-level-sensor/item/289-ds20l.html
+
+how to connect to TTN - https://wiki.dragino.com/xwiki/bin/view/Main/User%20Manual%20for%20LoRaWAN%20End%20Nodes/DS20L_LoRaWAN_Smart_Distance_Detector_User_Manual/#H2.2200BQuickguidetoconnecttoLoRaWANserver28OTAA29
+
+https://www.choovio.com/product/ds20l-lorawan-smart-distance-detector/
+
