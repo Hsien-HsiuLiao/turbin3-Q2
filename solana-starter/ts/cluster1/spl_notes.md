@@ -1,9 +1,11 @@
+```yarn install```
+
 https://solana.com/docs/core
 
 https://spl.solana.com/
 
 
-spl_init - create a mint acct
+[spl_init](/solana-starter/ts/cluster1/spl_init.ts) - create a mint acct
 
 spl_mint - create ATA and use the mint acct to send tokens to ATA
 
