@@ -25,10 +25,16 @@ pub mod marketplace {
         Ok(())
     }
 
-    pub fn reserve(ctx: Context<Reserve>, ) -> Result<()> {
-        
+    pub fn reserve(ctx: Context<Reserve>, duration: u64) -> Result<()> {
+        ctx.accounts.reserve_listing(duration)?;
         Ok(())
     }
+
+    //pub fn sensor_change() { //when driver arrives or leaves}
+
+    //pub fn confirm_parking() {//driver scans QR code to confirm arrival and parking}
+
+
 }
 
 //get marketplace pda, pda will save configuration for marketplace (admin, fee, ...)

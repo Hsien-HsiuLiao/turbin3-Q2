@@ -71,10 +71,6 @@ impl <'info> List<'info> {
         todo!();
     }
 
-    pub fn reserve_listing(&mut self) -> Result<()> {
-        todo!();
-    }
-
 
     pub fn delete_listing(&mut self) -> Result<()> {
         todo!();

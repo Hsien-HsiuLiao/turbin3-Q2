@@ -6,7 +6,7 @@ use anchor_lang::{prelude::*, system_program::{Transfer, transfer}};
     token_interface::{Mint, TokenAccount, TokenInterface}}; */
 
 
-use crate::{marketplace, state::{Listing, Marketplace}};
+use crate::{marketplace, state::{Listing, Marketplace, ParkingSpaceStatus}};
 
 #[derive(Accounts)]
 #[instruction(sensor_id: u64)]
@@ -25,12 +25,10 @@ pub struct Reserve<'info> {
 
     #[account(
         mut,
-//        seeds = [marketplace.key().as_ref(), maker_mint.key().as_ref()], //
         seeds = [marketplace.key().as_ref(), &sensor_id.to_le_bytes()], //
-
         bump,
-        close = maker
-    )]
+        constraint = listing.parking_space_status == ParkingSpaceStatus::Available
+        )]
     pub listing: Account<'info, Listing>,   //
    /*  #[account(
         mut, //will need to move things
@@ -45,14 +43,28 @@ pub struct Reserve<'info> {
 }
 
 impl <'info> Reserve<'info> {
-    pub fn send_sol(&self) -> Result<()> {
+    pub fn reserve_listing(&mut self, duration: u64) -> Result<()> {
+
+        let listing = &mut self.listing;
+    
+        // Check if the listing is available
+        if listing.parking_space_status != ParkingSpaceStatus::Available {
+            return Err(ErrorCode::ListingNotAvailable.into());
+        }
+    
+        // Update the listing with the new reservation details
+        listing.reserved_by = Some(self.renter.key());
+        listing.reservation_duration = Some(duration);
+        listing.parking_space_status = ParkingSpaceStatus::Reserved;
+
       Ok(())
     }
 
     
-    pub fn close(&mut self) -> Result<()> {
-       
-Ok(())
+}
 
-    }
+#[error_code]
+pub enum ErrorCode {
+    #[msg("The listing is not available for reservation.")]
+    ListingNotAvailable,
 }

@@ -15,7 +15,7 @@ pub struct Listing {
     pub parking_space_status:ParkingSpaceStatus, 
 }
 
-#[derive(Debug, Clone, Copy, AnchorSerialize, AnchorDeserialize)]
+#[derive(Debug, Clone, Copy, AnchorSerialize, AnchorDeserialize, PartialEq)]
 pub enum ParkingSpaceStatus {
     Available,
     Reserved,
