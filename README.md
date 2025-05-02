@@ -7,7 +7,7 @@ week 1
 Programs, Rent, Compute, IDL, PDA, CPI, 
 [@solana/spl-token library](https://spl.solana.com/) 
 ([create mint account and ATA](/solana-starter/ts/cluster1/spl_notes.md))
-- Metaplex, Master Edition, Collections, UMI, 
+- [Metaplex](https://developers.metaplex.com/token-metadata), Master Edition, Collections, UMI, 
 [create token metadata with umi and transfer token](/solana-starter/ts/cluster1/spl_notes.md)
 - [Create and mint NFT with UMI](/solana-starter/ts/cluster1/nft_notes.md)
 
@@ -26,7 +26,14 @@ week 4
 - Capstone deep dive
 - How to write Anchor tests
 
-https://www.worldtimebuddy.com/
+Enrichment
+- Mirror https://wasd.mirror.xyz/BFf4bA4Fes2nWW9CcHiul624sqqMTYCPhsoqJLxsqkA
+- Surfpool https://surfpool.run/
+- Metaplex
+- https://www.walrus.xyz/
+
+When is class? What's UTC?
+- https://www.worldtimebuddy.com/
 
 
 
