@@ -11,11 +11,20 @@ import { ellipsify } from '@/lib/utils'
 export default function AccountDetailFeature() {
   const params = useParams()
   const address = useMemo(() => {
-    if (!params.address || typeof params.address !== 'string') {
+   
+    /* if (!params.address || typeof params.address !== 'string') {
       return
     }
     assertIsAddress(params.address)
-    return params.address
+    return params.address */
+
+    // Check if params is not null and has the address property
+    if (params && params.address && typeof params.address === 'string') {
+      return params.address;
+    }
+    return null; // or handle the case when address is not available
+
+
   }, [params])
   if (!address) {
     return <div>Error loading account</div>
