@@ -48,3 +48,8 @@ how to connect to TTN - https://wiki.dragino.com/xwiki/bin/view/Main/User%20Manu
 
 https://www.choovio.com/product/ds20l-lorawan-smart-distance-detector/
 
+https://docs.switchboard.xyz/product-documentation/data-feeds
+
+https://ondemand.switchboard.xyz/solana/devnet/build
+
+switchboard - https://www.youtube.com/watch?v=XGD-shfSZb4
