@@ -31,7 +31,7 @@ export default function AccountDetailFeature() {
   }
 
   return (
-    <div>
+   /*  <div>
       <AppHero
         title={<AccountBalance address={address} />}
         subtitle={
@@ -48,6 +48,7 @@ export default function AccountDetailFeature() {
         <AccountTokens address={address} />
         <AccountTransactions address={address} />
       </div>
-    </div>
+    </div> */
+    <div></div>
   )
 }
