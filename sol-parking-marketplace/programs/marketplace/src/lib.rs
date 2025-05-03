@@ -1,6 +1,8 @@
 #![allow(unexpected_cfgs)]
 
 use anchor_lang::prelude::*;
+use switchboard_on_demand::on_demand::accounts::pull_feed::PullFeedAccountData;
+
 
 
 mod instructions;
@@ -30,7 +32,7 @@ pub mod marketplace {
         Ok(())
     }
 
-    pub fn sensor_change(ctx: Context<SwitchboardFeed>) -> Result<()> { //when driver arrives or leaves
+    pub fn sensor_change<'a>(ctx: Context<SwitchboardFeed>) -> Result<()> { //when driver arrives or leaves
         // Feed account data
         let feed_account = ctx.accounts.feed.data.borrow();
 
@@ -42,7 +44,7 @@ pub mod marketplace {
         // Docs at: https://switchboard-on-demand-rust-docs.web.app/on_demand/accounts/pull_feed/struct.PullFeedAccountData.html
         let feed = PullFeedAccountData::parse(feed_account).unwrap();
         // Log the value
-        msg!("price: {:?}", feed.value());
+        msg!("distance: {:?}", feed.value());
         Ok(())
 
 }
