@@ -5,12 +5,12 @@ const jobs: OracleJob[] = [
     tasks: [
       {
         httpTask: {
-          url: "https://binance.com/api/v3/ticker/price",
+          url: "https://lorawan-api.vercel.app/api/driver-parked",
         }
       },
       {
         jsonParseTask: {
-          path: "$[?(@.symbol == 'BTCUSDT')].price"
+          path: "$[0].distance_in_cm"
         }
       }
     ],
@@ -36,6 +36,10 @@ const response = await fetch("https://api.switchboard.xyz/api/simulate", {
   headers: [["Content-Type", "application/json"]],
   body: JSON.stringify({ cluster: "Mainnet", jobs: serializedJobs }),
 });
+
+/* // Log the response from the simulation server
+const responseData = await response.json();
+console.log(`Response from simulation server:`, responseData); */
 
 // Check response.
 if (response.ok) {
