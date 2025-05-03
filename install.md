@@ -22,3 +22,5 @@ Installed Versions:
 - Anchor CLI: anchor-cli 0.31.0
 - Node.js: v23.10.0
 - Yarn: 1.22.22
+
+install bun - ```curl -fsSL https://bun.sh/install | bash```
