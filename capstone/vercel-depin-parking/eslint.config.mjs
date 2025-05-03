@@ -12,7 +12,7 @@ const compat = new FlatCompat({
 const eslintConfig = [...compat.extends('next/core-web-vitals', 'next/typescript'),
   {
     rules: {
-      '@typescript-eslint/no-unused-vars' :off,
+      '@typescript-eslint/no-unused-vars' : 'off',
      // 'react/react-in-jsx-scope': 'off', // Disable the rule for React 17+
     },
   },
