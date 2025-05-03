@@ -30,7 +30,22 @@ pub mod marketplace {
         Ok(())
     }
 
-    //pub fn sensor_change() { //when driver arrives or leaves}
+    pub fn sensor_change(ctx: Context<SwitchboardFeed>) -> Result<()> { //when driver arrives or leaves
+        // Feed account data
+        let feed_account = ctx.accounts.feed.data.borrow();
+
+        // Verify that this account is the intended one by comparing public keys
+        // if ctx.accounts.feed.key != &specific_pubkey {
+        //     throwSomeError
+        // }
+
+        // Docs at: https://switchboard-on-demand-rust-docs.web.app/on_demand/accounts/pull_feed/struct.PullFeedAccountData.html
+        let feed = PullFeedAccountData::parse(feed_account).unwrap();
+        // Log the value
+        msg!("price: {:?}", feed.value());
+        Ok(())
+
+}
 
     //pub fn confirm_parking() {//driver scans QR code to confirm arrival and parking}
 
