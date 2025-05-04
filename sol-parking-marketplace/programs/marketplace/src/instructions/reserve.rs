@@ -6,7 +6,7 @@ use anchor_lang::{prelude::*, system_program::{Transfer, transfer}};
     token_interface::{Mint, TokenAccount, TokenInterface}}; */
 
 
-use crate::{marketplace, state::{Listing, Marketplace, ParkingSpaceStatus}};
+use crate::{ state::{Listing, Marketplace, ParkingSpaceStatus}};
 
 #[derive(Accounts)]
 #[instruction(sensor_id: u64)]

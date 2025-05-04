@@ -4,10 +4,12 @@ use switchboard_on_demand::on_demand::accounts::pull_feed::PullFeedAccountData;
 
 
 
-use crate::{marketplace, state::{Listing, Marketplace, ParkingSpaceStatus}};
+use crate::{ state::{Listing, Marketplace, ParkingSpaceStatus}};
 
 #[derive(Accounts)]
 pub struct SwitchboardFeed<'info> {
+    //     safety check:              Struct field "feed" is unsafe, but is not documented.
+        /// CHECK: via switchboard sdk
     pub feed: AccountInfo<'info>,
 }
 
