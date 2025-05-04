@@ -1,6 +1,16 @@
 import * as anchor from "@coral-xyz/anchor";
 import { Program } from "@coral-xyz/anchor";
 import { Marketplace } from "../target/types/marketplace";
+import {
+  Keypair,
+  LAMPORTS_PER_SOL,
+  PublicKey,
+  SystemProgram,
+  Transaction,
+} from "@solana/web3.js";
+/* import {
+  getMinimumBalanceForRentExemptAccount, 
+} from "@solana/spl-token"; */
 
 describe("depin parking space marketplace", () => {
   // Configure the client to use the local cluster.
@@ -33,7 +43,49 @@ describe("depin parking space marketplace", () => {
 
 
   //get/find accounts
-  //marketplace, listing, maker, admin, renter, owner, feed
+  //marketplace, listing, , admin, , owner, feed
+  const [maker, renter] = Array.from({ length: 2 }, () =>
+    Keypair.generate()
+  );
+
+
+
+  it("Airdrop", async () => {
+    console.log("maker", maker.publicKey);
+console.log("renter", renter.publicKey);
+   // let lamports = await getMinimumBalanceForRentExemptAccount(connection);
+   const makerTx = await connection.requestAirdrop(maker.publicKey, 2 * LAMPORTS_PER_SOL);
+   const renterTx = await connection.requestAirdrop(renter.publicKey, 2 * LAMPORTS_PER_SOL);
+
+   // , confirm the airdrop transactions
+   await connection.confirmTransaction(makerTx);
+   console.log(`Airdrop for keypair1 confirmed`);
+
+   await connection.confirmTransaction(renterTx);
+   console.log(`Airdrop for keypair2 confirmed`);
+   // Log the balance of each keypair
+   const balance1 = await connection.getBalance(maker.publicKey);
+   console.log(`Balance for maker: ${balance1 / LAMPORTS_PER_SOL} SOL`);
+
+   const balance2 = await connection.getBalance(renter.publicKey);
+   console.log(`Balance for renter: ${balance2 / LAMPORTS_PER_SOL} SOL`);
+   let tx = new Transaction();
+    tx.instructions = [
+      ...[maker, renter].map((account) =>
+        SystemProgram.transfer({
+          fromPubkey: provider.publicKey,
+          toPubkey: account.publicKey,
+          lamports: 10 * LAMPORTS_PER_SOL,
+        })
+      ),
+     
+      
+      
+    ];
+
+  //  await provider.sendAndConfirm(tx, [maker]).then(log);
+  });
+
 
   it("Is initialized!", async () => {
     // Add your test here.
