@@ -50,7 +50,6 @@ impl <'info> List<'info> {
         self.listing.set_inner(Listing { 
             maker: self.maker.key(), 
         //    mint: self.maker_mint.key(), 
-            price, 
             bump: bumps.listing,
             address: todo!(),
             rental_rate: todo!(),
