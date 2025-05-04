@@ -17,7 +17,7 @@ const jobs: OracleJob[] = [
     tasks: [
       {
         httpTask: {
-          url: "https://depin-parking.vercel.app/api/mock-driver-arrived",
+          url: "https://depin-parking.vercel.app/api/mock-driver-arrives",
         }
       },
       {
@@ -46,8 +46,8 @@ const serializedJobs = jobs.map((oracleJob) => {
 const response = await fetch("https://api.switchboard.xyz/api/simulate", {
   method: "POST",
   headers: [["Content-Type", "application/json"]],
-  body: JSON.stringify({ cluster: "Mainnet", jobs: serializedJobs }),
-//  body: JSON.stringify({ cluster: "Devnet", jobs: serializedJobs }),
+  //body: JSON.stringify({ cluster: "Mainnet", jobs: serializedJobs }),
+  body: JSON.stringify({ cluster: "Devnet", jobs: serializedJobs }),
 
 });
 
@@ -151,7 +151,7 @@ await confirmTransaction(sig);
 
 
 //request from oracle
-
+/* 
 const feedConnection = pullFeed.program.provider.connection;
 
 const [pullIx, responses, _, luts] = await pullFeed.fetchUpdateIx({
@@ -161,6 +161,7 @@ const [pullIx, responses, _, luts] = await pullFeed.fetchUpdateIx({
   network: "devnet",
 
 });
+console.log("pullIx", pullIx);
 
 const pullTx = await asV0Tx({
   connection: feedConnection,
@@ -175,13 +176,17 @@ const pullTx = await asV0Tx({
 const sim = await feedConnection.simulateTransaction(pullTx, {
   commitment: "processed",
 });
-const pullSig = await feedConnection.sendTransaction(tx, {
+const pullSig = await feedConnection.sendTransaction(pullTx, {
   preflightCommitment: "processed",
   skipPreflight: true,
 });
-if (sim.value?.logs) {
+console.log("sim.value.logs", sim.value.logs);
+console.log("pullSig", pullSig); */
+
+
+/* if (sim.value?.logs) {
   const simPrice = sim.value.logs.join().match(/distance_in_cm: (.*)/)[1];
   console.log(`Price update: ${simPrice}\n\tTransaction sent: ${pullSig}`);
 } else {
   console.log("No price update");
-}
+} */
