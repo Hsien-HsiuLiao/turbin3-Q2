@@ -65,6 +65,9 @@ impl <'info> Reserve<'info> {
         listing.reservation_duration = Some(duration);
         listing.parking_space_status = ParkingSpaceStatus::Reserved;
 
+        msg!("You reserved a listing, the parking space status is : {:?}", self.listing.parking_space_status);
+
+
       Ok(())
     }
 

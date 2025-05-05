@@ -63,6 +63,8 @@ impl <'info> List<'info> {
             reservation_duration: None, 
         });
 
+        msg!("You created a listing, the parking space status is : {:?}", self.listing.parking_space_status);
+
       
 
         

@@ -33,6 +33,8 @@ impl <'info> Initialize<'info> {
             name
         });
 
+        msg!("You created a marketplace named: {}", self.marketplace.name);
+        
         Ok(())
         
     }
