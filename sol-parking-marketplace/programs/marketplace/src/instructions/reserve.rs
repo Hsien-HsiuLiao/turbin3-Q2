@@ -9,7 +9,10 @@ use anchor_lang::{prelude::*, system_program::{Transfer, transfer}};
 use crate::{ state::{Listing, Marketplace, ParkingSpaceStatus}};
 
 #[derive(Accounts)]
-#[instruction(sensor_id: String)]
+//#[instruction(sensor_id: String)]
+/* Error: AnchorError occurred. Error Code: InstructionDidNotDeserialize. Error Number: 102. 
+Error Message: The program could not deserialize the given instruction.
+ */
 pub struct Reserve<'info> {
    #[account(mut)]
    pub renter: Signer<'info>,
