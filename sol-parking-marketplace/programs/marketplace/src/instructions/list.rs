@@ -15,7 +15,7 @@ pub struct List<'info> {
    
     #[account(
         //derivation
-        seeds = [b"mp", marketplace.name.as_bytes()], //make generic
+        seeds = [b"marketplace", marketplace.name.as_bytes()], //make generic
         bump = marketplace.bump
     )]
     pub marketplace: Account<'info, Marketplace>,
