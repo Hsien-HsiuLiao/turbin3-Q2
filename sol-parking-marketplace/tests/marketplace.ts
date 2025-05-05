@@ -43,12 +43,33 @@ describe("depin parking space marketplace", () => {
 
 
   //get/find accounts
-  //marketplace, listing, , admin, , owner, feed
-  const [maker, renter] = Array.from({ length: 2 }, () =>
+  //, listing, , admin, , owner, feed
+  const [admin, maker, renter] = Array.from({ length: 3 }, () =>
     Keypair.generate()
   );
 
+  const marketplace_name = "a";
 
+  let marketplace: PublicKey;
+  let marketplaceBump;
+
+
+  [marketplace, marketplaceBump] = PublicKey.findProgramAddressSync(
+    [Buffer.from("mp"), Buffer.from(marketplace_name)],
+    program.programId
+  );
+
+  const sensorId = "A9";
+
+  console.log("maketplace", marketplace);
+
+  /* const listing = PublicKey.findProgramAddressSync(
+    [marketplace.toBuffer(), Buffer.from(sensorId)],
+    program.programId
+  )[0];
+
+  console.log("listing", listing);
+ */
 
   it("Airdrop", async () => {
     console.log("maker", maker.publicKey);
@@ -56,6 +77,7 @@ console.log("renter", renter.publicKey);
    // let lamports = await getMinimumBalanceForRentExemptAccount(connection);
    const makerTx = await connection.requestAirdrop(maker.publicKey, 2 * LAMPORTS_PER_SOL);
    const renterTx = await connection.requestAirdrop(renter.publicKey, 2 * LAMPORTS_PER_SOL);
+   const adminTX = await connection.requestAirdrop(admin.publicKey, 2 * LAMPORTS_PER_SOL);
 
    // , confirm the airdrop transactions
    await connection.confirmTransaction(makerTx);
@@ -63,6 +85,9 @@ console.log("renter", renter.publicKey);
 
    await connection.confirmTransaction(renterTx);
    console.log(`Airdrop for keypair2 confirmed`);
+
+   await connection.confirmTransaction(adminTX);
+
    // Log the balance of each keypair
    const balance1 = await connection.getBalance(maker.publicKey);
    console.log(`Balance for maker: ${balance1 / LAMPORTS_PER_SOL} SOL`);
@@ -89,9 +114,39 @@ console.log("renter", renter.publicKey);
 
   it("Is initialized!", async () => {
     // Add your test here.
-    const listing_fee = 0.1;
-    const marketplace_name = "Rent-a-parking-space";
-    const tx = await program.methods.initialize(marketplace_name, listing_fee, ).rpc();
+    const rental_fee = 0.15;// * LAMPORTS_PER_SOL;
+    const tx = await program.methods
+    .initialize(marketplace_name, rental_fee, )
+    .accountsPartial({
+      admin: admin.publicKey,
+      marketplace: marketplace,
+      })
+    .signers([admin])
+    .rpc();
     console.log("Your transaction signature", tx);
   });
+
+  it("Create a new listing for parking space rental", async () => {
+    const address = "1234 MyStreet, Los Angeles, CA 90210";
+    const rentalRate = 0.0345; //$5 USD/hr ~ 0.0345 SOL 
+
+    [marketplace, marketplaceBump] = PublicKey.findProgramAddressSync(
+      [Buffer.from("mp"), Buffer.from(marketplace_name)],
+      program.programId
+    );
+    await program.methods
+      .list(address, rentalRate, sensorId)
+      .accountsPartial({ 
+        maker: maker.publicKey,
+        marketplace: marketplace, 
+   //     listing: listing
+       })
+   //    .then(console.log("accountspartial"))
+      .signers([maker])
+     // .then()
+      .rpc()
+      .then(confirm)
+      .then(log);
+  });
+
 });
