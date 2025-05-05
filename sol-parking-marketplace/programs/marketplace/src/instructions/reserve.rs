@@ -9,7 +9,7 @@ use anchor_lang::{prelude::*, system_program::{Transfer, transfer}};
 use crate::{ state::{Listing, Marketplace, ParkingSpaceStatus}};
 
 #[derive(Accounts)]
-#[instruction(sensor_id: u64)]
+#[instruction(sensor_id: String)]
 pub struct Reserve<'info> {
    #[account(mut)]
    pub renter: Signer<'info>,
@@ -25,7 +25,12 @@ pub struct Reserve<'info> {
 
     #[account(
         mut,
-        seeds = [marketplace.key().as_ref(), &sensor_id.to_le_bytes()], //
+       // seeds = [marketplace.key().as_ref(), &sensor_id.to_le_bytes()], //
+       seeds = [marketplace.key().as_ref(), 
+        /* &sensor_id.as_bytes()[..16],  */
+      //  b"A9",
+        maker.key().as_ref()
+        ], 
         bump,
         constraint = listing.parking_space_status == ParkingSpaceStatus::Available
         )]
@@ -43,7 +48,7 @@ pub struct Reserve<'info> {
 }
 
 impl <'info> Reserve<'info> {
-    pub fn reserve_listing(&mut self, duration: u64) -> Result<()> {
+    pub fn reserve_listing(&mut self, duration: u16) -> Result<()> {
 
         let listing = &mut self.listing;
     
