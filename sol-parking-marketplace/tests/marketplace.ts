@@ -55,13 +55,13 @@ describe("depin parking space marketplace", () => {
 
 
   [marketplace, marketplaceBump] = PublicKey.findProgramAddressSync(
-    [Buffer.from("mp"), Buffer.from(marketplace_name)],
+    [Buffer.from("marketplace"), Buffer.from(marketplace_name)],
     program.programId
   );
 
   const sensorId = "A9";
 
-  console.log("maketplace", marketplace);
+ // console.log("maketplace", marketplace);
 
   /* const listing = PublicKey.findProgramAddressSync(
     [marketplace.toBuffer(), Buffer.from(sensorId)],
@@ -72,8 +72,8 @@ describe("depin parking space marketplace", () => {
  */
 
   it("Airdrop", async () => {
-    console.log("maker", maker.publicKey);
-console.log("renter", renter.publicKey);
+  //  console.log("maker", maker.publicKey);
+//console.log("renter", renter.publicKey);
    // let lamports = await getMinimumBalanceForRentExemptAccount(connection);
    const makerTx = await connection.requestAirdrop(maker.publicKey, 2 * LAMPORTS_PER_SOL);
    const renterTx = await connection.requestAirdrop(renter.publicKey, 2 * LAMPORTS_PER_SOL);
@@ -81,19 +81,19 @@ console.log("renter", renter.publicKey);
 
    // , confirm the airdrop transactions
    await connection.confirmTransaction(makerTx);
-   console.log(`Airdrop for keypair1 confirmed`);
+  // console.log(`Airdrop for keypair1 confirmed`);
 
    await connection.confirmTransaction(renterTx);
-   console.log(`Airdrop for keypair2 confirmed`);
+  // console.log(`Airdrop for keypair2 confirmed`);
 
    await connection.confirmTransaction(adminTX);
 
    // Log the balance of each keypair
    const balance1 = await connection.getBalance(maker.publicKey);
-   console.log(`Balance for maker: ${balance1 / LAMPORTS_PER_SOL} SOL`);
+ //  console.log(`Balance for maker: ${balance1 / LAMPORTS_PER_SOL} SOL`);
 
    const balance2 = await connection.getBalance(renter.publicKey);
-   console.log(`Balance for renter: ${balance2 / LAMPORTS_PER_SOL} SOL`);
+ //  console.log(`Balance for renter: ${balance2 / LAMPORTS_PER_SOL} SOL`);
    let tx = new Transaction();
     tx.instructions = [
       ...[maker, renter].map((account) =>
@@ -131,7 +131,7 @@ console.log("renter", renter.publicKey);
     const rentalRate = 0.0345; //$5 USD/hr ~ 0.0345 SOL 
 
     [marketplace, marketplaceBump] = PublicKey.findProgramAddressSync(
-      [Buffer.from("mp"), Buffer.from(marketplace_name)],
+      [Buffer.from("marketplace"), Buffer.from(marketplace_name)],
       program.programId
     );
     await program.methods
@@ -147,6 +147,46 @@ console.log("renter", renter.publicKey);
       .rpc()
       .then(confirm)
       .then(log);
+
+      const listing = PublicKey.findProgramAddressSync(
+        [marketplace.toBuffer(), maker.publicKey.toBuffer()],
+        program.programId
+      )[0];
+
+      const listingAccountInfo = await connection.getAccountInfo(listing);
+
+      if (listingAccountInfo === null) {
+        console.log('Account not found');
+      } else {
+     //   console.log('Account data:', listingAccountInfo.data);
+      }
+  });
+
+  it("Reserve a listing", async () => {
+    const listing = PublicKey.findProgramAddressSync(
+      [marketplace.toBuffer(), maker.publicKey.toBuffer()],
+      program.programId
+    )[0];
+
+    const listingAccountInfo = await connection.getAccountInfo(listing);
+    console.log('Account data:', listingAccountInfo.data.toString());
+
+
+    const duration = 1;
+
+    const tx = await program.methods
+    .reserve(duration )
+    .accountsPartial({
+      renter: renter.publicKey,
+      maker: maker.publicKey, //is maker needed?
+      marketplace: marketplace,
+      listing: listing
+      })
+    .signers([renter])
+    .rpc()
+    .then(confirm)
+    .then(log);
+    console.log("Your transaction signature", tx);
   });
 
 });
