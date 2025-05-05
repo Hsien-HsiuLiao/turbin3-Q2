@@ -197,24 +197,33 @@ describe("depin parking space marketplace", () => {
   it("Call switchboard feed and program ix", async () => {
     const { keypair, connection, program } = await sb.AnchorUtils.loadEnv();
     //
-    const feed = new PublicKey("78RQueztz58VXJ2DAabtdkMd5JqAT68stEtMUPJWBYnu");
+   // console.log("connection", connection);
+    console.log("program from sb.anchorutils", program);
+
+    const feed = new PublicKey("J748azokS8cKaiGKgN5hsTsTuB1FJ1ikVNXKjq9DQnjg");
 
   const feedAccount = new sb.PullFeed(program!, feed);
   await feedAccount.preHeatLuts();
   const latencies: number[] = [];
   //added
   //const feed = argv.feed!; //feedPubkey
-  const myProgramPath = "target/deploy/sb_on_demand_solana-keypair.json";
+  const myProgramPath = "target/deploy/marketplace-keypair.json";
 
   async function myAnchorProgram(
     provider: anchor.Provider,
     keypath: string
   ): Promise<anchor.Program> {
+
     try {
       const myProgramKeypair = await sb.AnchorUtils.initKeypairFromFile(keypath);
+
       const pid = myProgramKeypair.publicKey;
+
       const idl = (await anchor.Program.fetchIdl(pid, provider))!;
+    //  console.log("provider", provider);
+
       const program = new anchor.Program(idl, provider);
+
       return program;
     } catch (e) {
       throw new Error("Failed to load demo program. Was it deployed?");
@@ -236,6 +245,8 @@ describe("depin parking space marketplace", () => {
     .test()
     .accounts({feed}) //account name must match
     .instruction();
+    /* .then(confirm)
+    .then(log); */
     const endTime = Date.now();
     for (const response of responses) {
       const shortErr = response.shortError();
