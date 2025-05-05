@@ -1,40 +1,18 @@
 import * as sb from "@switchboard-xyz/on-demand";
-import yargs from "yargs";
 import { TX_CONFIG, myAnchorProgram, sleep } from "./utils";
 import { PublicKey } from "@solana/web3.js";
 
-const argv = yargs(process.argv).options({ feed: { required: true } })
-  .argv as any;
 
-function calculateStatistics(latencies: number[]) {
-  const sortedLatencies = [...latencies].sort((a, b) => a - b);
-  const min = sortedLatencies[0];
-  const max = sortedLatencies[sortedLatencies.length - 1];
-  const median =
-    sortedLatencies.length % 2 === 0
-      ? (sortedLatencies[sortedLatencies.length / 2 - 1] +
-          sortedLatencies[sortedLatencies.length / 2]) /
-        2
-      : sortedLatencies[Math.floor(sortedLatencies.length / 2)];
-  const sum = sortedLatencies.reduce((a, b) => a + b, 0);
-  const mean = sum / sortedLatencies.length;
 
-  return {
-    min,
-    max,
-    median,
-    mean,
-    count: latencies.length,
-  };
-}
+
 
 (async function main() {
   const { keypair, connection, program } = await sb.AnchorUtils.loadEnv();
-  const feedAccount = new sb.PullFeed(program!, argv.feed!);
+  const feed = new PublicKey("J748azokS8cKaiGKgN5hsTsTuB1FJ1ikVNXKjq9DQnjg");
+  const feedAccount = new sb.PullFeed(program!, feed);
   await feedAccount.preHeatLuts();
   const latencies: number[] = [];
-  //added
-  const feed = argv.feed!; //feedPubkey
+  
   const myProgramPath = "target/deploy/sb_on_demand_solana-keypair.json";
   const myProgram = await myAnchorProgram(program!.provider, myProgramPath);
   console.log("myProgram", myProgram?.methods);
@@ -77,13 +55,10 @@ function calculateStatistics(latencies: number[]) {
     const latency = endTime - start;
     latencies.push(latency);
 
-    const stats = calculateStatistics(latencies);
-    console.log(`Min latency: ${stats.min} ms`);
-    console.log(`Max latency: ${stats.max} ms`);
-    console.log(`Median latency: ${stats.median} ms`);
-    console.log(`Mean latency: ${stats.mean.toFixed(2)} ms`);
-    console.log(`Loop count: ${stats.count}`);
+
     console.log(`Transaction sent: ${await connection.sendTransaction(tx)}`);
+    console.log(`Looping...`);
+
     await sleep(3000);
   }
 })();
