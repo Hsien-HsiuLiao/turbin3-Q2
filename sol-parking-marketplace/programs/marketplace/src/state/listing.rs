@@ -7,8 +7,9 @@ pub struct Listing {
     pub bump: u8, 
     #[max_len(32)] 
     pub address: String,
-    pub rental_rate: u64, //per hour
-    pub sensor_id: u64, 
+    pub rental_rate: u16, //per hour
+    #[max_len(8)] 
+    pub sensor_id: String, 
     pub reserved_by: Option<Pubkey>, 
     pub reservation_duration: Option<u64>,
     pub parking_space_status:ParkingSpaceStatus, 
