@@ -5,17 +5,17 @@ use anchor_lang::{prelude::*,  system_program::Transfer};
      
     token_interface::{Mint, TokenAccount, TokenInterface, transfer_checked, TransferChecked}}; */
 
-use crate::state::{Listing, Marketplace};
+use crate::state::{Listing, Marketplace, ParkingSpaceStatus};
 
 #[derive(Accounts)]
-#[instruction(sensor_id: u64)]
+#[instruction(sensor_id: String)]
 pub struct List<'info> {
    #[account(mut)]
    pub maker: Signer<'info>,
    
     #[account(
         //derivation
-        seeds = [b"marketplace", marketplace.name.as_bytes()], //make generic
+        seeds = [b"mp", marketplace.name.as_bytes()], //make generic
         bump = marketplace.bump
     )]
     pub marketplace: Account<'info, Marketplace>,
@@ -32,10 +32,14 @@ pub struct List<'info> {
         init,
         payer = maker, 
       //  seeds = [marketplace.key().as_ref(), maker_mint.key().as_ref()], //mint is unique
-        seeds = [marketplace.key().as_ref(), &sensor_id.to_le_bytes()], //listing sensor_id
+        seeds = [marketplace.key().as_ref(), 
+        /* &sensor_id.as_bytes()[..16],  */
+      //  b"A9",
+        maker.key().as_ref()
+        ], //listing sensor_id
 
         bump,
-        space = 8 + Listing::INIT_SPACE
+        space = 8 + Listing::INIT_SPACE + ParkingSpaceStatus::INIT_SPACE
     )]
     pub listing: Account<'info, Listing>, //
 
@@ -46,17 +50,17 @@ pub struct List<'info> {
 }
 
 impl <'info> List<'info> {
-    pub fn create_listing(&mut self, price: u64, bumps: &ListBumps) -> Result<()> {
+    pub fn create_listing(&mut self, address: String, rental_rate: u16, sensor_id: String, bumps: &ListBumps) -> Result<()> {
         self.listing.set_inner(Listing { 
             maker: self.maker.key(), 
         //    mint: self.maker_mint.key(), 
             bump: bumps.listing,
-            address: todo!(),
-            rental_rate: todo!(),
-            sensor_id: todo!(),
-            reserved_by: todo!(),
-            reservation_duration: todo!(),
-            parking_space_status: todo!(), 
+            address,
+            rental_rate,
+            sensor_id,
+            parking_space_status: ParkingSpaceStatus::Available,
+            reserved_by: None,
+            reservation_duration: None, 
         });
 
       
