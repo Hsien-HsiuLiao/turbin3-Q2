@@ -27,7 +27,7 @@ pub mod marketplace {
         Ok(())
     }
 
-    pub fn reserve(ctx: Context<Reserve>, duration: u64) -> Result<()> {
+    pub fn reserve(ctx: Context<Reserve>, duration: u16) -> Result<()> {
         ctx.accounts.reserve_listing(duration)?;
         Ok(())
     }
