@@ -2,6 +2,7 @@ import * as anchor from "@coral-xyz/anchor";
 import { Program } from "@coral-xyz/anchor";
 import { Marketplace } from "../target/types/marketplace";
 import {
+  Commitment,
   Keypair,
   LAMPORTS_PER_SOL,
   PublicKey,
@@ -11,6 +12,8 @@ import {
 /* import {
   getMinimumBalanceForRentExemptAccount, 
 } from "@solana/spl-token"; */
+import * as sb from "@switchboard-xyz/on-demand";
+
 
 describe("depin parking space marketplace", () => {
   // Configure the client to use the local cluster.
@@ -48,7 +51,7 @@ describe("depin parking space marketplace", () => {
     Keypair.generate()
   );
 
-  const marketplace_name = "a";
+  const marketplace_name = "DePIN PARKING";
 
   let marketplace: PublicKey;
   let marketplaceBump;
@@ -122,7 +125,9 @@ describe("depin parking space marketplace", () => {
       marketplace: marketplace,
       })
     .signers([admin])
-    .rpc();
+    .rpc()
+    .then(confirm)
+    .then(log);
     console.log("Your transaction signature", tx);
   });
 
@@ -187,6 +192,81 @@ describe("depin parking space marketplace", () => {
     .then(confirm)
     .then(log);
     console.log("Your transaction signature", tx);
+  });
+
+  it("Call switchboard feed and program ix", async () => {
+    const { keypair, connection, program } = await sb.AnchorUtils.loadEnv();
+  const feedAccount = new sb.PullFeed(program!, argv.feed!);
+  await feedAccount.preHeatLuts();
+  const latencies: number[] = [];
+  //added
+  const feed = argv.feed!; //feedPubkey
+  const myProgramPath = "target/deploy/sb_on_demand_solana-keypair.json";
+
+  async function myAnchorProgram(
+    provider: anchor.Provider,
+    keypath: string
+  ): Promise<anchor.Program> {
+    try {
+      const myProgramKeypair = await sb.AnchorUtils.initKeypairFromFile(keypath);
+      const pid = myProgramKeypair.publicKey;
+      const idl = (await anchor.Program.fetchIdl(pid, provider))!;
+      const program = new anchor.Program(idl, provider);
+      return program;
+    } catch (e) {
+      throw new Error("Failed to load demo program. Was it deployed?");
+    }
+  }
+
+  const myProgram = await myAnchorProgram(program!.provider, myProgramPath);
+  console.log("myProgram", myProgram?.methods);
+
+    const start = Date.now();
+    const [pullIx, responses, _ok, luts] = await feedAccount.fetchUpdateIx({
+      numSignatures: 3,
+    });
+    //added
+    // Instruction to example program using the switchboard feed
+   // console.log("methods", await program?.methods);
+    const myIx = await myProgram!.methods
+    .test()
+    .accounts({feed}) //account name must match
+    .instruction();
+    const endTime = Date.now();
+    for (const response of responses) {
+      const shortErr = response.shortError();
+      if (shortErr) {
+        console.log(`Error: ${shortErr}`);
+      }
+    }
+    const tx = await sb.asV0Tx({
+      connection,
+      ixs: [...pullIx!, myIx],
+      signers: [keypair],
+      computeUnitPrice: 200_000,
+      computeUnitLimitMultiple: 1.3,
+      lookupTables: luts,
+    });
+
+    const TX_CONFIG = {
+      commitment: "processed" as Commitment,
+      skipPreflight: true,
+      maxRetries: 0,
+    };
+    const sim = await connection.simulateTransaction(tx, TX_CONFIG);
+    const updateEvent = new sb.PullFeedValueEvent(
+      sb.AnchorUtils.loggedEvents(program!, sim.value.logs!)[0]
+    ).toRows();
+    console.log("Simulated Price Updates:\n", JSON.stringify(sim.value.logs));
+    console.log("Submitted Price Updates:\n", updateEvent);
+    const latency = endTime - start;
+    latencies.push(latency);
+
+    
+    
+    console.log(`Transaction sent: ${await connection.sendTransaction(tx)}`);
+  
+    
   });
 
 });
