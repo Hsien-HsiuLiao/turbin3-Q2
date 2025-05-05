@@ -28,6 +28,7 @@ pub mod marketplace {
     }
 
     pub fn reserve(ctx: Context<Reserve>, duration: u16) -> Result<()> {
+        //pass in sensor_id if needed
         ctx.accounts.reserve_listing(duration)?;
         Ok(())
     }
@@ -44,7 +45,7 @@ pub mod marketplace {
         // Docs at: https://switchboard-on-demand-rust-docs.web.app/on_demand/accounts/pull_feed/struct.PullFeedAccountData.html
         let feed = PullFeedAccountData::parse(feed_account).unwrap();
         // Log the value
-        msg!("distance: {:?}", feed.value());
+        msg!("sensor data, distance_in_cm: {:?}", feed.value());
         Ok(())
 
 }
