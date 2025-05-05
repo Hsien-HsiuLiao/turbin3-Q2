@@ -196,11 +196,14 @@ describe("depin parking space marketplace", () => {
 
   it("Call switchboard feed and program ix", async () => {
     const { keypair, connection, program } = await sb.AnchorUtils.loadEnv();
-  const feedAccount = new sb.PullFeed(program!, argv.feed!);
+    //
+    const feed = new PublicKey("78RQueztz58VXJ2DAabtdkMd5JqAT68stEtMUPJWBYnu");
+
+  const feedAccount = new sb.PullFeed(program!, feed);
   await feedAccount.preHeatLuts();
   const latencies: number[] = [];
   //added
-  const feed = argv.feed!; //feedPubkey
+  //const feed = argv.feed!; //feedPubkey
   const myProgramPath = "target/deploy/sb_on_demand_solana-keypair.json";
 
   async function myAnchorProgram(
@@ -217,6 +220,7 @@ describe("depin parking space marketplace", () => {
       throw new Error("Failed to load demo program. Was it deployed?");
     }
   }
+
 
   const myProgram = await myAnchorProgram(program!.provider, myProgramPath);
   console.log("myProgram", myProgram?.methods);
