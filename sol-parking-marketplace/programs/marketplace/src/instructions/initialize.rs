@@ -14,7 +14,7 @@ pub struct Initialize<'info> {
         payer = admin, 
         seeds = [b"marketplace", name.as_bytes()], //make generic
         bump, 
-        space = Marketplace::INIT_SPACE
+        space = 8 + Marketplace::INIT_SPACE
     )]
     pub marketplace: Account<'info, Marketplace>,
    
