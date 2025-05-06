@@ -50,7 +50,7 @@ pub struct List<'info> {
 }
 
 impl <'info> List<'info> {
-    pub fn create_listing(&mut self, address: String, rental_rate: u16, sensor_id: String, bumps: &ListBumps) -> Result<()> {
+    pub fn create_listing(&mut self, address: String, rental_rate: u16, sensor_id: String, latitude:f64 , longitude: f64 , bumps: &ListBumps) -> Result<()> {
         self.listing.set_inner(Listing { 
             maker: self.maker.key(), 
         //    mint: self.maker_mint.key(), 
@@ -60,7 +60,9 @@ impl <'info> List<'info> {
             sensor_id,
             parking_space_status: ParkingSpaceStatus::Available,
             reserved_by: None,
-            reservation_duration: None, 
+            reservation_duration: None,
+            latitude, 
+            longitude 
         });
 
         msg!("You created a listing, the parking space status is : {:?}", self.listing.parking_space_status);

@@ -134,13 +134,17 @@ describe("depin parking space marketplace", () => {
   it("Create a new listing for parking space rental", async () => {
     const address = "1234 MyStreet, Los Angeles, CA 90210";
     const rentalRate = 0.0345; //$5 USD/hr ~ 0.0345 SOL 
+    //[latitude, longitude] =getLatLon(address);
+    let latitude;
+    let longitude;
+    [latitude, longitude] = [34.2273574,-118.4500036];
 
     [marketplace, marketplaceBump] = PublicKey.findProgramAddressSync(
       [Buffer.from("marketplace"), Buffer.from(marketplace_name)],
       program.programId
     );
     await program.methods
-      .list(address, rentalRate, sensorId)
+      .list(address, rentalRate, sensorId, latitude, longitude)
       .accountsPartial({ 
         maker: maker.publicKey,
         marketplace: marketplace, 

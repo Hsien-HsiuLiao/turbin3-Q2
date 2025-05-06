@@ -13,6 +13,8 @@ pub struct Listing {
     pub reserved_by: Option<Pubkey>, 
     pub reservation_duration: Option<u16>,
     pub parking_space_status:ParkingSpaceStatus, 
+    pub latitude:f64, 
+    pub longitude:f64
 }
 
 #[derive(Debug, Clone, Copy, AnchorSerialize, AnchorDeserialize, PartialEq)]
