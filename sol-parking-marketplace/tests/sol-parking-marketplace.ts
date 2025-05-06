@@ -47,7 +47,7 @@ describe("depin parking space marketplace", () => {
 
   //get/find accounts
   //, listing, owner, feed
-  const [admin, homeowner1, homeowner2,homeowner3,renter] = Array.from({ length: 5 }, () =>
+  const [admin, homeowner1, homeowner2, homeowner3, renter] = Array.from({ length: 5 }, () =>
     Keypair.generate()
   );
 
@@ -61,10 +61,10 @@ describe("depin parking space marketplace", () => {
     [Buffer.from("marketplace"), Buffer.from(marketplace_name)],
     program.programId
   );
-  
+
   const sensorId = "A9";
 
- // console.log("maketplace", marketplace);
+  // console.log("maketplace", marketplace);
 
   /* const listing = PublicKey.findProgramAddressSync(
     [marketplace.toBuffer(), Buffer.from(sensorId)],
@@ -75,46 +75,46 @@ describe("depin parking space marketplace", () => {
  */
 
   it("Airdrop", async () => {
-  //  console.log("maker", maker.publicKey);
-//console.log("renter", renter.publicKey);
-   const homeowner1Tx = await connection.requestAirdrop(homeowner1.publicKey, 2 * LAMPORTS_PER_SOL);
-   const homeowner2Tx = await connection.requestAirdrop(homeowner2.publicKey, 2 * LAMPORTS_PER_SOL);
-   const homeowner3Tx = await connection.requestAirdrop(homeowner3.publicKey, 2 * LAMPORTS_PER_SOL);
+    //  console.log("maker", maker.publicKey);
+    //console.log("renter", renter.publicKey);
+    const homeowner1Tx = await connection.requestAirdrop(homeowner1.publicKey, 2 * LAMPORTS_PER_SOL);
+    const homeowner2Tx = await connection.requestAirdrop(homeowner2.publicKey, 2 * LAMPORTS_PER_SOL);
+    const homeowner3Tx = await connection.requestAirdrop(homeowner3.publicKey, 2 * LAMPORTS_PER_SOL);
 
-   const renterTx = await connection.requestAirdrop(renter.publicKey, 2 * LAMPORTS_PER_SOL);
-   const adminTX = await connection.requestAirdrop(admin.publicKey, 2 * LAMPORTS_PER_SOL);
+    const renterTx = await connection.requestAirdrop(renter.publicKey, 2 * LAMPORTS_PER_SOL);
+    const adminTX = await connection.requestAirdrop(admin.publicKey, 2 * LAMPORTS_PER_SOL);
 
-   // , confirm the airdrop transactions
-   await connection.confirmTransaction(homeowner1Tx);
-   await connection.confirmTransaction(homeowner2Tx);
-   await connection.confirmTransaction(homeowner3Tx);
+    // , confirm the airdrop transactions
+    await connection.confirmTransaction(homeowner1Tx);
+    await connection.confirmTransaction(homeowner2Tx);
+    await connection.confirmTransaction(homeowner3Tx);
 
 
-   await connection.confirmTransaction(renterTx);
+    await connection.confirmTransaction(renterTx);
 
-   await connection.confirmTransaction(adminTX);
+    await connection.confirmTransaction(adminTX);
 
-   // Log the balance of each keypair
-   const balance1 = await connection.getBalance(homeowner1.publicKey);
- //  console.log(`Balance for maker: ${balance1 / LAMPORTS_PER_SOL} SOL`);
+    // Log the balance of each keypair
+    const balance1 = await connection.getBalance(homeowner1.publicKey);
+    //  console.log(`Balance for maker: ${balance1 / LAMPORTS_PER_SOL} SOL`);
 
-   const balance2 = await connection.getBalance(renter.publicKey);
- //  console.log(`Balance for renter: ${balance2 / LAMPORTS_PER_SOL} SOL`);
-   let tx = new Transaction();
-   /*  tx.instructions = [
-      ...[homeowner1, renter].map((account) =>
-        SystemProgram.transfer({
-          fromPubkey: provider.publicKey,
-          toPubkey: account.publicKey,
-          lamports: 10 * LAMPORTS_PER_SOL,
-        })
-      ),
-     
+    const balance2 = await connection.getBalance(renter.publicKey);
+    //  console.log(`Balance for renter: ${balance2 / LAMPORTS_PER_SOL} SOL`);
+    let tx = new Transaction();
+    /*  tx.instructions = [
+       ...[homeowner1, renter].map((account) =>
+         SystemProgram.transfer({
+           fromPubkey: provider.publicKey,
+           toPubkey: account.publicKey,
+           lamports: 10 * LAMPORTS_PER_SOL,
+         })
+       ),
       
-      
-    ]; */
+       
+       
+     ]; */
 
-  //  await provider.sendAndConfirm(tx, [maker]).then(log);
+    //  await provider.sendAndConfirm(tx, [maker]).then(log);
   });
 
 
@@ -122,15 +122,15 @@ describe("depin parking space marketplace", () => {
     // Add your test here.
     const rental_fee = 0.15;// * LAMPORTS_PER_SOL;
     const tx = await program.methods
-    .initialize(marketplace_name, rental_fee, )
-    .accountsPartial({
-      admin: admin.publicKey,
-      marketplace: marketplace,
+      .initialize(marketplace_name, rental_fee,)
+      .accountsPartial({
+        admin: admin.publicKey,
+        marketplace: marketplace,
       })
-    .signers([admin])
-    .rpc()
-    .then(confirm)
-    .then(log);
+      .signers([admin])
+      .rpc()
+      .then(confirm)
+      .then(log);
     console.log("Your transaction signature", tx);
   });
 
@@ -140,70 +140,71 @@ describe("depin parking space marketplace", () => {
     //[latitude, longitude] =getLatLon(address);
     let latitude;
     let longitude;
-    [latitude, longitude] = [34.2273574,-118.4500036];
+    [latitude, longitude] = [34.2273574, -118.4500036];
 
     await program.methods
       .list(address, rentalRate, sensorId, latitude, longitude)
-      .accountsPartial({ 
+      .accountsPartial({
         maker: homeowner1.publicKey,
-        marketplace: marketplace, 
-   //     listing: listing
-       })
-   //    .then(console.log("accountspartial"))
+        marketplace: marketplace,
+        //     listing: listing
+      })
+      //    .then(console.log("accountspartial"))
       .signers([homeowner1])
-     // .then()
+      // .then()
       .rpc()
       .then(confirm)
       .then(log);
 
-      const listing = PublicKey.findProgramAddressSync(
-        [marketplace.toBuffer(), homeowner1.publicKey.toBuffer()],
-        program.programId
-      )[0];
+    const listing = PublicKey.findProgramAddressSync(
+      [marketplace.toBuffer(), homeowner1.publicKey.toBuffer()],
+      program.programId
+    )[0];
 
-      const listingAccountInfo = await connection.getAccountInfo(listing);
+    const listingAccountInfo = await connection.getAccountInfo(listing);
 
-      assert(listingAccountInfo !== null);
+    assert(listingAccountInfo !== null);
 
-      // homeowner2 creates a  listing
-       address = "1235 MyStreet, Los Angeles, CA 90210";
-     rentalRate = 0.0355; //$5 USD/hr ~ 0.0345 SOL 
+    // homeowner2 creates a  listing
+    address = "1235 MyStreet, Los Angeles, CA 90210";
+    rentalRate = 0.0355; //$5 USD/hr ~ 0.0345 SOL 
     //[latitude, longitude] =getLatLon(address);
-    
-    [latitude, longitude] = [35.2273574,-118.4500036];
+
+    [latitude, longitude] = [35.2273574, -118.4500036];
 
     await program.methods
       .list(address, rentalRate, sensorId, latitude, longitude)
-      .accountsPartial({ 
+      .accountsPartial({
         maker: homeowner2.publicKey,
-        marketplace: marketplace, 
-   //     listing: listing
-       })
-   //    .then(console.log("accountspartial"))
+        marketplace: marketplace,
+        //     listing: listing
+      })
+      //    .then(console.log("accountspartial"))
       .signers([homeowner2])
-     // .then()
+      // .then()
       .rpc()
       .then(confirm)
       .then(log);
 
-      const listing2 = PublicKey.findProgramAddressSync(
-        [marketplace.toBuffer(), homeowner2.publicKey.toBuffer()],
-        program.programId
-      )[0];
+    const listing2 = PublicKey.findProgramAddressSync(
+      [marketplace.toBuffer(), homeowner2.publicKey.toBuffer()],
+      program.programId
+    )[0];
 
-      const listingAccountInfo2 = await connection.getAccountInfo(listing2);
+    const listingAccountInfo2 = await connection.getAccountInfo(listing2);
 
-      assert(listingAccountInfo2 !== null);
+    assert(listingAccountInfo2 !== null);
   });
 
   it("Driver gets a list of parking spaces", async () => {
-    
+
     const listingAccounts = await program.account.listing.all();
     assert.equal(listingAccounts.length, 2);
-    
+
     console.log("Here's a list", listingAccounts);
   });
 
+  
   it("Reserve a listing", async () => {
     const listing = PublicKey.findProgramAddressSync(
       [marketplace.toBuffer(), homeowner1.publicKey.toBuffer()],
@@ -214,80 +215,82 @@ describe("depin parking space marketplace", () => {
     console.log('Account data:', listingAccountInfo.data.toString());
 
 
-    const duration = 1;
+    const duration = 1; //1 hour
 
     const tx = await program.methods
-    .reserve(duration )
-    .accountsPartial({
-      renter: renter.publicKey,
-      maker: homeowner1.publicKey, //is maker needed?
-      marketplace: marketplace,
-      listing: listing
+      .reserve(duration)
+      .accountsPartial({
+        renter: renter.publicKey,
+        maker: homeowner1.publicKey, //is maker needed?
+        marketplace: marketplace,
+        listing: listing
       })
-    .signers([renter])
-    .rpc()
-    .then(confirm)
-    .then(log);
+      .signers([renter])
+      .rpc()
+      .then(confirm)
+      .then(log);
     console.log("Your transaction signature", tx);
 
   });
 
-  xit("Call switchboard feed and program ix", async () => {
+  it("Call switchboard feed and program ix", async () => {
     const { keypair, connection, program } = await sb.AnchorUtils.loadEnv();
     //
-    console.log("connection", connection);
-   const sbProgram = program;
-  //  console.log("program from sb.anchorutils", sbProgram);
-
+   // console.log("connection", connection);
+    const sbProgram = program;
+    //  console.log("program from sb.anchorutils", sbProgram);
     const feed = new PublicKey("J748azokS8cKaiGKgN5hsTsTuB1FJ1ikVNXKjq9DQnjg");
+    const feedAccountInfo = await connection.getAccountInfo(feed);
 
-  const feedAccount = new sb.PullFeed(sbProgram!, feed);
-  await feedAccount.preHeatLuts();
-  
-  const myProgramPath = "target/deploy/marketplace-keypair.json";
+   // console.log("feedaccountinfo", feedAccountInfo);
 
-  async function myAnchorProgram(
-    provider: anchor.Provider,
-    keypath: string
-  ): Promise<anchor.Program> {
+    const feedAccount = new sb.PullFeed(sbProgram!, feed);
+    await feedAccount.preHeatLuts();
 
-    try {
-      const myProgramKeypair = await sb.AnchorUtils.initKeypairFromFile(keypath);
+    /* const myProgramPath = "target/deploy/marketplace-keypair.json";
 
-      const pid = myProgramKeypair.publicKey;
+    async function myAnchorProgram(
+      provider: anchor.Provider,
+      keypath: string
+    ): Promise<anchor.Program> {
 
-      const idl = (await anchor.Program.fetchIdl(pid, provider))!;
-      console.log("provider", provider);
+      try {
+        const myProgramKeypair = await sb.AnchorUtils.initKeypairFromFile(keypath);
 
-      const program = new anchor.Program(idl, provider);
+        const pid = myProgramKeypair.publicKey;
 
-      return program;
-    } catch (e) {
-      throw new Error("Failed to load demo program. Was it deployed?");
-    }
-  }
+        const idl = (await anchor.Program.fetchIdl(pid, provider))!;
+        console.log("provider", provider);
+
+        const program = new anchor.Program(idl, provider);
+
+        return program;
+      } catch (e) {
+        throw new Error("Failed to load demo program. Was it deployed?");
+      }
+    } */
 
 
-  //const myProgram = await myAnchorProgram(provider, myProgramPath);
-   const myProgram = anchor.workspace.marketplace as Program<Marketplace>;
+    //const myProgram = await myAnchorProgram(provider, myProgramPath);
+    const myProgram = anchor.workspace.marketplace as Program<Marketplace>;
 
- // console.log("myProgram", myProgram?.methods);
+    // console.log("myProgram", myProgram?.methods);
 
     const [pullIx, responses, _ok, luts] = await feedAccount.fetchUpdateIx({
       numSignatures: 3,
     });
     // Instruction to example program using the switchboard feed
-   // console.log("methods", await program?.methods);
+    // console.log("methods", await program?.methods);
     const myIx = await myProgram!.methods
-    .sensorChange()
-    .accounts({feed}) //account name must match
-    //.signers([maker])
-    .rpc()
-   // .instruction();
-    .then(confirm)
-    .then(log);
-    
-    
+      .sensorChange()
+      .accounts({ feed }) //account name must match
+      //.signers([maker])
+      .rpc()
+      // .instruction();
+      .then(confirm)
+      .then(log);
+
+
     const tx = await sb.asV0Tx({
       connection,
       ixs: [...pullIx!, /* myIx */],
@@ -309,10 +312,10 @@ describe("depin parking space marketplace", () => {
     ).toRows();
     console.log("Simulated Price Updates:\n", JSON.stringify(sim.value.logs));
     console.log("Submitted Price Updates:\n", updateEvent);
-    
+
     console.log(`Transaction sent: ${await connection.sendTransaction(tx)}`);
-  
-    
+
+
   });
 
 });
