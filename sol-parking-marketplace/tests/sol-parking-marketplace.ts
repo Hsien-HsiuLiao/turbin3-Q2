@@ -13,6 +13,7 @@ import {
   getMinimumBalanceForRentExemptAccount, 
 } from "@solana/spl-token"; */
 import * as sb from "@switchboard-xyz/on-demand";
+import { assert } from "chai";
 
 
 describe("depin parking space marketplace", () => {
@@ -44,10 +45,9 @@ describe("depin parking space marketplace", () => {
     return signature;
   };
 
-
   //get/find accounts
-  //, listing, , admin, , owner, feed
-  const [admin, maker, renter] = Array.from({ length: 3 }, () =>
+  //, listing, owner, feed
+  const [admin, homeowner1, homeowner2,homeowner3,renter] = Array.from({ length: 5 }, () =>
     Keypair.generate()
   );
 
@@ -61,7 +61,7 @@ describe("depin parking space marketplace", () => {
     [Buffer.from("marketplace"), Buffer.from(marketplace_name)],
     program.programId
   );
-
+  
   const sensorId = "A9";
 
  // console.log("maketplace", marketplace);
@@ -77,29 +77,32 @@ describe("depin parking space marketplace", () => {
   it("Airdrop", async () => {
   //  console.log("maker", maker.publicKey);
 //console.log("renter", renter.publicKey);
-   // let lamports = await getMinimumBalanceForRentExemptAccount(connection);
-   const makerTx = await connection.requestAirdrop(maker.publicKey, 2 * LAMPORTS_PER_SOL);
+   const homeowner1Tx = await connection.requestAirdrop(homeowner1.publicKey, 2 * LAMPORTS_PER_SOL);
+   const homeowner2Tx = await connection.requestAirdrop(homeowner2.publicKey, 2 * LAMPORTS_PER_SOL);
+   const homeowner3Tx = await connection.requestAirdrop(homeowner3.publicKey, 2 * LAMPORTS_PER_SOL);
+
    const renterTx = await connection.requestAirdrop(renter.publicKey, 2 * LAMPORTS_PER_SOL);
    const adminTX = await connection.requestAirdrop(admin.publicKey, 2 * LAMPORTS_PER_SOL);
 
    // , confirm the airdrop transactions
-   await connection.confirmTransaction(makerTx);
-  // console.log(`Airdrop for keypair1 confirmed`);
+   await connection.confirmTransaction(homeowner1Tx);
+   await connection.confirmTransaction(homeowner2Tx);
+   await connection.confirmTransaction(homeowner3Tx);
+
 
    await connection.confirmTransaction(renterTx);
-  // console.log(`Airdrop for keypair2 confirmed`);
 
    await connection.confirmTransaction(adminTX);
 
    // Log the balance of each keypair
-   const balance1 = await connection.getBalance(maker.publicKey);
+   const balance1 = await connection.getBalance(homeowner1.publicKey);
  //  console.log(`Balance for maker: ${balance1 / LAMPORTS_PER_SOL} SOL`);
 
    const balance2 = await connection.getBalance(renter.publicKey);
  //  console.log(`Balance for renter: ${balance2 / LAMPORTS_PER_SOL} SOL`);
    let tx = new Transaction();
-    tx.instructions = [
-      ...[maker, renter].map((account) =>
+   /*  tx.instructions = [
+      ...[homeowner1, renter].map((account) =>
         SystemProgram.transfer({
           fromPubkey: provider.publicKey,
           toPubkey: account.publicKey,
@@ -109,7 +112,7 @@ describe("depin parking space marketplace", () => {
      
       
       
-    ];
+    ]; */
 
   //  await provider.sendAndConfirm(tx, [maker]).then(log);
   });
@@ -131,49 +134,79 @@ describe("depin parking space marketplace", () => {
     console.log("Your transaction signature", tx);
   });
 
-  it("Create a new listing for parking space rental", async () => {
-    const address = "1234 MyStreet, Los Angeles, CA 90210";
-    const rentalRate = 0.0345; //$5 USD/hr ~ 0.0345 SOL 
+  it("Create new listings for parking space rental", async () => {
+    let address = "1234 MyStreet, Los Angeles, CA 90210";
+    let rentalRate = 0.0345; //$5 USD/hr ~ 0.0345 SOL 
     //[latitude, longitude] =getLatLon(address);
     let latitude;
     let longitude;
     [latitude, longitude] = [34.2273574,-118.4500036];
 
-    [marketplace, marketplaceBump] = PublicKey.findProgramAddressSync(
-      [Buffer.from("marketplace"), Buffer.from(marketplace_name)],
-      program.programId
-    );
     await program.methods
       .list(address, rentalRate, sensorId, latitude, longitude)
       .accountsPartial({ 
-        maker: maker.publicKey,
+        maker: homeowner1.publicKey,
         marketplace: marketplace, 
    //     listing: listing
        })
    //    .then(console.log("accountspartial"))
-      .signers([maker])
+      .signers([homeowner1])
      // .then()
       .rpc()
       .then(confirm)
       .then(log);
 
       const listing = PublicKey.findProgramAddressSync(
-        [marketplace.toBuffer(), maker.publicKey.toBuffer()],
+        [marketplace.toBuffer(), homeowner1.publicKey.toBuffer()],
         program.programId
       )[0];
 
       const listingAccountInfo = await connection.getAccountInfo(listing);
 
-      if (listingAccountInfo === null) {
-        console.log('Account not found');
-      } else {
-     //   console.log('Account data:', listingAccountInfo.data);
-      }
+      assert(listingAccountInfo !== null);
+
+      // homeowner2 creates a  listing
+       address = "1235 MyStreet, Los Angeles, CA 90210";
+     rentalRate = 0.0355; //$5 USD/hr ~ 0.0345 SOL 
+    //[latitude, longitude] =getLatLon(address);
+    
+    [latitude, longitude] = [35.2273574,-118.4500036];
+
+    await program.methods
+      .list(address, rentalRate, sensorId, latitude, longitude)
+      .accountsPartial({ 
+        maker: homeowner2.publicKey,
+        marketplace: marketplace, 
+   //     listing: listing
+       })
+   //    .then(console.log("accountspartial"))
+      .signers([homeowner2])
+     // .then()
+      .rpc()
+      .then(confirm)
+      .then(log);
+
+      const listing2 = PublicKey.findProgramAddressSync(
+        [marketplace.toBuffer(), homeowner2.publicKey.toBuffer()],
+        program.programId
+      )[0];
+
+      const listingAccountInfo2 = await connection.getAccountInfo(listing2);
+
+      assert(listingAccountInfo2 !== null);
+  });
+
+  it("Driver gets a list of parking spaces", async () => {
+    
+    const listingAccounts = await program.account.listing.all();
+    assert.equal(listingAccounts.length, 2);
+    
+    console.log("Here's a list", listingAccounts);
   });
 
   it("Reserve a listing", async () => {
     const listing = PublicKey.findProgramAddressSync(
-      [marketplace.toBuffer(), maker.publicKey.toBuffer()],
+      [marketplace.toBuffer(), homeowner1.publicKey.toBuffer()],
       program.programId
     )[0];
 
@@ -187,7 +220,7 @@ describe("depin parking space marketplace", () => {
     .reserve(duration )
     .accountsPartial({
       renter: renter.publicKey,
-      maker: maker.publicKey, //is maker needed?
+      maker: homeowner1.publicKey, //is maker needed?
       marketplace: marketplace,
       listing: listing
       })
@@ -197,15 +230,12 @@ describe("depin parking space marketplace", () => {
     .then(log);
     console.log("Your transaction signature", tx);
 
-    const tx2 = await program.methods
-    .reserve(duration).accountsPartial({}).signers([]).rpc();
-
   });
 
-  it("Call switchboard feed and program ix", async () => {
+  xit("Call switchboard feed and program ix", async () => {
     const { keypair, connection, program } = await sb.AnchorUtils.loadEnv();
     //
-   // console.log("connection", connection);
+    console.log("connection", connection);
    const sbProgram = program;
   //  console.log("program from sb.anchorutils", sbProgram);
 
@@ -213,9 +243,7 @@ describe("depin parking space marketplace", () => {
 
   const feedAccount = new sb.PullFeed(sbProgram!, feed);
   await feedAccount.preHeatLuts();
-  const latencies: number[] = [];
-  //added
-  //const feed = argv.feed!; //feedPubkey
+  
   const myProgramPath = "target/deploy/marketplace-keypair.json";
 
   async function myAnchorProgram(
@@ -243,31 +271,26 @@ describe("depin parking space marketplace", () => {
   //const myProgram = await myAnchorProgram(provider, myProgramPath);
    const myProgram = anchor.workspace.marketplace as Program<Marketplace>;
 
-  console.log("myProgram", myProgram?.methods);
+ // console.log("myProgram", myProgram?.methods);
 
-    const start = Date.now();
     const [pullIx, responses, _ok, luts] = await feedAccount.fetchUpdateIx({
       numSignatures: 3,
     });
-    //added
     // Instruction to example program using the switchboard feed
    // console.log("methods", await program?.methods);
     const myIx = await myProgram!.methods
     .sensorChange()
     .accounts({feed}) //account name must match
-    .instruction();
-    /* .then(confirm)
-    .then(log); */
-    const endTime = Date.now();
-    for (const response of responses) {
-      const shortErr = response.shortError();
-      if (shortErr) {
-        console.log(`Error: ${shortErr}`);
-      }
-    }
+    //.signers([maker])
+    .rpc()
+   // .instruction();
+    .then(confirm)
+    .then(log);
+    
+    
     const tx = await sb.asV0Tx({
       connection,
-      ixs: [...pullIx!, myIx],
+      ixs: [...pullIx!, /* myIx */],
       signers: [keypair],
       computeUnitPrice: 200_000,
       computeUnitLimitMultiple: 1.3,
@@ -286,10 +309,6 @@ describe("depin parking space marketplace", () => {
     ).toRows();
     console.log("Simulated Price Updates:\n", JSON.stringify(sim.value.logs));
     console.log("Submitted Price Updates:\n", updateEvent);
-    const latency = endTime - start;
-    latencies.push(latency);
-
-    
     
     console.log(`Transaction sent: ${await connection.sendTransaction(tx)}`);
   
