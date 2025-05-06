@@ -196,17 +196,22 @@ describe("depin parking space marketplace", () => {
     .then(confirm)
     .then(log);
     console.log("Your transaction signature", tx);
+
+    const tx2 = await program.methods
+    .reserve(duration).accountsPartial({}).signers([]).rpc();
+
   });
 
   it("Call switchboard feed and program ix", async () => {
     const { keypair, connection, program } = await sb.AnchorUtils.loadEnv();
     //
    // console.log("connection", connection);
-    console.log("program from sb.anchorutils", program);
+   const sbProgram = program;
+  //  console.log("program from sb.anchorutils", sbProgram);
 
     const feed = new PublicKey("J748azokS8cKaiGKgN5hsTsTuB1FJ1ikVNXKjq9DQnjg");
 
-  const feedAccount = new sb.PullFeed(program!, feed);
+  const feedAccount = new sb.PullFeed(sbProgram!, feed);
   await feedAccount.preHeatLuts();
   const latencies: number[] = [];
   //added
@@ -224,7 +229,7 @@ describe("depin parking space marketplace", () => {
       const pid = myProgramKeypair.publicKey;
 
       const idl = (await anchor.Program.fetchIdl(pid, provider))!;
-    //  console.log("provider", provider);
+      console.log("provider", provider);
 
       const program = new anchor.Program(idl, provider);
 
@@ -235,7 +240,9 @@ describe("depin parking space marketplace", () => {
   }
 
 
-  const myProgram = await myAnchorProgram(program!.provider, myProgramPath);
+  //const myProgram = await myAnchorProgram(provider, myProgramPath);
+   const myProgram = anchor.workspace.marketplace as Program<Marketplace>;
+
   console.log("myProgram", myProgram?.methods);
 
     const start = Date.now();
@@ -246,7 +253,7 @@ describe("depin parking space marketplace", () => {
     // Instruction to example program using the switchboard feed
    // console.log("methods", await program?.methods);
     const myIx = await myProgram!.methods
-    .test()
+    .sensorChange()
     .accounts({feed}) //account name must match
     .instruction();
     /* .then(confirm)
@@ -272,9 +279,10 @@ describe("depin parking space marketplace", () => {
       skipPreflight: true,
       maxRetries: 0,
     };
+    console.log("simulating..");
     const sim = await connection.simulateTransaction(tx, TX_CONFIG);
     const updateEvent = new sb.PullFeedValueEvent(
-      sb.AnchorUtils.loggedEvents(program!, sim.value.logs!)[0]
+      sb.AnchorUtils.loggedEvents(sbProgram!, sim.value.logs!)[0]
     ).toRows();
     console.log("Simulated Price Updates:\n", JSON.stringify(sim.value.logs));
     console.log("Submitted Price Updates:\n", updateEvent);
