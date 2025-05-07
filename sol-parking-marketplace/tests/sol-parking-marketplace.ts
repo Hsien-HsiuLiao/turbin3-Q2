@@ -62,7 +62,7 @@ describe("depin parking space marketplace", () => {
     program.programId
   );
 
-  const sensorId = "A9";
+  //const sensorId = "A9";
 
   // console.log("maketplace", marketplace);
 
@@ -91,7 +91,6 @@ describe("depin parking space marketplace", () => {
 
 
     await connection.confirmTransaction(renterTx);
-
     await connection.confirmTransaction(adminTX);
 
     // Log the balance of each keypair
@@ -100,7 +99,7 @@ describe("depin parking space marketplace", () => {
 
     const balance2 = await connection.getBalance(renter.publicKey);
     //  console.log(`Balance for renter: ${balance2 / LAMPORTS_PER_SOL} SOL`);
-    let tx = new Transaction();
+   // let tx = new Transaction();
     /*  tx.instructions = [
        ...[homeowner1, renter].map((account) =>
          SystemProgram.transfer({
@@ -120,7 +119,7 @@ describe("depin parking space marketplace", () => {
 
   it("Is initialized!", async () => {
     // Add your test here.
-    const rental_fee = 0.15;// * LAMPORTS_PER_SOL;
+    const rental_fee = 0.015 * LAMPORTS_PER_SOL;
     const tx = await program.methods
       .initialize(marketplace_name, rental_fee,)
       .accountsPartial({
@@ -136,14 +135,17 @@ describe("depin parking space marketplace", () => {
 
   it("Create new listings for parking space rental", async () => {
     let address = "1234 MyStreet, Los Angeles, CA 90210";
-    let rentalRate = 0.0345; //$5 USD/hr ~ 0.0345 SOL 
+    let rentalRate = 0.0345 * LAMPORTS_PER_SOL; //$5 USD/hr ~ 0.0345 SOL 
+    let sensorId = "A946444646";
+    let additional_info ="gate code is 2342";
+
     //[latitude, longitude] =getLatLon(address);
     let latitude;
     let longitude;
     [latitude, longitude] = [34.2273574, -118.4500036];
 
     await program.methods
-      .list(address, rentalRate, sensorId, latitude, longitude)
+      .list(address, rentalRate, sensorId, latitude, longitude, additional_info)
       .accountsPartial({
         maker: homeowner1.publicKey,
         marketplace: marketplace,
@@ -167,13 +169,15 @@ describe("depin parking space marketplace", () => {
 
     // homeowner2 creates a  listing
     address = "1235 MyStreet, Los Angeles, CA 90210";
-    rentalRate = 0.0355; //$5 USD/hr ~ 0.0345 SOL 
+    rentalRate = 0.0355 * LAMPORTS_PER_SOL; //$5 USD/hr ~ 0.0345 SOL 
+    sensorId = "B946444646";
+    additional_info= "";
     //[latitude, longitude] =getLatLon(address);
 
     [latitude, longitude] = [35.2273574, -118.4500036];
 
     await program.methods
-      .list(address, rentalRate, sensorId, latitude, longitude)
+      .list(address, rentalRate, sensorId, latitude, longitude, additional_info)
       .accountsPartial({
         maker: homeowner2.publicKey,
         marketplace: marketplace,
@@ -196,7 +200,28 @@ describe("depin parking space marketplace", () => {
     assert(listingAccountInfo2 !== null);
   });
 
-  it("Driver gets a list of parking spaces", async () => {
+  //admin adds feed account to listing
+
+  it("Should allow homeowner to update listing", async () => {
+
+    //update rental rate
+
+  });
+
+  it("Should not allow other accounts to update listing", async () => {
+
+    //have different homeowner or driver try to changes
+    //update rental rate
+
+  });
+
+  it("Driver gets a list of parking spaces near destination", async () => {
+
+    let destination_address = "1400 MyStreet, Los Angeles, CA 90210";
+    let latitude;
+    let longitude;
+    [latitude, longitude] = [35.2273574, -118.4500036];
+
 
     const listingAccounts = await program.account.listing.all();
     assert.equal(listingAccounts.length, 2);
@@ -232,6 +257,10 @@ describe("depin parking space marketplace", () => {
     console.log("Your transaction signature", tx);
 
   });
+
+  //driver updates reservation
+
+  //another account cannot update reservation
 
   it("Call switchboard feed and program ix", async () => {
     const { keypair, connection, program } = await sb.AnchorUtils.loadEnv();
@@ -317,5 +346,13 @@ describe("depin parking space marketplace", () => {
 
 
   });
+
+  //driver confirms arrival by scanning QR code connected to b link
+
+
+  //driver leaves on time and payment transferred
+
+  //driver leaves late and is charged penalty
+
 
 });
