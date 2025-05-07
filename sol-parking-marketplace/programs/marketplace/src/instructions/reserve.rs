@@ -53,6 +53,7 @@ pub struct Reserve<'info> {
 impl <'info> Reserve<'info> {
     pub fn reserve_listing(&mut self, duration: u16) -> Result<()> {
 
+        // check time, driver can reserve up to an hour ahead of time
         let listing = &mut self.listing;
     
         // Check if the listing is available
@@ -67,6 +68,8 @@ impl <'info> Reserve<'info> {
 
         msg!("You reserved a listing, the parking space status is : {:?}", self.listing.parking_space_status);
 
+        //msg homeowner that space is reserved
+        //msg driver with reservation info, user story2B
 
       Ok(())
     }
