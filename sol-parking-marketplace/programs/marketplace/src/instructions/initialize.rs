@@ -23,7 +23,7 @@ pub struct Initialize<'info> {
 }
 
 impl <'info> Initialize<'info> {
-    pub fn init(&mut self, name: String, fee: u16, bumps: &InitializeBumps) -> Result<()> {
+    pub fn init(&mut self, name: String, fee: u32, bumps: &InitializeBumps) -> Result<()> {
         assert!(name.len() < 32);
         
         self.marketplace.set_inner(Marketplace{
