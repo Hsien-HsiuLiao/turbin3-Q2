@@ -50,7 +50,7 @@ pub struct List<'info> {
 }
 
 impl <'info> List<'info> {
-    pub fn create_listing(&mut self, address: String, rental_rate: u32, sensor_id: String, latitude:f64 , longitude: f64 ,  additional_info: Option<String> , availabilty_start:String, availabilty_end:String,
+    pub fn create_listing(&mut self, address: String, rental_rate: u32, sensor_id: String, latitude:f64 , longitude: f64 ,  additional_info: Option<String> , availabilty_start:i64, availabilty_end:i64,
          bumps: &ListBumps) -> Result<()> {
         self.listing.set_inner(Listing { 
             maker: self.maker.key(), 

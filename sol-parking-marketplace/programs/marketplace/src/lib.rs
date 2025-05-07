@@ -22,12 +22,12 @@ pub mod marketplace {
         Ok(())
     }
 
-    pub fn list(ctx: Context<List>, address: String, rental_rate: u32, sensor_id: String, latitude:f64, longitude:f64, additional_info: Option<String>,availabilty_start:String, availabilty_end:String) -> Result<()> {
+    pub fn list(ctx: Context<List>, address: String, rental_rate: u32, sensor_id: String, latitude:f64, longitude:f64, additional_info: Option<String>,availabilty_start:i64, availabilty_end:i64) -> Result<()> {
         ctx.accounts.create_listing(address, rental_rate, sensor_id, latitude, longitude, additional_info, availabilty_start, availabilty_end, &ctx.bumps)?;
         Ok(())
     }
 
-    pub fn update_listing(
+    /* pub fn update_listing(
         ctx: Context<UpdateListing>, 
         address: String, 
         rental_rate: Option<u32>, 
@@ -40,7 +40,7 @@ pub mod marketplace {
     ) -> Result<()> {
         ctx.accounts.update_listing(address, rental_rate, sensor_id, latitude, longitude, additional_info, availabilty_start, availabilty_end, &ctx.bumps)?;
         Ok(())
-    }
+    } */
     //pub fn set_notification_settings() -> 
     pub fn reserve(ctx: Context<Reserve>, duration: u16) -> Result<()> {
         //pass in sensor_id if needed

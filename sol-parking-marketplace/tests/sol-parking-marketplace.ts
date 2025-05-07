@@ -139,8 +139,8 @@ describe("depin parking space marketplace", () => {
     let rentalRate = 0.0345 * LAMPORTS_PER_SOL; //$5 USD/hr ~ 0.0345 SOL 
     let sensorId = "A946444646";
     let additional_info ="gate code is 2342";
-    let availabilty_start = new Date('2025-05-07T10:33:30').toISOString(); 
-    let availabilty_end = new Date('2025-05-15T10:33:30').toISOString();
+    let availabilty_start = new anchor.BN(Math.floor(new Date('2025-05-07T10:33:30').getTime() / 1000)); //unix time stamp in seconds
+    let availabilty_end = new anchor.BN(Math.floor(new Date('2025-015-07T10:33:30').getTime() / 1000));
     console.log("date time", availabilty_end);
 
     //[latitude, longitude] =getLatLon(address);
