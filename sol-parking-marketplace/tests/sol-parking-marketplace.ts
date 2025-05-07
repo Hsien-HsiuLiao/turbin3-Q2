@@ -47,11 +47,12 @@ describe("depin parking space marketplace", () => {
 
   //get/find accounts
   //, listing, owner, feed
-  const [admin, homeowner1, homeowner2, homeowner3, renter] = Array.from({ length: 5 }, () =>
+  // homeowners provide parking space, drivers reserve the space
+  const [admin, homeowner1, homeowner2, homeowner3, driver] = Array.from({ length: 5 }, () =>
     Keypair.generate()
   );
 
-  const marketplace_name = "DePIN PARKING";
+  const marketplace_name = "DePIN PANORAMA PARKING";
 
   let marketplace: PublicKey;
   let marketplaceBump;
@@ -81,7 +82,7 @@ describe("depin parking space marketplace", () => {
     const homeowner2Tx = await connection.requestAirdrop(homeowner2.publicKey, 2 * LAMPORTS_PER_SOL);
     const homeowner3Tx = await connection.requestAirdrop(homeowner3.publicKey, 2 * LAMPORTS_PER_SOL);
 
-    const renterTx = await connection.requestAirdrop(renter.publicKey, 2 * LAMPORTS_PER_SOL);
+    const driverTx = await connection.requestAirdrop(driver.publicKey, 2 * LAMPORTS_PER_SOL);
     const adminTX = await connection.requestAirdrop(admin.publicKey, 2 * LAMPORTS_PER_SOL);
 
     // , confirm the airdrop transactions
@@ -90,14 +91,14 @@ describe("depin parking space marketplace", () => {
     await connection.confirmTransaction(homeowner3Tx);
 
 
-    await connection.confirmTransaction(renterTx);
+    await connection.confirmTransaction(driverTx);
     await connection.confirmTransaction(adminTX);
 
     // Log the balance of each keypair
     const balance1 = await connection.getBalance(homeowner1.publicKey);
     //  console.log(`Balance for maker: ${balance1 / LAMPORTS_PER_SOL} SOL`);
 
-    const balance2 = await connection.getBalance(renter.publicKey);
+    const balance2 = await connection.getBalance(driver.publicKey);
     //  console.log(`Balance for renter: ${balance2 / LAMPORTS_PER_SOL} SOL`);
    // let tx = new Transaction();
     /*  tx.instructions = [
@@ -138,6 +139,9 @@ describe("depin parking space marketplace", () => {
     let rentalRate = 0.0345 * LAMPORTS_PER_SOL; //$5 USD/hr ~ 0.0345 SOL 
     let sensorId = "A946444646";
     let additional_info ="gate code is 2342";
+    let availabilty_start = new Date('2025-05-07T10:33:30').toISOString(); 
+    let availabilty_end = new Date('2025-05-15T10:33:30').toISOString();
+    console.log("date time", availabilty_end);
 
     //[latitude, longitude] =getLatLon(address);
     let latitude;
@@ -145,7 +149,7 @@ describe("depin parking space marketplace", () => {
     [latitude, longitude] = [34.2273574, -118.4500036];
 
     await program.methods
-      .list(address, rentalRate, sensorId, latitude, longitude, additional_info)
+      .list(address, rentalRate, sensorId, latitude, longitude, additional_info,availabilty_start, availabilty_end)
       .accountsPartial({
         maker: homeowner1.publicKey,
         marketplace: marketplace,
@@ -177,7 +181,7 @@ describe("depin parking space marketplace", () => {
     [latitude, longitude] = [35.2273574, -118.4500036];
 
     await program.methods
-      .list(address, rentalRate, sensorId, latitude, longitude, additional_info)
+      .list(address, rentalRate, sensorId, latitude, longitude, additional_info, availabilty_start, availabilty_end)
       .accountsPartial({
         maker: homeowner2.publicKey,
         marketplace: marketplace,
@@ -245,12 +249,12 @@ describe("depin parking space marketplace", () => {
     const tx = await program.methods
       .reserve(duration)
       .accountsPartial({
-        renter: renter.publicKey,
+        renter: driver.publicKey,
         maker: homeowner1.publicKey, //is maker needed?
         marketplace: marketplace,
         listing: listing
       })
-      .signers([renter])
+      .signers([driver])
       .rpc()
       .then(confirm)
       .then(log);
@@ -349,6 +353,7 @@ describe("depin parking space marketplace", () => {
 
   //driver confirms arrival by scanning QR code connected to b link
 
+  //driver arrives early and tried to scan QR
 
   //driver leaves on time and payment transferred
 

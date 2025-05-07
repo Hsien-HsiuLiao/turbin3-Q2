@@ -10,6 +10,10 @@ pub struct Listing {
     pub latitude:f64, 
     pub longitude:f64,
     pub rental_rate: u32, //per hour
+    #[max_len(16)] 
+    pub availabilty_start: String, 
+    #[max_len(16)] 
+    pub availabilty_end: String,
     #[max_len(8)] 
     pub sensor_id: String, 
     pub reserved_by: Option<Pubkey>, 

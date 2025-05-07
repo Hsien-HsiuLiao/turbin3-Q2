@@ -22,8 +22,8 @@ pub mod marketplace {
         Ok(())
     }
 
-    pub fn list(ctx: Context<List>, address: String, rental_rate: u32, sensor_id: String, latitude:f64, longitude:f64, additional_info: Option<String>) -> Result<()> {
-        ctx.accounts.create_listing(address, rental_rate, sensor_id, latitude, longitude, additional_info, &ctx.bumps)?;
+    pub fn list(ctx: Context<List>, address: String, rental_rate: u32, sensor_id: String, latitude:f64, longitude:f64, additional_info: Option<String>,availabilty_start:String, availabilty_end:String) -> Result<()> {
+        ctx.accounts.create_listing(address, rental_rate, sensor_id, latitude, longitude, additional_info, availabilty_start, availabilty_end, &ctx.bumps)?;
         Ok(())
     }
 
