@@ -7,7 +7,7 @@ use anchor_lang::{prelude::*,  system_program::Transfer};
 
 use crate::state::{Listing, Marketplace, ParkingSpaceStatus};
 
-#[derive(Accounts)]
+#[derive(Accounts, Debug)]
 #[instruction(sensor_id: String)]
 pub struct List<'info> {
    #[account(mut)]
@@ -50,7 +50,8 @@ pub struct List<'info> {
 }
 
 impl <'info> List<'info> {
-    pub fn create_listing(&mut self, address: String, rental_rate: u16, sensor_id: String, latitude:f64 , longitude: f64 , bumps: &ListBumps) -> Result<()> {
+    pub fn create_listing(&mut self, address: String, rental_rate: u32, sensor_id: String, latitude:f64 , longitude: f64 ,  additional_info: Option<String> , 
+         bumps: &ListBumps) -> Result<()> {
         self.listing.set_inner(Listing { 
             maker: self.maker.key(), 
         //    mint: self.maker_mint.key(), 
@@ -62,10 +63,13 @@ impl <'info> List<'info> {
             reserved_by: None,
             reservation_duration: None,
             latitude, 
-            longitude 
+            longitude, 
+            additional_info, 
+            feed: None //will be set by admin
         });
 
         msg!("You created a listing, the parking space status is : {:?}", self.listing.parking_space_status);
+        msg!("Listing info: {:?}", self.listing);
 
       
 
