@@ -27,8 +27,20 @@ pub mod marketplace {
         Ok(())
     }
 
-    //pub fn update_listing()
-
+    pub fn update_listing(
+        ctx: Context<UpdateListing>, 
+        address: String, 
+        rental_rate: Option<u32>, 
+        sensor_id: Option<String>, 
+        latitude: Option<f64>, 
+        longitude: Option<f64>, 
+        additional_info: Option<String>, 
+        availabilty_start: Option<String>, 
+        availabilty_end: Option<String>
+    ) -> Result<()> {
+        ctx.accounts.update_listing(address, rental_rate, sensor_id, latitude, longitude, additional_info, availabilty_start, availabilty_end, &ctx.bumps)?;
+        Ok(())
+    }
     //pub fn set_notification_settings() -> 
     pub fn reserve(ctx: Context<Reserve>, duration: u16) -> Result<()> {
         //pass in sensor_id if needed
