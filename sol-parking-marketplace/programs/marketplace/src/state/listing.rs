@@ -20,7 +20,8 @@ pub struct Listing {
     #[max_len(8)] 
     pub sensor_id: String, 
     pub reserved_by: Option<Pubkey>, 
-    pub reservation_duration: Option<u16>,
+    pub reservation_start: Option<i64>,
+    pub reservation_end: Option<i64>,
     pub parking_space_status:ParkingSpaceStatus, 
     
     #[max_len(32)]

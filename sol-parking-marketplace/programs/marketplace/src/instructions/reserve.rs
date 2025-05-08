@@ -1,10 +1,5 @@
 use anchor_lang::{prelude::*, system_program::{Transfer, transfer}};
 
-/* use anchor_spl::{associated_token::AssociatedToken, 
-    metadata::{MasterEditionAccount, Metadata, MetadataAccount}, 
-    token::{close_account, transfer_checked, CloseAccount, TransferChecked}, 
-    token_interface::{Mint, TokenAccount, TokenInterface}}; */
-
 
 use crate::{ state::{Listing, Marketplace, ParkingSpaceStatus}};
 
@@ -31,19 +26,12 @@ pub struct Reserve<'info> {
        // seeds = [marketplace.key().as_ref(), &sensor_id.to_le_bytes()], //
        seeds = [marketplace.key().as_ref(), 
         /* &sensor_id.as_bytes()[..16],  */
-      //  b"A9",
         maker.key().as_ref()
         ], 
         bump,
         constraint = listing.parking_space_status == ParkingSpaceStatus::Available
         )]
     pub listing: Account<'info, Listing>,   //
-   /*  #[account(
-        mut, //will need to move things
-  //      associated_token::mint = maker_mint,
-        associated_token::authority = listing
-    )]
-    pub vault: InterfaceAccount<'info, TokenAccount>, */
    
 
     pub system_program: Program<'info, System>,
@@ -51,9 +39,9 @@ pub struct Reserve<'info> {
 }
 
 impl <'info> Reserve<'info> {
-    pub fn reserve_listing(&mut self, duration: u16) -> Result<()> {
+    pub fn reserve_listing(&mut self, start_time: i64, end_time: i64) -> Result<()> {
 
-        // check time, driver can reserve up to an hour ahead of time
+        //need reservation start time and end time
         let listing = &mut self.listing;
     
         // Check if the listing is available
@@ -63,7 +51,8 @@ impl <'info> Reserve<'info> {
     
         // Update the listing with the new reservation details
         listing.reserved_by = Some(self.renter.key());
-        listing.reservation_duration = Some(duration);
+        listing.reservation_start = Some(start_time);
+        listing.reservation_end = Some(end_time);
         listing.parking_space_status = ParkingSpaceStatus::Reserved;
 
         msg!("You reserved a listing, the parking space status is : {:?}", self.listing.parking_space_status);
