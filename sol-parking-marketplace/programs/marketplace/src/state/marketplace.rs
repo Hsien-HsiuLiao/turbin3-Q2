@@ -7,7 +7,7 @@ pub struct Marketplace {
     pub fee: u32, //basis points
     pub bump: u8, 
    
-    #[max_len(16)] //be careful of length when using name as seed, seeds total cannot exceed 32bytes
+    #[max_len(32)] 
     pub name: String
 
 }
