@@ -11,9 +11,14 @@ pub struct UpdateListing<'info> {
         bump = marketplace.bump
     )]
     pub marketplace: Account<'info, Marketplace>,
+    #[account(mut)]
+   pub maker: SystemAccount<'info>,
     #[account(
         mut,
-        seeds = [marketplace.key().as_ref(), &sensor_id.to_le_bytes()], 
+        seeds = [marketplace.key().as_ref(), 
+        maker.key().as_ref()
+        //&sensor_id.to_le_bytes()
+        ], 
         bump, 
         realloc = 8 + Listing::INIT_SPACE,
         realloc::payer = owner, 
