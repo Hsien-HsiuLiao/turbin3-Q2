@@ -135,6 +135,8 @@ describe("depin parking space marketplace", () => {
   });
 
   it("Create new listings for parking space rental", async () => {
+    let email = "homeowner1@email.com";
+    let phone = "555-555-6309"
     let address = "1234 MyStreet, Los Angeles, CA 90210";
     let rentalRate = 0.0345 * LAMPORTS_PER_SOL; //$5 USD/hr ~ 0.0345 SOL 
     let sensorId = "A946444646";
@@ -149,7 +151,7 @@ describe("depin parking space marketplace", () => {
     [latitude, longitude] = [34.2273574, -118.4500036];
 
     await program.methods
-      .list(address, rentalRate, sensorId, latitude, longitude, additional_info,availabilty_start, availabilty_end)
+      .list(address, rentalRate, sensorId, latitude, longitude, additional_info,availabilty_start, availabilty_end, email, phone)
       .accountsPartial({
         maker: homeowner1.publicKey,
         marketplace: marketplace,
@@ -181,7 +183,7 @@ describe("depin parking space marketplace", () => {
     [latitude, longitude] = [35.2273574, -118.4500036];
 
     await program.methods
-      .list(address, rentalRate, sensorId, latitude, longitude, additional_info, availabilty_start, availabilty_end)
+      .list(address, rentalRate, sensorId, latitude, longitude, additional_info, availabilty_start, availabilty_end, email, phone)
       .accountsPartial({
         maker: homeowner2.publicKey,
         marketplace: marketplace,
@@ -343,7 +345,7 @@ describe("depin parking space marketplace", () => {
     const updateEvent = new sb.PullFeedValueEvent(
       sb.AnchorUtils.loggedEvents(sbProgram!, sim.value.logs!)[0]
     ).toRows();
-    console.log("Simulated Price Updates:\n", JSON.stringify(sim.value.logs));
+  //  console.log("Simulated Price Updates:\n", JSON.stringify(sim.value.logs));
     console.log("Submitted Price Updates:\n", updateEvent);
 
     console.log(`Transaction sent: ${await connection.sendTransaction(tx)}`);

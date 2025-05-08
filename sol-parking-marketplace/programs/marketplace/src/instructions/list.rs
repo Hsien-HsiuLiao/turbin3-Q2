@@ -1,10 +1,5 @@
 use anchor_lang::{prelude::*,  system_program::Transfer};
 
-/* use anchor_spl::{associated_token::AssociatedToken, 
-    metadata::{MasterEditionAccount, Metadata, MetadataAccount}, 
-     
-    token_interface::{Mint, TokenAccount, TokenInterface, transfer_checked, TransferChecked}}; */
-
 use crate::state::{Listing, Marketplace, ParkingSpaceStatus};
 
 #[derive(Accounts, Debug)]
@@ -20,21 +15,11 @@ pub struct List<'info> {
     )]
     pub marketplace: Account<'info, Marketplace>,
    
-   
-   /*  #[account(
-        init, 
-        payer = maker,
-        associated_token::mint = maker_mint,
-        associated_token::authority = listing//owner
-    )]                                                
-    pub vault: InterfaceAccount<'info, TokenAccount>,  */
     #[account(
         init,
         payer = maker, 
-      //  seeds = [marketplace.key().as_ref(), maker_mint.key().as_ref()], //mint is unique
         seeds = [marketplace.key().as_ref(), 
         /* &sensor_id.as_bytes()[..16],  */
-      //  b"A9",
         maker.key().as_ref()
         ], //listing sensor_id
 
@@ -43,25 +28,31 @@ pub struct List<'info> {
     )]
     pub listing: Account<'info, Listing>, //
 
-    
-    
     pub system_program: Program<'info, System>,
 
 }
 
 impl <'info> List<'info> {
-    pub fn create_listing(&mut self, address: String, rental_rate: u32, sensor_id: String, latitude:f64 , longitude: f64 ,  additional_info: Option<String> , availabilty_start:i64, availabilty_end:i64,
+    pub fn create_listing(&mut self, address: String, rental_rate: u32, sensor_id: String, latitude:f64 , longitude: f64 ,  additional_info: Option<String> , availabilty_start:i64, availabilty_end:i64, email: String, phone:String,
          bumps: &ListBumps) -> Result<()> {
+            //get current time, check avail start and set parking status accordingly
+        let current_time = Clock::get()?.unix_timestamp;
+        let mut parking_space_status = ParkingSpaceStatus::UnAvailable;
+
+        if availabilty_start <= current_time {
+            parking_space_status = ParkingSpaceStatus::Available;    
+        }
         self.listing.set_inner(Listing { 
             maker: self.maker.key(), 
-        //    mint: self.maker_mint.key(), 
+            email,
+            phone,
             bump: bumps.listing,
             address,
             rental_rate,
             availabilty_start, 
             availabilty_end,
             sensor_id,
-            parking_space_status: ParkingSpaceStatus::Available,
+            parking_space_status,
             reserved_by: None,
             reservation_duration: None,
             latitude, 

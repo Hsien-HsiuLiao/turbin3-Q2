@@ -5,6 +5,10 @@ use anchor_lang::prelude::*;
 #[derive(InitSpace, Debug)]
 pub struct Listing {
     pub maker: Pubkey,
+    #[max_len(32)] 
+    pub email: String,
+    #[max_len(8)] 
+    pub phone: String,
     pub bump: u8, 
     #[max_len(32)] 
     pub address: String,
