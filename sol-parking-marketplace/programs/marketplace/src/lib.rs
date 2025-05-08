@@ -15,6 +15,7 @@ declare_id!("FXUQwDsKJNrYFsfiUokPbH4BSrZtoC9m8HpoiMvYxtSE");
 
 #[program]
 pub mod marketplace {
+
     use super::*;
 
      pub fn initialize(ctx: Context<Initialize>, name: String, fee:u32) -> Result<()> {
@@ -26,6 +27,24 @@ pub mod marketplace {
         ctx.accounts.create_listing(address, rental_rate, sensor_id, latitude, longitude, additional_info, availabilty_start, availabilty_end, email, phone,&ctx.bumps)?;
         Ok(())
     }
+
+    pub fn add_feed_to_listing(ctx: Context<AddFeedToListing>, feed: Pubkey) -> Result<()> {
+        //only admin
+        
+        // Fetch the listing using the provided listing_id
+        let listing = &mut ctx.accounts.listing;
+    
+        
+    
+        // Update the listing with the new feed_id
+        listing.feed = Some(feed);
+    
+        // Optionally, you might want to log the action
+        msg!("Feed {} added to listing {:?}", feed, listing );
+    
+        Ok(())
+    }
+    
 
     /* pub fn update_listing(
         ctx: Context<UpdateListing>, 
@@ -42,15 +61,14 @@ pub mod marketplace {
         Ok(())
     } */
     pub fn set_notification_settings(ctx: Context<SetNotificationSettings>, app:bool, email: bool, phone: bool) -> Result<()> {
-        // Logic to set notification settings for the user
         ctx.accounts.set_notification_settings(app,email, phone)?;
         msg!("Notification settings updated for user: {:?}", ctx.accounts.user.key());
         Ok(())
     }
 
-    pub fn reserve(ctx: Context<Reserve>, duration: u16) -> Result<()> {
+    pub fn reserve(ctx: Context<Reserve>, start_time: i64, end_time: i64) -> Result<()> {
         //pass in sensor_id if needed
-        ctx.accounts.reserve_listing(duration)?;
+        ctx.accounts.reserve_listing(start_time, end_time)?;
         Ok(())
     }
 
