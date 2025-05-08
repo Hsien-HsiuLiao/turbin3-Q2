@@ -100,7 +100,7 @@ describe("depin parking space marketplace", () => {
 
     const balance2 = await connection.getBalance(driver.publicKey);
     //  console.log(`Balance for renter: ${balance2 / LAMPORTS_PER_SOL} SOL`);
-   // let tx = new Transaction();
+    // let tx = new Transaction();
     /*  tx.instructions = [
        ...[homeowner1, renter].map((account) =>
          SystemProgram.transfer({
@@ -140,7 +140,7 @@ describe("depin parking space marketplace", () => {
     let address = "1234 MyStreet, Los Angeles, CA 90210";
     let rentalRate = 0.0345 * LAMPORTS_PER_SOL; //$5 USD/hr ~ 0.0345 SOL 
     let sensorId = "A946444646";
-    let additional_info ="gate code is 2342";
+    let additional_info = "gate code is 2342";
     let availabilty_start = new anchor.BN(Math.floor(new Date('2025-05-07T10:33:30').getTime() / 1000)); //unix time stamp in seconds
     let availabilty_end = new anchor.BN(Math.floor(new Date('2025-015-07T10:33:30').getTime() / 1000));
     console.log("date time", availabilty_end);
@@ -151,7 +151,7 @@ describe("depin parking space marketplace", () => {
     [latitude, longitude] = [34.2273574, -118.4500036];
 
     await program.methods
-      .list(address, rentalRate, sensorId, latitude, longitude, additional_info,availabilty_start, availabilty_end, email, phone)
+      .list(address, rentalRate, sensorId, latitude, longitude, additional_info, availabilty_start, availabilty_end, email, phone)
       .accountsPartial({
         maker: homeowner1.publicKey,
         marketplace: marketplace,
@@ -177,7 +177,7 @@ describe("depin parking space marketplace", () => {
     address = "1235 MyStreet, Los Angeles, CA 90210";
     rentalRate = 0.0355 * LAMPORTS_PER_SOL; //$5 USD/hr ~ 0.0345 SOL 
     sensorId = "B946444646";
-    additional_info= "";
+    additional_info = "";
     //[latitude, longitude] =getLatLon(address);
 
     [latitude, longitude] = [35.2273574, -118.4500036];
@@ -206,180 +206,210 @@ describe("depin parking space marketplace", () => {
     assert(listingAccountInfo2 !== null);
   });
 
-  //admin adds feed account to listing
-
-  it("should let user set notification settings", async () => {
-    const notification = PublicKey.findProgramAddressSync(
-      [homeowner1.publicKey.toBuffer()],
-      programId
-    )[0];
-
-    const tx = await program.methods
-        .setNotificationSettings(true, true, false) // app: true, email: true, phone: false
-        .accounts({
-            user: homeowner1.publicKey,
-         ////   notification,
-           // systemProgram: SystemProgram.programId,
-        })
-        .signers([homeowner1])
-        .rpc();
-
-    console.log("Transaction signature", tx);
-
-    // Fetch the notification settings account to verify the changes
-    const notificationAccount = await program.account.notificationSettings.fetch(notification);
-
-    console.log(notificationAccount);
-
-    assert.isTrue(notificationAccount.app);
-    assert.isFalse(notificationAccount.email);
-    assert.isTrue(notificationAccount.text);
-});
-
-  it("Should allow homeowner to update listing", async () => {
-
-    //update rental rate
-
-  });
-
-  it("Should not allow other accounts to update listing", async () => {
-
-    //have different homeowner or driver try to changes
-    //update rental rate
-
-  });
-
-  it("Driver gets a list of parking spaces near destination", async () => {
-
-    let destination_address = "1400 MyStreet, Los Angeles, CA 90210";
-    let latitude;
-    let longitude;
-    [latitude, longitude] = [35.2273574, -118.4500036];
-
-
-    const listingAccounts = await program.account.listing.all();
-    assert.equal(listingAccounts.length, 2);
-
-    console.log("Here's a list", listingAccounts);
-  });
-
-  
-  it("Reserve a listing", async () => {
+  it("should allow only admin adds feed account to listing", async () => {
     const listing = PublicKey.findProgramAddressSync(
       [marketplace.toBuffer(), homeowner1.publicKey.toBuffer()],
       program.programId
     )[0];
 
-    const listingAccountInfo = await connection.getAccountInfo(listing);
-    console.log('Account data:', listingAccountInfo.data.toString());
-
-
-    const duration = 1; //1 hour
-
-    const tx = await program.methods
-      .reserve(duration)
-      .accountsPartial({
-        renter: driver.publicKey,
-        maker: homeowner1.publicKey, //is maker needed?
-        marketplace: marketplace,
-        listing: listing
-      })
-      .signers([driver])
-      .rpc()
-      .then(confirm)
-      .then(log);
-    console.log("Your transaction signature", tx);
-
-  });
-
-  //driver updates reservation
-
-  //another account cannot update reservation
-
-  xit("Call switchboard feed and program ix", async () => {
-    const { keypair, connection, program } = await sb.AnchorUtils.loadEnv();
-    //
-   // console.log("connection", connection);
-    const sbProgram = program;
-    //  console.log("program from sb.anchorutils", sbProgram);
     const feed = new PublicKey("J748azokS8cKaiGKgN5hsTsTuB1FJ1ikVNXKjq9DQnjg");
-    const feedAccountInfo = await connection.getAccountInfo(feed);
-
-   // console.log("feedaccountinfo", feedAccountInfo);
-
-    const feedAccount = new sb.PullFeed(sbProgram!, feed);
-    await feedAccount.preHeatLuts();
-
-    /* const myProgramPath = "target/deploy/marketplace-keypair.json";
-
-    async function myAnchorProgram(
-      provider: anchor.Provider,
-      keypath: string
-    ): Promise<anchor.Program> {
-
-      try {
-        const myProgramKeypair = await sb.AnchorUtils.initKeypairFromFile(keypath);
-
-        const pid = myProgramKeypair.publicKey;
-
-        const idl = (await anchor.Program.fetchIdl(pid, provider))!;
-        console.log("provider", provider);
-
-        const program = new anchor.Program(idl, provider);
-
-        return program;
-      } catch (e) {
-        throw new Error("Failed to load demo program. Was it deployed?");
-      }
-    } */
 
 
-    //const myProgram = await myAnchorProgram(provider, myProgramPath);
-    const myProgram = anchor.workspace.marketplace as Program<Marketplace>;
-
-    // console.log("myProgram", myProgram?.methods);
-
-    const [pullIx, responses, _ok, luts] = await feedAccount.fetchUpdateIx({
-      numSignatures: 3,
-    });
-    // Instruction to example program using the switchboard feed
-    // console.log("methods", await program?.methods);
-    const myIx = await myProgram!.methods
-      .sensorChange()
-      .accounts({ feed }) //account name must match
-      //.signers([maker])
+    await program.methods.addFeedToListing(feed)
+      .accounts({
+        maker: homeowner1.publicKey,
+        marketplace:marketplace, 
+        listing:listing,
+        admin: admin.publicKey,
+      })
+      .signers([admin])
       .rpc()
-      // .instruction();
       .then(confirm)
       .then(log);
+  
+
+  // Fetch the updated listing
+  const updatedListing = await program.account.listing.fetch(listing);
+
+  // Assert that the feed was added correctly
+  assert.equal(updatedListing.feed.toString(), feed.toString(), "Feed was not added to the listing correctly");
+});
 
 
-    const tx = await sb.asV0Tx({
-      connection,
-      ixs: [...pullIx!, /* myIx */],
-      signers: [keypair],
-      computeUnitPrice: 200_000,
-      computeUnitLimitMultiple: 1.3,
-      lookupTables: luts,
-    });
+it("should let user set notification settings", async () => {
+  const notification = PublicKey.findProgramAddressSync(
+    [homeowner1.publicKey.toBuffer()],
+    programId
+  )[0];
 
-    const TX_CONFIG = {
-      commitment: "processed" as Commitment,
-      skipPreflight: true,
-      maxRetries: 0,
-    };
-    console.log("simulating..");
-    const sim = await connection.simulateTransaction(tx, TX_CONFIG);
-    const updateEvent = new sb.PullFeedValueEvent(
-      sb.AnchorUtils.loggedEvents(sbProgram!, sim.value.logs!)[0]
-    ).toRows();
-  //  console.log("Simulated Price Updates:\n", JSON.stringify(sim.value.logs));
-    console.log("Submitted Price Updates:\n", updateEvent);
+  const tx = await program.methods
+    .setNotificationSettings(true, true, false) // app: true, email: true, phone: false
+    .accounts({
+      user: homeowner1.publicKey,
+      ////   notification,
+      // systemProgram: SystemProgram.programId,
+    })
+    .signers([homeowner1])
+    .rpc();
 
-    console.log(`Transaction sent: ${await connection.sendTransaction(tx)}`);
+  console.log("Transaction signature", tx);
+
+  // Fetch the notification settings account to verify the changes
+  const notificationAccount = await program.account.notificationSettings.fetch(notification);
+
+  console.log(notificationAccount);
+
+  assert.isTrue(notificationAccount.app);
+  assert.isFalse(notificationAccount.email);
+  assert.isTrue(notificationAccount.text);
+});
+
+it("Should allow homeowner to update listing", async () => {
+
+  //update rental rate
+
+});
+
+it("Should not allow other accounts to update listing", async () => {
+
+  //have different homeowner or driver try to changes
+  //update rental rate
+
+});
+
+it("Driver gets a list of parking spaces near destination and specified time frame", async () => {
+
+  let destination_address = "1400 MyStreet, Los Angeles, CA 90210";
+  let latitude;
+  let longitude;
+  [latitude, longitude] = [35.2273574, -118.4500036];
 
 
+  const listingAccounts = await program.account.listing.all();
+  assert.equal(listingAccounts.length, 2);
+
+  console.log("Here's a list", listingAccounts);
+});
+
+
+it("Reserve a listing", async () => {
+  const listing = PublicKey.findProgramAddressSync(
+    [marketplace.toBuffer(), homeowner1.publicKey.toBuffer()],
+    program.programId
+  )[0];
+
+  const listingAccountInfo = await connection.getAccountInfo(listing);
+  console.log('Account data:', listingAccountInfo.data.toString());
+
+
+  //const duration = 1; //1 hour
+  let start_time = new anchor.BN(Math.floor(Date.now() / 1000)); //in seconds 
+  let end_time = start_time.add(new anchor.BN(3600));
+
+  const tx = await program.methods
+    .reserve(start_time, end_time)
+    .accountsPartial({
+      renter: driver.publicKey,
+      maker: homeowner1.publicKey, //is maker needed?
+      marketplace: marketplace,
+      listing: listing
+    })
+    .signers([driver])
+    .rpc()
+    .then(confirm)
+    .then(log);
+  console.log("Your transaction signature", tx);
+
+});
+
+//driver updates reservation
+
+//another account cannot update reservation
+
+xit("Call switchboard feed and program ix", async () => {
+  const { keypair, connection, program } = await sb.AnchorUtils.loadEnv();
+  //
+  // console.log("connection", connection);
+  const sbProgram = program;
+  //  console.log("program from sb.anchorutils", sbProgram);
+  const feed = new PublicKey("J748azokS8cKaiGKgN5hsTsTuB1FJ1ikVNXKjq9DQnjg");
+  const feedAccountInfo = await connection.getAccountInfo(feed);
+
+  // console.log("feedaccountinfo", feedAccountInfo);
+
+  const feedAccount = new sb.PullFeed(sbProgram!, feed);
+  await feedAccount.preHeatLuts();
+
+  /* const myProgramPath = "target/deploy/marketplace-keypair.json";
+
+  async function myAnchorProgram(
+    provider: anchor.Provider,
+    keypath: string
+  ): Promise<anchor.Program> {
+
+    try {
+      const myProgramKeypair = await sb.AnchorUtils.initKeypairFromFile(keypath);
+
+      const pid = myProgramKeypair.publicKey;
+
+      const idl = (await anchor.Program.fetchIdl(pid, provider))!;
+      console.log("provider", provider);
+
+      const program = new anchor.Program(idl, provider);
+
+      return program;
+    } catch (e) {
+      throw new Error("Failed to load demo program. Was it deployed?");
+    }
+  } */
+
+
+  //const myProgram = await myAnchorProgram(provider, myProgramPath);
+  const myProgram = anchor.workspace.marketplace as Program<Marketplace>;
+
+  // console.log("myProgram", myProgram?.methods);
+
+  const [pullIx, responses, _ok, luts] = await feedAccount.fetchUpdateIx({
+    numSignatures: 3,
   });
+  // Instruction to example program using the switchboard feed
+  // console.log("methods", await program?.methods);
+  const myIx = await myProgram!.methods
+    .sensorChange()
+    .accounts({ feed }) //account name must match
+    //.signers([maker])
+    .rpc()
+    // .instruction();
+    .then(confirm)
+    .then(log);
+
+
+  const tx = await sb.asV0Tx({
+    connection,
+    ixs: [...pullIx!, /* myIx */],
+    signers: [keypair],
+    computeUnitPrice: 200_000,
+    computeUnitLimitMultiple: 1.3,
+    lookupTables: luts,
+  });
+
+  const TX_CONFIG = {
+    commitment: "processed" as Commitment,
+    skipPreflight: true,
+    maxRetries: 0,
+  };
+  console.log("simulating..");
+  const sim = await connection.simulateTransaction(tx, TX_CONFIG);
+  const updateEvent = new sb.PullFeedValueEvent(
+    sb.AnchorUtils.loggedEvents(sbProgram!, sim.value.logs!)[0]
+  ).toRows();
+  //  console.log("Simulated Price Updates:\n", JSON.stringify(sim.value.logs));
+  console.log("Submitted Price Updates:\n", updateEvent);
+
+  console.log(`Transaction sent: ${await connection.sendTransaction(tx)}`);
+
+
+});
 
   //driver confirms arrival by scanning QR code connected to b link
 
