@@ -8,7 +8,7 @@ use crate::{ state::{Listing, Marketplace, ParkingSpaceStatus}};
 
 #[derive(Accounts)]
 pub struct SwitchboardFeed<'info> {
-    //     safety check:              Struct field "feed" is unsafe, but is not documented.
+    //safety check: Struct field "feed" is unsafe, but is not documented.add ///CHECK
         /// CHECK: via switchboard sdk
     pub feed: AccountInfo<'info>,
 }
