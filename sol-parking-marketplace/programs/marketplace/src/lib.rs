@@ -41,7 +41,13 @@ pub mod marketplace {
         ctx.accounts.update_listing(address, rental_rate, sensor_id, latitude, longitude, additional_info, availabilty_start, availabilty_end, &ctx.bumps)?;
         Ok(())
     } */
-    //pub fn set_notification_settings() -> 
+    pub fn set_notification_settings(ctx: Context<SetNotificationSettings>, app:bool, email: bool, phone: bool) -> Result<()> {
+        // Logic to set notification settings for the user
+        ctx.accounts.set_notification_settings(app,email, phone)?;
+        msg!("Notification settings updated for user: {:?}", ctx.accounts.user.key());
+        Ok(())
+    }
+
     pub fn reserve(ctx: Context<Reserve>, duration: u16) -> Result<()> {
         //pass in sensor_id if needed
         ctx.accounts.reserve_listing(duration)?;

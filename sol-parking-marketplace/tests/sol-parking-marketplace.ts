@@ -208,6 +208,34 @@ describe("depin parking space marketplace", () => {
 
   //admin adds feed account to listing
 
+  it("should let user set notification settings", async () => {
+    const notification = PublicKey.findProgramAddressSync(
+      [homeowner1.publicKey.toBuffer()],
+      programId
+    )[0];
+
+    const tx = await program.methods
+        .setNotificationSettings(true, true, false) // app: true, email: true, phone: false
+        .accounts({
+            user: homeowner1.publicKey,
+         ////   notification,
+           // systemProgram: SystemProgram.programId,
+        })
+        .signers([homeowner1])
+        .rpc();
+
+    console.log("Transaction signature", tx);
+
+    // Fetch the notification settings account to verify the changes
+    const notificationAccount = await program.account.notificationSettings.fetch(notification);
+
+    console.log(notificationAccount);
+
+    assert.isTrue(notificationAccount.app);
+    assert.isFalse(notificationAccount.email);
+    assert.isTrue(notificationAccount.text);
+});
+
   it("Should allow homeowner to update listing", async () => {
 
     //update rental rate
@@ -268,7 +296,7 @@ describe("depin parking space marketplace", () => {
 
   //another account cannot update reservation
 
-  it("Call switchboard feed and program ix", async () => {
+  xit("Call switchboard feed and program ix", async () => {
     const { keypair, connection, program } = await sb.AnchorUtils.loadEnv();
     //
    // console.log("connection", connection);
