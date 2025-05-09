@@ -19,7 +19,7 @@ pub struct List<'info> {
         init,
         payer = maker, 
         seeds = [marketplace.key().as_ref(), 
-        /* &sensor_id.as_bytes()[..16],  */
+        /* &sensor_id.as_bytes()[..16],  */ //try as_ref()
         maker.key().as_ref()
         ], //listing sensor_id
 
@@ -54,7 +54,8 @@ impl <'info> List<'info> {
             sensor_id,
             parking_space_status,
             reserved_by: None,
-            reservation_duration: None,
+            reservation_start: None,
+            reservation_end: None,
             latitude, 
             longitude, 
             additional_info, 
