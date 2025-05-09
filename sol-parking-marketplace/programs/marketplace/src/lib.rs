@@ -115,6 +115,9 @@ pub mod marketplace {
         let feed = PullFeedAccountData::parse(feed_account).unwrap();
         // Log the value
         msg!("sensor data, distance_in_cm: {:?}", feed.value().unwrap());
+
+        //when driver leaves, sensor detects change. a server function monitoring for changes (or anchor test) will
+        // call this instruction, get the data and verify value is over x cm, then msg homeowner and parkingspace status updated
         Ok(())
     }
 
@@ -128,6 +131,10 @@ pub mod marketplace {
         if sensor_id == listing.sensor_id {
             listing.parking_space_status = ParkingSpaceStatus::Occupied;
         }
+
+        //how to emit and listen for events https://www.rareskills.io/post/solana-logs-transaction-history
+        //event triggers script to check sensor 5 min before end time
+        // if driver leaves early, they will still be charged reserved time, similar to parking meter, garage 
         // Notify the homeowner
         
 
