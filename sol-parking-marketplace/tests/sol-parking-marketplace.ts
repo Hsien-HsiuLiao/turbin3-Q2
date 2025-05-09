@@ -235,6 +235,36 @@ describe("depin parking space marketplace", () => {
   assert.equal(updatedListing.feed.toString(), feed.toString(), "Feed was not added to the listing correctly");
 });
 
+it("should not allow an unauthorized accoun to add feed account to listing", async () => {
+  const listing = PublicKey.findProgramAddressSync(
+    [marketplace.toBuffer(), homeowner1.publicKey.toBuffer()],
+    program.programId
+  )[0];
+
+  const feed = new PublicKey("J748azokS8cKaiGKgN5hsTsTuB1FJ1ikVNXKjq9DQnjg");
+
+
+  const result  = await program.methods.addFeedToListing(feed)
+    .accounts({
+      maker: homeowner1.publicKey,
+      marketplace:marketplace, 
+      listing:listing,
+      admin: homeowner1.publicKey,
+    })
+    .signers([homeowner1])
+    .rpc()
+    .then(confirm)
+    .then(log);
+
+    console.log("result:", result);
+
+
+    //const updatedListing = await program.account.listing.fetch(listing);
+
+// Assert that the feed was added correctly
+//assert.equal(updatedListing.feed.toString(), feed.toString(), "Feed was not added to the listing correctly");
+});
+
 
 it("should let user set notification settings", async () => {
   const notification = PublicKey.findProgramAddressSync(
