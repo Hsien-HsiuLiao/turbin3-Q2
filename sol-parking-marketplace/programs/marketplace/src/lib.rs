@@ -5,6 +5,8 @@ use switchboard_on_demand::on_demand::accounts::pull_feed::PullFeedAccountData;
 
 mod instructions;
 mod state;
+mod error;
+
 
 use instructions::*;
 
@@ -12,6 +14,8 @@ declare_id!("FXUQwDsKJNrYFsfiUokPbH4BSrZtoC9m8HpoiMvYxtSE");
 
 #[program]
 pub mod marketplace {
+
+    use switchboard_on_demand::prelude::rust_decimal::Decimal;
 
     use crate::state::ParkingSpaceStatus;
 
@@ -115,9 +119,31 @@ pub mod marketplace {
         let feed = PullFeedAccountData::parse(feed_account).unwrap();
         // Log the value
         msg!("sensor data, distance_in_cm: {:?}", feed.value().unwrap());
+        //distance < 30 cm, car parked, >30cm car left space
 
         //when driver leaves, sensor detects change. a server function monitoring for changes (or anchor test) will
         // call this instruction, get the data and verify value is over x cm, then msg homeowner and parkingspace status updated
+
+        //user story 1c
+    //driver receives confirmation
+
+    let distance= feed.value().unwrap();
+
+    // Check if the distance indicates the car has left the space
+    if distance > Decimal::from(30) {
+        let listing = &mut ctx.accounts.listing;
+
+        // Update the parking space status to Available
+        listing.parking_space_status = ParkingSpaceStatus::Available;
+
+        // Notify the homeowner of the change
+
+        msg!("Parking space is now available for listing: {:?}", listing);
+    }
+    if distance <= Decimal::from(30){
+
+    }
+
         Ok(())
     }
 
@@ -134,7 +160,9 @@ pub mod marketplace {
 
         //how to emit and listen for events https://www.rareskills.io/post/solana-logs-transaction-history
         //event triggers script to check sensor 5 min before end time
-        // if driver leaves early, they will still be charged reserved time, similar to parking meter, garage 
+              //  emit!(event, "Parking confirmed");
+
+        // if driver leaves early, they will still be charged reserved time, similar to parking meter 
         // Notify the homeowner
         
 
@@ -143,8 +171,7 @@ pub mod marketplace {
 
         Ok(())
     }
-    //user story 1c
-    //driver receives confirmation
+    
 }
 
 #[error_code]
