@@ -149,9 +149,11 @@ pub mod marketplace {
 
     //pub fn confirm_parking() {//driver scans QR code to confirm arrival and parking},
     //should also send alert to homeowner
-    pub fn confirm_parking(ctx: Context<List>, sensor_id: String) -> Result<()> {
+    pub fn confirm_parking(ctx: Context<ConfirmParking>, sensor_id: String) -> Result<()> {
         
 
+        //check arrival time is within reservation start time
+        
         let listing = &mut ctx.accounts.listing;
        
         if sensor_id == listing.sensor_id {
