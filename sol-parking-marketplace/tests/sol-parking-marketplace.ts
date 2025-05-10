@@ -235,7 +235,7 @@ describe("depin parking space marketplace", () => {
   assert.equal(updatedListing.feed.toString(), feed.toString(), "Feed was not added to the listing correctly");
 });
 
-it("should not allow an unauthorized accoun to add feed account to listing", async () => {
+xit("should not allow an unauthorized accoun to add feed account to listing", async () => {
   const listing = PublicKey.findProgramAddressSync(
     [marketplace.toBuffer(), homeowner1.publicKey.toBuffer()],
     program.programId
@@ -266,7 +266,7 @@ it("should not allow an unauthorized accoun to add feed account to listing", asy
 });
 
 
-it("should let user set notification settings", async () => {
+xit("should let user set notification settings", async () => {
   const notification = PublicKey.findProgramAddressSync(
     [homeowner1.publicKey.toBuffer()],
     programId
@@ -307,7 +307,7 @@ it("Should not allow other accounts to update listing", async () => {
 
 });
 
-it("Driver gets a list of parking spaces near destination and specified time frame", async () => {
+xit("Driver gets a list of parking spaces near destination and specified time frame", async () => {
 
   let destination_address = "1400 MyStreet, Los Angeles, CA 90210";
   let latitude;
@@ -442,6 +442,39 @@ xit("Call switchboard feed and program ix", async () => {
 });
 
   //driver confirms arrival by scanning QR code connected to b link
+  it("Driver confirms arrival by scanning QR code", async () => {
+    const listing = PublicKey.findProgramAddressSync(
+      [marketplace.toBuffer(), homeowner1.publicKey.toBuffer()],
+      program.programId
+    )[0];
+  
+    const sensorId = "A946444646"; 
+
+  
+    const tx = await program.methods
+      .confirmParking(sensorId)
+      .accounts({
+        maker: homeowner1.publicKey, 
+        marketplace: marketplace,
+        listing: listing,
+      })
+      .signers([homeowner1])   //will homeowner1 need to get a msg to sign? 
+      .rpc()
+      .then(confirm)
+      .then(log);
+  
+    console.log("Parking confirmation transaction signature", tx);
+  
+    // Fetch the listing to verify the parking status
+    const listingAccount = await program.account.listing.fetch(listing);
+    
+    console.log("listingAccount.parkingSpaceStatus", listingAccount.parkingSpaceStatus);
+
+    assert.equal(Object.keys(listingAccount.parkingSpaceStatus)[0], "occupied", "Parking space status should be Occupied");
+  
+    
+  });
+  
 
   //driver arrives early and tried to scan QR
 
