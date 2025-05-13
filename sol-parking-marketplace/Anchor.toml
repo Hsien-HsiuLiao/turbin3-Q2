@@ -23,3 +23,5 @@ url = "https://api.devnet.solana.com"
 
 [[test.validator.clone]]
 address = "J748azokS8cKaiGKgN5hsTsTuB1FJ1ikVNXKjq9DQnjg"
+#mock data feed driver leaves
+addres =  "43qXTGQdvEiPYj9GQvDfvQi7Shx8ahSd3d2sYBeEizuR"
