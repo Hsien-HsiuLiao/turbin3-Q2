@@ -17,12 +17,15 @@ const jobs: OracleJob[] = [
     tasks: [
       {
         httpTask: {
-          url: "https://depin-parking.vercel.app/api/mock-driver-arrives",
+        //  url: "https://depin-parking.vercel.app/api/mock-driver-arrives",
+          url: "https://depin-parking.vercel.app/api/mock-driver-leaves",
+
         }
       },
       {
         jsonParseTask: {
-          path: "$[0].distance_in_cm"
+        //  path: "$[0].distance_in_cm"
+         path: "$[0].decoded.payload.Distance_cm"
         }
       }
     ],
