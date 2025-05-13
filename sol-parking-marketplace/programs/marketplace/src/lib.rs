@@ -7,6 +7,8 @@ mod instructions;
 mod state;
 mod error;
 
+pub use error::ErrorCode;
+
 
 use instructions::*;
 
@@ -60,6 +62,7 @@ pub mod marketplace {
         if ctx.accounts.admin.key() != ctx.accounts.marketplace.admin {
             return Err(ErrorCode::Unauthorized.into());
         }
+
         let listing = &mut ctx.accounts.listing;
 
         listing.feed = Some(feed);
@@ -147,7 +150,7 @@ pub mod marketplace {
         Ok(())
     }
 
-    //pub fn confirm_parking() {//driver scans QR code to confirm arrival and parking},
+    // {//driver scans QR code to confirm arrival and parking},
     //should also send alert to homeowner
     pub fn confirm_parking(ctx: Context<ConfirmParking>, sensor_id: String) -> Result<()> {
         
@@ -176,10 +179,5 @@ pub mod marketplace {
     
 }
 
-#[error_code]
-pub enum ErrorCode {
-    #[msg("Unauthorized access.")]
-    Unauthorized,
-}
 
-//get marketplace pda, pda will save configuration for marketplace (admin, fee, ...)
+
