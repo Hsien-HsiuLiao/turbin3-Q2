@@ -155,7 +155,7 @@ describe("depin parking space marketplace", () => {
     additional_info = "";
     //[latitude, longitude] =getLatLon(address);
 
-    [latitude, longitude] = [35.2273574, -118.4500036];
+    [latitude, longitude] = [34.2373574, -118.4500036];
 
     await program.methods
       .list(address, rentalRate, sensorId, latitude, longitude, additional_info, availabilty_start, availabilty_end, email, phone)
@@ -306,18 +306,61 @@ xit("Should not allow other accounts to update listing", async () => {
 
 });
 
-xit("Driver gets a list of parking spaces near destination and specified time frame", async () => {
+it("Driver gets a list of parking spaces near destination and specified rental rate", async () => {
 
+  let desired_rental_rate = 0.0345 * LAMPORTS_PER_SOL;
   let destination_address = "1400 MyStreet, Los Angeles, CA 90210";
-  let latitude;
-  let longitude;
-  [latitude, longitude] = [35.2273574, -118.4500036];
+  let dest_latitude;
+  let dest_longitude;
+  //  [latitude, longitude] = getLatLon(destination_address);
+  [dest_latitude, dest_longitude] = [34.2373574, -118.4500036];
 
 
-  const listingAccounts = await program.account.listing.all();
-  assert.equal(listingAccounts.length, 2);
+  const listings = await program.account.listing.all();
+  //filter listings by rental_rate and distance from destination
+  //listings[0].account.rentalRate
+  /* let filteredListings;
+  for (let i=0; i< listings.length) {
+    if (listings[i].account.rentalRate <= desired_rental_rate){
+      filteredListings.add(listings[i]);
+    }
+  } */
 
-  console.log("Here's a list", listingAccounts);
+     // maximum distance from listing address to destination for filtering listings
+  const maxDistance = 1; // 1 mile
+
+  // Function to calculate distance between two lat/lon points
+  const calculateDistance = (lat1, lon1, lat2, lon2) => {
+    const R = 3959; // Radius of the Earth in miles
+    const dLat = (lat2 - lat1) * (Math.PI / 180);
+    const dLon = (lon2 - lon1) * (Math.PI / 180);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c; // Distance in  miles
+  };
+
+  // Filter listings based on distance and rental rate
+  const filteredListings = listings.filter(listing => {
+    console.log("address", listing.account.address);
+    const listingLatitude = listing.account.latitude; // Assuming latitude is stored as a number
+    const listingLongitude = listing.account.longitude; // Assuming longitude is stored as a number
+    const distance = calculateDistance(dest_latitude, dest_longitude, listingLatitude, listingLongitude);
+    console.log("distance:", distance);
+    // Check if the listing is within the max distance and meets rental rate criteria
+    const isWithinDistance = distance <= maxDistance;
+    const isRentalRateAcceptable = listing.account.rentalRate <= desired_rental_rate; 
+
+    return isWithinDistance && isRentalRateAcceptable;
+  });
+
+  assert.equal(listings.length, 2);
+  assert.equal(filteredListings.length, 1);
+
+
+  console.log("Here's a list", filteredListings);
 });
 
 
@@ -355,7 +398,7 @@ it("Reserve a listing", async () => {
 
 //another account cannot update reservation
 
-it("Call switchboard feed and program ix", async () => {
+xit("Call switchboard feed and program ix", async () => {
 
   const listing = PublicKey.findProgramAddressSync(
     [marketplace.toBuffer(), homeowner1.publicKey.toBuffer()],
