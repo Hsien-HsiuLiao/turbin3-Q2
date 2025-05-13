@@ -9,9 +9,7 @@ import {
   SystemProgram,
   Transaction,
 } from "@solana/web3.js";
-/* import {
-  getMinimumBalanceForRentExemptAccount, 
-} from "@solana/spl-token"; */
+
 import * as sb from "@switchboard-xyz/on-demand";
 import { assert } from "chai";
 
@@ -46,7 +44,6 @@ describe("depin parking space marketplace", () => {
   };
 
   //get/find accounts
-  //, listing, owner, feed
   // homeowners provide parking space, drivers reserve the space
   const [admin, homeowner1, homeowner2, homeowner3, driver] = Array.from({ length: 5 }, () =>
     Keypair.generate()
@@ -63,10 +60,6 @@ describe("depin parking space marketplace", () => {
     program.programId
   );
 
-  //const sensorId = "A9";
-
-  // console.log("maketplace", marketplace);
-
   /* const listing = PublicKey.findProgramAddressSync(
     [marketplace.toBuffer(), Buffer.from(sensorId)],
     program.programId
@@ -76,8 +69,6 @@ describe("depin parking space marketplace", () => {
  */
 
   it("Airdrop", async () => {
-    //  console.log("maker", maker.publicKey);
-    //console.log("renter", renter.publicKey);
     const homeowner1Tx = await connection.requestAirdrop(homeowner1.publicKey, 2 * LAMPORTS_PER_SOL);
     const homeowner2Tx = await connection.requestAirdrop(homeowner2.publicKey, 2 * LAMPORTS_PER_SOL);
     const homeowner3Tx = await connection.requestAirdrop(homeowner3.publicKey, 2 * LAMPORTS_PER_SOL);
@@ -85,11 +76,10 @@ describe("depin parking space marketplace", () => {
     const driverTx = await connection.requestAirdrop(driver.publicKey, 2 * LAMPORTS_PER_SOL);
     const adminTX = await connection.requestAirdrop(admin.publicKey, 2 * LAMPORTS_PER_SOL);
 
-    // , confirm the airdrop transactions
+    // confirm the airdrop transactions
     await connection.confirmTransaction(homeowner1Tx);
     await connection.confirmTransaction(homeowner2Tx);
     await connection.confirmTransaction(homeowner3Tx);
-
 
     await connection.confirmTransaction(driverTx);
     await connection.confirmTransaction(adminTX);
@@ -99,28 +89,13 @@ describe("depin parking space marketplace", () => {
     //  console.log(`Balance for maker: ${balance1 / LAMPORTS_PER_SOL} SOL`);
 
     const balance2 = await connection.getBalance(driver.publicKey);
-    //  console.log(`Balance for renter: ${balance2 / LAMPORTS_PER_SOL} SOL`);
-    // let tx = new Transaction();
-    /*  tx.instructions = [
-       ...[homeowner1, renter].map((account) =>
-         SystemProgram.transfer({
-           fromPubkey: provider.publicKey,
-           toPubkey: account.publicKey,
-           lamports: 10 * LAMPORTS_PER_SOL,
-         })
-       ),
-      
-       
-       
-     ]; */
-
-    //  await provider.sendAndConfirm(tx, [maker]).then(log);
+    
   });
 
 
   it("Is initialized!", async () => {
-    // Add your test here.
     const rental_fee = 0.015 * LAMPORTS_PER_SOL;
+    
     const tx = await program.methods
       .initialize(marketplace_name, rental_fee,)
       .accountsPartial({
@@ -157,9 +132,7 @@ describe("depin parking space marketplace", () => {
         marketplace: marketplace,
         //     listing: listing
       })
-      //    .then(console.log("accountspartial"))
       .signers([homeowner1])
-      // .then()
       .rpc()
       .then(confirm)
       .then(log);
@@ -189,9 +162,7 @@ describe("depin parking space marketplace", () => {
         marketplace: marketplace,
         //     listing: listing
       })
-      //    .then(console.log("accountspartial"))
       .signers([homeowner2])
-      // .then()
       .rpc()
       .then(confirm)
       .then(log);
@@ -206,7 +177,7 @@ describe("depin parking space marketplace", () => {
     assert(listingAccountInfo2 !== null);
   });
 
-  it("should allow only admin adds feed account to listing", async () => {
+  it("should allow only admin to add feed account to listing", async () => {
     const listing = PublicKey.findProgramAddressSync(
       [marketplace.toBuffer(), homeowner1.publicKey.toBuffer()],
       program.programId
@@ -216,7 +187,7 @@ describe("depin parking space marketplace", () => {
 
 
     await program.methods.addFeedToListing(feed)
-      .accounts({
+      .accountsPartial({
         maker: homeowner1.publicKey,
         marketplace:marketplace, 
         listing:listing,
@@ -245,7 +216,7 @@ xit("should not allow an unauthorized accoun to add feed account to listing", as
 
 
   const result  = await program.methods.addFeedToListing(feed)
-    .accounts({
+    .accountsPartial({
       maker: homeowner1.publicKey,
       marketplace:marketplace, 
       listing:listing,
@@ -332,7 +303,7 @@ it("Reserve a listing", async () => {
   console.log('Account data:', listingAccountInfo.data.toString());
 
 
-  //const duration = 1; //1 hour
+  // duration 1 hour
   let start_time = new anchor.BN(Math.floor(Date.now() / 1000)); //in seconds 
   let end_time = start_time.add(new anchor.BN(3600));
 
@@ -358,58 +329,29 @@ it("Reserve a listing", async () => {
 
 xit("Call switchboard feed and program ix", async () => {
   const { keypair, connection, program } = await sb.AnchorUtils.loadEnv();
-  //
+
   // console.log("connection", connection);
   const sbProgram = program;
   //  console.log("program from sb.anchorutils", sbProgram);
   const feed = new PublicKey("J748azokS8cKaiGKgN5hsTsTuB1FJ1ikVNXKjq9DQnjg");
   const feedAccountInfo = await connection.getAccountInfo(feed);
 
-  // console.log("feedaccountinfo", feedAccountInfo);
 
   const feedAccount = new sb.PullFeed(sbProgram!, feed);
   await feedAccount.preHeatLuts();
 
-  /* const myProgramPath = "target/deploy/marketplace-keypair.json";
 
-  async function myAnchorProgram(
-    provider: anchor.Provider,
-    keypath: string
-  ): Promise<anchor.Program> {
-
-    try {
-      const myProgramKeypair = await sb.AnchorUtils.initKeypairFromFile(keypath);
-
-      const pid = myProgramKeypair.publicKey;
-
-      const idl = (await anchor.Program.fetchIdl(pid, provider))!;
-      console.log("provider", provider);
-
-      const program = new anchor.Program(idl, provider);
-
-      return program;
-    } catch (e) {
-      throw new Error("Failed to load demo program. Was it deployed?");
-    }
-  } */
-
-
-  //const myProgram = await myAnchorProgram(provider, myProgramPath);
   const myProgram = anchor.workspace.marketplace as Program<Marketplace>;
 
-  // console.log("myProgram", myProgram?.methods);
 
   const [pullIx, responses, _ok, luts] = await feedAccount.fetchUpdateIx({
     numSignatures: 3,
   });
-  // Instruction to example program using the switchboard feed
-  // console.log("methods", await program?.methods);
+  // Instruction to  program using the switchboard feed
   const myIx = await myProgram!.methods
     .sensorChange()
     .accounts({ feed }) //account name must match
-    //.signers([maker])
     .rpc()
-    // .instruction();
     .then(confirm)
     .then(log);
 
@@ -439,6 +381,7 @@ xit("Call switchboard feed and program ix", async () => {
   console.log(`Transaction sent: ${await connection.sendTransaction(tx)}`);
 
 
+  //assert feed data matches data sent to program
 });
 
   //driver confirms arrival by scanning QR code connected to b link
@@ -453,7 +396,7 @@ xit("Call switchboard feed and program ix", async () => {
   
     const tx = await program.methods
       .confirmParking(sensorId)
-      .accounts({
+      .accountsPartial({
         maker: homeowner1.publicKey, 
         marketplace: marketplace,
         listing: listing,
