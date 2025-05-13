@@ -397,11 +397,12 @@ xit("Call switchboard feed and program ix", async () => {
     const tx = await program.methods
       .confirmParking(sensorId)
       .accountsPartial({
+        renter: driver.publicKey,
         maker: homeowner1.publicKey, 
         marketplace: marketplace,
         listing: listing,
       })
-      .signers([homeowner1])   //will homeowner1 need to get a msg to sign? 
+      .signers([driver])   
       .rpc()
       .then(confirm)
       .then(log);
