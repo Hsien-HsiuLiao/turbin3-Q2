@@ -386,6 +386,8 @@ xit("Call switchboard feed and program ix", async () => {
 
   //driver confirms arrival by scanning QR code connected to b link
   it("Driver confirms arrival by scanning QR code", async () => {
+   
+
     const listing = PublicKey.findProgramAddressSync(
       [marketplace.toBuffer(), homeowner1.publicKey.toBuffer()],
       program.programId
@@ -393,6 +395,18 @@ xit("Call switchboard feed and program ix", async () => {
   
     const sensorId = "A946444646"; 
 
+  // Listen for the ParkingConfirmed event
+  const eventListener = program.addEventListener("parkingConfirmed", (event) => {
+    console.log("Parking confirmed event received:", event);
+    assert.equal(event.listingId.toString(), listing.toString(), "Listing ID should match");
+    assert.equal(event.sensorId, sensorId, "Sensor ID should match the one used in the transaction");
+    
+    //call server function to monitor sensor data 5 min before reservation end at 1 min intervals
+
+
+    // Clean up the event listener after the event is received
+    program.removeEventListener(eventListener);
+  });
   
     const tx = await program.methods
       .confirmParking(sensorId)
@@ -416,13 +430,36 @@ xit("Call switchboard feed and program ix", async () => {
 
     assert.equal(Object.keys(listingAccount.parkingSpaceStatus)[0], "occupied", "Parking space status should be Occupied");
   
+    //listen for event
+
+    /* // Check the balances after the transaction
+    const finalDriverBalance = await provider.connection.getBalance(driver.publicKey);
+    const finalHomeownerBalance = await provider.connection.getBalance(homeowner1.publicKey);
+
+    // Calculate expected transfer amount
+    const duration = listingAccount.reservationEnd - listingAccount.reservationStart;
+    const ratePerHour = listingAccount.rentalRate.toNumber();
+    const reservationAmount = ((duration / 3600) * ratePerHour) + marketplace.fee.toNumber();
+
+    // Assert that the driver's balance has decreased by the reservation amount
+    assert.equal(finalDriverBalance, initialDriverBalance - reservationAmount, "Driver's balance should decrease by the reservation amount");
+
+    // Assert that the homeowner's balance has increased by the reservation amount
+    assert.equal(finalHomeownerBalance, initialHomeownerBalance + reservationAmount, "Homeowner's balance should increase by the reservation amount");
+ */
+     
+
+    // Wait for a short period to ensure the event is emitted
+    await new Promise(resolve => setTimeout(resolve, 5000));
+
+    // Clean up the event listener if the event was not received
+    program.removeEventListener(eventListener);
     
   });
   
 
   //driver arrives early and tried to scan QR
 
-  //driver leaves on time and payment transferred
 
   //driver leaves late and is charged penalty
 
