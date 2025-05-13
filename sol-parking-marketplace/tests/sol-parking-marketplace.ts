@@ -208,7 +208,7 @@ describe("depin parking space marketplace", () => {
   assert.equal(updatedListing.feed.toString(), feed.toString(), "Feed was not added to the listing correctly");
 });
 
-xit("should not allow an unauthorized accoun to add feed account to listing", async () => {
+it("should not allow an unauthorized account to add feed account to listing", async () => {
   const listing = PublicKey.findProgramAddressSync(
     [marketplace.toBuffer(), homeowner1.publicKey.toBuffer()],
     program.programId
@@ -216,7 +216,7 @@ xit("should not allow an unauthorized accoun to add feed account to listing", as
 
   const feed = new PublicKey("J748azokS8cKaiGKgN5hsTsTuB1FJ1ikVNXKjq9DQnjg");
 
-
+try{
   const result  = await program.methods.addFeedToListing(feed)
     .accountsPartial({
       maker: homeowner1.publicKey,
@@ -229,7 +229,13 @@ xit("should not allow an unauthorized accoun to add feed account to listing", as
     .then(confirm)
     .then(log);
 
-    console.log("result:", result);
+    assert.fail("Expected an error but did not get one");
+  }
+  catch (error) {
+    assert.include(error.message, "Unauthorized", "Expected an unauthorized error");
+  }
+
+   // console.log("result:", result);
 
 
     //const updatedListing = await program.account.listing.fetch(listing);
@@ -273,10 +279,30 @@ it("Should allow homeowner to update listing", async () => {
 
 });
 
-it("Should not allow other accounts to update listing", async () => {
+xit("Should not allow other accounts to update listing", async () => {
 
   //have different homeowner or driver try to changes
-  //update rental rate
+  const listing = PublicKey.findProgramAddressSync(
+    [marketplace.toBuffer(), homeowner1.publicKey.toBuffer()],
+    program.programId
+  )[0];
+
+  const newRentalRate = 0.055 * LAMPORTS_PER_SOL; // New rental rate
+
+  try {
+    await program.methods
+      .updateListing(newRentalRate)
+      .accountsPartial({
+        maker: homeowner2.publicKey, // Unauthorized user
+        marketplace: marketplace,
+        listing: listing,
+      })
+      .signers([homeowner2])
+      .rpc();
+    assert.fail("Expected an error but did not get one");
+  } catch (error) {
+    assert.include(error.message, "Unauthorized", "Expected an unauthorized error");
+  }
 
 });
 
