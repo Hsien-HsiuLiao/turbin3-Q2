@@ -397,20 +397,28 @@ it("Reserve a listing", async () => {
 //driver updates reservation
 
 //another account cannot update reservation
+it("another account cannot update reservation", async () => {
 
-xit("Call switchboard feed and program ix", async () => {
+});
+
+
+it("Call switchboard feed and program ix", async () => {
 
   const listing = PublicKey.findProgramAddressSync(
     [marketplace.toBuffer(), homeowner1.publicKey.toBuffer()],
     programId
   )[0];
 
+  const myProgram = anchor.workspace.marketplace as Program<Marketplace>;
+  const listingAccount = await myProgram.account.listing.fetch(listing);
+  const feed = listingAccount.feed;
+
   const { keypair, connection, program } = await sb.AnchorUtils.loadEnv();
 
   // console.log("connection", connection);
   const sbProgram = program;
   //  console.log("program from sb.anchorutils", sbProgram);
-  const feed = new PublicKey("J748azokS8cKaiGKgN5hsTsTuB1FJ1ikVNXKjq9DQnjg");
+  //const feed = new PublicKey("J748azokS8cKaiGKgN5hsTsTuB1FJ1ikVNXKjq9DQnjg");
   const feedAccountInfo = await connection.getAccountInfo(feed);
 
 
@@ -418,7 +426,7 @@ xit("Call switchboard feed and program ix", async () => {
   await feedAccount.preHeatLuts();
 
 
-  const myProgram = anchor.workspace.marketplace as Program<Marketplace>;
+ 
 
 
   const [pullIx, responses, _ok, luts] = await feedAccount.fetchUpdateIx({
