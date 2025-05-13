@@ -2,6 +2,8 @@ use anchor_lang::{prelude::*, system_program::{Transfer, transfer}};
 
 
 use crate::{ state::{Listing, Marketplace, ParkingSpaceStatus}};
+use crate::error::ErrorCode;
+
 
 #[derive(Accounts)]
 //#[instruction(sensor_id: String)]
@@ -41,24 +43,52 @@ pub struct Reserve<'info> {
 impl <'info> Reserve<'info> {
     pub fn reserve_listing(&mut self, start_time: i64, end_time: i64) -> Result<()> {
 
-        //need reservation start time and end time
         let listing = &mut self.listing;
+
+        //does driver have enough funds?
+        let duration = end_time - start_time;
+        let rate_per_hour:i64 = listing.rental_rate.into();
+        
+        let driver_has_sufficient_funds:bool = self.renter.to_account_info().lamports() >= ((duration / 3600) * rate_per_hour).try_into().unwrap();
+
+        if !driver_has_sufficient_funds {
+            return Err(ErrorCode::InsufficientFunds.into());
+        }
+
+
     
-        // Check if the listing is available
         if listing.parking_space_status != ParkingSpaceStatus::Available {
             return Err(ErrorCode::ListingNotAvailable.into());
         }
     
-        // Update the listing with the new reservation details
         listing.reserved_by = Some(self.renter.key());
         listing.reservation_start = Some(start_time);
         listing.reservation_end = Some(end_time);
         listing.parking_space_status = ParkingSpaceStatus::Reserved;
 
-        msg!("You reserved a listing, the parking space status is : {:?}", self.listing.parking_space_status);
-
         //msg homeowner that space is reserved
         //msg driver with reservation info, user story2B
+
+         // Message to driver
+    msg!("You reserved a listing, the parking space status is: {:?}", listing.parking_space_status);
+    msg!("Reservation details: Start Time: {}, End Time: {}", start_time, end_time);
+
+    // Message to homeowner that space is reserved
+    let homeowner_msg = format!(
+        "Your parking space has been reserved by {} from {} to {}.",
+        self.renter.key(),
+        start_time,
+        end_time
+    );
+    msg!("{}", homeowner_msg);
+
+    // Optionally, you could also send a message to the driver with reservation info
+    let driver_msg = format!(
+        "Reservation confirmed! Your parking space is reserved from {} to {}.",
+        start_time,
+        end_time
+    );
+    msg!("{}", driver_msg);
 
       Ok(())
     }
@@ -66,8 +96,3 @@ impl <'info> Reserve<'info> {
     
 }
 
-#[error_code]
-pub enum ErrorCode {
-    #[msg("The listing is not available for reservation.")]
-    ListingNotAvailable,
-}
