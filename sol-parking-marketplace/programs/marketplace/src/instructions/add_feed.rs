@@ -1,6 +1,8 @@
 use anchor_lang::{prelude::*,  system_program::Transfer};
 
 use crate::state::{Listing, Marketplace, NotificationSettings, ParkingSpaceStatus};
+use crate::error::ErrorCode;
+
 
 #[derive(Accounts)]
 pub struct AddFeedToListing<'info> {
@@ -33,7 +35,20 @@ pub struct AddFeedToListing<'info> {
 
 
 impl <'info> AddFeedToListing<'info> {
-    
-    
+    pub fn add_feed(&mut self, feed: Pubkey) -> Result<()> {
+         //only admin
+         if self.admin.key() != self.marketplace.admin {
+            return Err(ErrorCode::Unauthorized.into());
+        }
+
+        let listing = &mut self.listing;
+
+        listing.feed = Some(feed);
+
+        msg!("Feed {} added to listing {:?}", feed, listing);
+
+        Ok(())
+
+    }
     
 }

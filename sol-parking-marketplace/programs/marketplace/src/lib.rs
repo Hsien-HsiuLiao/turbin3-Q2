@@ -58,17 +58,8 @@ pub mod marketplace {
     }
 
     pub fn add_feed_to_listing(ctx: Context<AddFeedToListing>, feed: Pubkey) -> Result<()> {
-        //only admin
-        if ctx.accounts.admin.key() != ctx.accounts.marketplace.admin {
-            return Err(ErrorCode::Unauthorized.into());
-        }
-
-        let listing = &mut ctx.accounts.listing;
-
-        listing.feed = Some(feed);
-
-        msg!("Feed {} added to listing {:?}", feed, listing);
-
+        ctx.accounts.add_feed(feed)?;
+       
         Ok(())
     }
 
