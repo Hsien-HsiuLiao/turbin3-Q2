@@ -92,7 +92,6 @@ pub mod marketplace {
     }
 
     pub fn reserve(ctx: Context<Reserve>, start_time: i64, end_time: i64) -> Result<()> {
-        //pass in sensor_id if needed
         ctx.accounts.reserve_listing(start_time, end_time)?;
         Ok(())
     }
@@ -134,9 +133,9 @@ pub mod marketplace {
 
         msg!("Parking space is now available for listing: {:?}", listing);
     }
-    if distance <= Decimal::from(30){
+   /*  if distance <= Decimal::from(30){
 
-    }
+    } */
 
         Ok(())
     }
@@ -144,31 +143,12 @@ pub mod marketplace {
     // {//driver scans QR code to confirm arrival and parking},
     //should also send alert to homeowner
     pub fn confirm_parking(ctx: Context<ConfirmParking>, sensor_id: String) -> Result<()> {
+        ctx.accounts.confirm_parking(sensor_id)?;
         
-
-        //check arrival time is within reservation start time
-        
-        let listing = &mut ctx.accounts.listing;
-       
-        if sensor_id == listing.sensor_id {
-            listing.parking_space_status = ParkingSpaceStatus::Occupied;
-        }
-
-        //how to emit and listen for events https://www.rareskills.io/post/solana-logs-transaction-history
-        //event triggers script to check sensor 5 min before end time
-              //  emit!(event, "Parking confirmed");
-
-        // if driver leaves early, they will still be charged reserved time, similar to parking meter 
-        // Notify the homeowner
-        
-
-        // Notify the driver
-       
 
         Ok(())
     }
     
 }
-
 
 
