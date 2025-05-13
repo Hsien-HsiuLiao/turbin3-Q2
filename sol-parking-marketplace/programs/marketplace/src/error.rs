@@ -7,4 +7,10 @@ pub enum ErrorCode {
     
     #[msg("Unauthorized access.")]
     Unauthorized,
+
+    #[msg("The listing is not available for reservation.")]
+    ListingNotAvailable,
+
+    #[msg("Insufficient funds")]
+    InsufficientFunds
 }
