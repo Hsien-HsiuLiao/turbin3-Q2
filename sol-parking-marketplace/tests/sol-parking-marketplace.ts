@@ -147,6 +147,8 @@ describe("depin parking space marketplace", () => {
     assert(listingAccountInfo !== null);
 
     // homeowner2 creates a  listing
+    email = "homeowner1@emai2.com";
+    phone = "555-555-7000"
     address = "1235 MyStreet, Los Angeles, CA 90210";
     rentalRate = 0.0355 * LAMPORTS_PER_SOL; //$5 USD/hr ~ 0.0345 SOL 
     sensorId = "B946444646";
@@ -237,7 +239,7 @@ xit("should not allow an unauthorized accoun to add feed account to listing", as
 });
 
 
-xit("should let user set notification settings", async () => {
+it("should let user set notification settings", async () => {
   const notification = PublicKey.findProgramAddressSync(
     [homeowner1.publicKey.toBuffer()],
     programId
@@ -327,7 +329,13 @@ it("Reserve a listing", async () => {
 
 //another account cannot update reservation
 
-xit("Call switchboard feed and program ix", async () => {
+it("Call switchboard feed and program ix", async () => {
+
+  const listing = PublicKey.findProgramAddressSync(
+    [marketplace.toBuffer(), homeowner1.publicKey.toBuffer()],
+    programId
+  )[0];
+
   const { keypair, connection, program } = await sb.AnchorUtils.loadEnv();
 
   // console.log("connection", connection);
@@ -350,7 +358,13 @@ xit("Call switchboard feed and program ix", async () => {
   // Instruction to  program using the switchboard feed
   const myIx = await myProgram!.methods
     .sensorChange()
-    .accounts({ feed }) //account name must match
+    .accountsPartial({ 
+      feed, //account name must match
+      marketplace: marketplace, 
+      maker: homeowner1.publicKey,
+      listing:listing
+    })
+    .signers([homeowner1]) 
     .rpc()
     .then(confirm)
     .then(log);
@@ -376,12 +390,11 @@ xit("Call switchboard feed and program ix", async () => {
     sb.AnchorUtils.loggedEvents(sbProgram!, sim.value.logs!)[0]
   ).toRows();
   //  console.log("Simulated Price Updates:\n", JSON.stringify(sim.value.logs));
-  console.log("Submitted Price Updates:\n", updateEvent);
+  //console.log("Submitted Price Updates:\n", updateEvent);
+
+  console.log("feed value from oracle: ", updateEvent[0].value);
 
   console.log(`Transaction sent: ${await connection.sendTransaction(tx)}`);
-
-
-  //assert feed data matches data sent to program
 });
 
   //driver confirms arrival by scanning QR code connected to b link
@@ -402,12 +415,12 @@ xit("Call switchboard feed and program ix", async () => {
     assert.equal(event.sensorId, sensorId, "Sensor ID should match the one used in the transaction");
     
     //call server function to monitor sensor data 5 min before reservation end at 1 min intervals
-
+    //todo
 
     // Clean up the event listener after the event is received
     program.removeEventListener(eventListener);
   });
-  
+
     const tx = await program.methods
       .confirmParking(sensorId)
       .accountsPartial({
@@ -450,7 +463,7 @@ xit("Call switchboard feed and program ix", async () => {
      
 
     // Wait for a short period to ensure the event is emitted
-    await new Promise(resolve => setTimeout(resolve, 5000));
+    //await new Promise(resolve => setTimeout(resolve, 5000));
 
     // Clean up the event listener if the event was not received
     program.removeEventListener(eventListener);
