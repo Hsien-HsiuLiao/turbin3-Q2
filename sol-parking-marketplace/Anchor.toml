@@ -20,8 +20,16 @@ test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"
 
 [test.validator]
 url = "https://api.devnet.solana.com"
+#url = "https://turbine-solanad-4cde.devnet.rpcpool.com/168dd64f-ce5e-4e19-a836-f6482ad6b396";
+
 
 [[test.validator.clone]]
 address = "J748azokS8cKaiGKgN5hsTsTuB1FJ1ikVNXKjq9DQnjg"
-#mock data feed driver leaves
-addres =  "43qXTGQdvEiPYj9GQvDfvQi7Shx8ahSd3d2sYBeEizuR"
+
+[[test.validator.clone]]
+address = "43qXTGQdvEiPYj9GQvDfvQi7Shx8ahSd3d2sYBeEizuR" #mock data feed driver leaves
+
+[[test.validator.clone]]
+address = "9jfL52Gmudwee1RK8yuNguoZET7DMDqKSR6DePBJNXot" #mock data feed driver leaves
+
+
