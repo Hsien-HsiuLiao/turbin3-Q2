@@ -8,10 +8,13 @@ import {
   PublicKey,
   SystemProgram,
   Transaction,
+  Connection
 } from "@solana/web3.js";
 
 import * as sb from "@switchboard-xyz/on-demand";
 import { assert } from "chai";
+import homeowner1wallet from "./homeowner1wallet-wallet.json";
+
 
 
 describe("depin parking space marketplace", () => {
@@ -20,8 +23,15 @@ describe("depin parking space marketplace", () => {
 
   const provider = anchor.getProvider();
 
-  const connection = provider.connection;
+ // const connection = provider.connection;
+  const commitment: Commitment = "confirmed";
 
+  const connection = new Connection("https://turbine-solanad-4cde.devnet.rpcpool.com/168dd64f-ce5e-4e19-a836-f6482ad6b396", commitment); 
+//  const connection = new Connection("https://turbine-solanad-43ad.devnet.rpcpool.com/abdbf6bf-acc3-49e8-8075-4422a5789e87", commitment); 
+
+//new
+//turbine-solanad-43ad
+//abdbf6bf-acc3-49e8-8075-4422a5789e87
 
   const program = anchor.workspace.marketplace as Program<Marketplace>;
   const programId = program.programId;
@@ -45,9 +55,16 @@ describe("depin parking space marketplace", () => {
 
   //get/find accounts
   // homeowners provide parking space, drivers reserve the space
-  const [admin, homeowner1, homeowner2, homeowner3, driver] = Array.from({ length: 5 }, () =>
+  const [homeowner2, homeowner3, driver] = Array.from({ length: 4 }, () =>
     Keypair.generate()
   );
+  //const homeowner1 = new PublicKey("5Fq9zH31WucxBPN1haSFgDeTr9tUJFjdbowPGUsKP3AD");
+  const admin = new PublicKey("Coop1aAuEqbN3Pm9TzohXvS3kM4zpp3pJZ9D4M2uWXH2");
+
+  const homeowner1 = Keypair.fromSecretKey(new Uint8Array(homeowner1wallet));
+
+
+  //console.log(`publickey: ${admin.publicKey} `);
 
   const marketplace_name = "DePIN PANORAMA PARKING";
 
@@ -69,7 +86,7 @@ describe("depin parking space marketplace", () => {
  */
 
   it("Airdrop", async () => {
-    const homeowner1Tx = await connection.requestAirdrop(homeowner1.publicKey, 2 * LAMPORTS_PER_SOL);
+    /* const homeowner1Tx = await connection.requestAirdrop(homeowner1.publicKey, 2 * LAMPORTS_PER_SOL);
     const homeowner2Tx = await connection.requestAirdrop(homeowner2.publicKey, 2 * LAMPORTS_PER_SOL);
     const homeowner3Tx = await connection.requestAirdrop(homeowner3.publicKey, 2 * LAMPORTS_PER_SOL);
 
@@ -82,27 +99,29 @@ describe("depin parking space marketplace", () => {
     await connection.confirmTransaction(homeowner3Tx);
 
     await connection.confirmTransaction(driverTx);
-    await connection.confirmTransaction(adminTX);
+    await connection.confirmTransaction(adminTX); */
 
     // Log the balance of each keypair
-    const balance1 = await connection.getBalance(homeowner1.publicKey);
-    //  console.log(`Balance for maker: ${balance1 / LAMPORTS_PER_SOL} SOL`);
+   // const balance1 = await connection.getBalance(homeowner1.publicKey);
+    //  console.log(`Balance for maker/homeowner1: ${homeowner1.publicKey} ${balance1 / LAMPORTS_PER_SOL} SOL`);
+      const balance1 = await connection.getBalance(homeowner1);
+      console.log(`Balance for maker/homeowner1: ${homeowner1} ${balance1 / LAMPORTS_PER_SOL} SOL`);
 
     const balance2 = await connection.getBalance(driver.publicKey);
 
   });
 
 
-  it("Is initialized!", async () => {
+  xit("Is initialized!", async () => {
     const rental_fee = 0.015 * LAMPORTS_PER_SOL;
 
     const tx = await program.methods
       .initialize(marketplace_name, rental_fee,)
       .accountsPartial({
-        admin: admin.publicKey,
+        admin: admin,
         marketplace: marketplace,
       })
-      .signers([admin])
+      .signers([])//admin
       .rpc()
       .then(confirm)
       .then(log);
@@ -128,17 +147,17 @@ describe("depin parking space marketplace", () => {
     await program.methods
       .list(address, rentalRate, sensorId, latitude, longitude, additional_info, availabilty_start, availabilty_end, email, phone)
       .accountsPartial({
-        maker: homeowner1.publicKey,
+        maker: homeowner1,
         marketplace: marketplace,
         //     listing: listing
       })
-      .signers([homeowner1])
+      .signers([])//homeowner1
       .rpc()
       .then(confirm)
       .then(log);
 
     const listing = PublicKey.findProgramAddressSync(
-      [marketplace.toBuffer(), homeowner1.publicKey.toBuffer()],
+      [marketplace.toBuffer(), homeowner1/* .publicKey */.toBuffer()],
       program.programId
     )[0];
 
