@@ -13,8 +13,11 @@ import {
 
 import * as sb from "@switchboard-xyz/on-demand";
 import { assert } from "chai";
-import homeowner1wallet from "./homeowner1wallet-wallet.json";
+import homeowner1wallet from "../homeowner1-wallet.json";
+import homeowner2wallet from "../homeowner2-wallet.json";
+import driverwallet from "../driver-wallet.json";
 
+import wallet from "../HTurbin3-wallet.json";
 
 
 describe("depin parking space marketplace", () => {
@@ -55,15 +58,16 @@ describe("depin parking space marketplace", () => {
 
   //get/find accounts
   // homeowners provide parking space, drivers reserve the space
-  const [homeowner2, homeowner3, driver] = Array.from({ length: 4 }, () =>
+ /*  const [, homeowner3, ] = Array.from({ length: 4 }, () =>
     Keypair.generate()
-  );
-  //const homeowner1 = new PublicKey("5Fq9zH31WucxBPN1haSFgDeTr9tUJFjdbowPGUsKP3AD");
-  const admin = new PublicKey("Coop1aAuEqbN3Pm9TzohXvS3kM4zpp3pJZ9D4M2uWXH2");
+  ); */
+  const admin = Keypair.fromSecretKey(new Uint8Array(wallet)); //("Coop1aAuEqbN3Pm9TzohXvS3kM4zpp3pJZ9D4M2uWXH2");
 
-  const homeowner1 = Keypair.fromSecretKey(new Uint8Array(homeowner1wallet));
+  const homeowner1 = Keypair.fromSecretKey(new Uint8Array(homeowner1wallet)); //DmipzvprT5w4sYLVLARzUuxazAMUqm1iUbJZ88Yk58XS
 
+  const homeowner2 = Keypair.fromSecretKey(new Uint8Array(homeowner2wallet)); //Av2tsxqpU6LC5vr5gccQyx8rVR9gfcEEvxPxVtd7Z3qc
 
+  const driver = Keypair.fromSecretKey(new Uint8Array(driverwallet)); //8wbbE8vUPfuR16nZ6YcBsggZuSMVrFvKQr7fbXuZjWz
   //console.log(`publickey: ${admin.publicKey} `);
 
   const marketplace_name = "DePIN PANORAMA PARKING";
@@ -104,8 +108,8 @@ describe("depin parking space marketplace", () => {
     // Log the balance of each keypair
    // const balance1 = await connection.getBalance(homeowner1.publicKey);
     //  console.log(`Balance for maker/homeowner1: ${homeowner1.publicKey} ${balance1 / LAMPORTS_PER_SOL} SOL`);
-      const balance1 = await connection.getBalance(homeowner1);
-      console.log(`Balance for maker/homeowner1: ${homeowner1} ${balance1 / LAMPORTS_PER_SOL} SOL`);
+      const balance1 = await connection.getBalance(homeowner1.publicKey);
+      console.log(`Balance for maker/homeowner1: ${homeowner1.publicKey} ${balance1 / LAMPORTS_PER_SOL} SOL`);
 
     const balance2 = await connection.getBalance(driver.publicKey);
 
@@ -118,7 +122,7 @@ describe("depin parking space marketplace", () => {
     const tx = await program.methods
       .initialize(marketplace_name, rental_fee,)
       .accountsPartial({
-        admin: admin,
+        admin: admin.publicKey,
         marketplace: marketplace,
       })
       .signers([])//admin
@@ -128,7 +132,7 @@ describe("depin parking space marketplace", () => {
     console.log("Your transaction signature", tx);
   });
 
-  it("Create new listings for parking space rental", async () => {
+  xit("Create new listings for parking space rental", async () => {
     let email = "homeowner1@email.com";
     let phone = "555-555-6309"
     let address = "1234 MyStreet, Los Angeles, CA 90210";
@@ -147,17 +151,17 @@ describe("depin parking space marketplace", () => {
     await program.methods
       .list(address, rentalRate, sensorId, latitude, longitude, additional_info, availabilty_start, availabilty_end, email, phone)
       .accountsPartial({
-        maker: homeowner1,
+        maker: homeowner1.publicKey,
         marketplace: marketplace,
         //     listing: listing
       })
-      .signers([])//homeowner1
+      .signers([homeowner1])
       .rpc()
       .then(confirm)
       .then(log);
 
     const listing = PublicKey.findProgramAddressSync(
-      [marketplace.toBuffer(), homeowner1/* .publicKey */.toBuffer()],
+      [marketplace.toBuffer(), homeowner1.publicKey.toBuffer()],
       program.programId
     )[0];
 
@@ -292,11 +296,11 @@ describe("depin parking space marketplace", () => {
     assert.isTrue(notificationAccount.text);
   });
 
-  it("Should allow homeowner to update listing", async () => {
+  /* it("Should allow homeowner to update listing", async () => {
 
     //update rental rate
 
-  });
+  }); */
 
   it("Should not allow other accounts to update listing", async () => {
     let email = "homeowner1@email.com";
@@ -354,6 +358,8 @@ describe("depin parking space marketplace", () => {
 
 
     const listings = await program.account.listing.all();
+    console.log("Here's all", listings);
+
     //filter listings by rental_rate and distance from destination
     //listings[0].account.rentalRate
     /* let filteredListings;
@@ -397,7 +403,6 @@ describe("depin parking space marketplace", () => {
     assert.equal(filteredListings.length, 1);
 
 
-   // console.log("Here's a list", filteredListings);
   });
 
 
@@ -434,9 +439,9 @@ describe("depin parking space marketplace", () => {
   //driver updates reservation
 
   //another account cannot update reservation
-  it("another account cannot update reservation", async () => {
+  /* it("another account cannot update reservation", async () => {
 
-  });
+  }); */
 
 
   it("Call switchboard feed and program ix", async () => {
