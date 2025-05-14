@@ -413,6 +413,7 @@ describe("depin parking space marketplace", () => {
     const listingAccount = await myProgram.account.listing.fetch(listing);
     const feed = listingAccount.feed;
     //const feed = new PublicKey("43qXTGQdvEiPYj9GQvDfvQi7Shx8ahSd3d2sYBeEizuR"); //driver leaves
+    //const feed = new PublicKey("9jfL52Gmudwee1RK8yuNguoZET7DMDqKSR6DePBJNXot");
 
 
     const { keypair, connection, program } = await sb.AnchorUtils.loadEnv();
@@ -422,6 +423,8 @@ describe("depin parking space marketplace", () => {
     //  console.log("program from sb.anchorutils", sbProgram);
     //const feed = new PublicKey("J748azokS8cKaiGKgN5hsTsTuB1FJ1ikVNXKjq9DQnjg");
     const feedAccountInfo = await connection.getAccountInfo(feed);
+    //console.log("feedAccountInfo", feedAccountInfo);
+    console.log("feedAccountInfo", feedAccountInfo.data.toString());
 
 
     const feedAccount = new sb.PullFeed(sbProgram!, feed);
@@ -554,7 +557,7 @@ describe("depin parking space marketplace", () => {
 
 
   //driver leaves late and is charged penalty
-  xit("Driver  leaves late and is charged penalty", async () => {
+  it("Driver  leaves late and is charged penalty", async () => {
     //function running on a server is monitring sensor data and calls solana program when there is a change
     // Instruction to  program using the switchboard feed
     const myProgram = anchor.workspace.marketplace as Program<Marketplace>;
@@ -565,16 +568,44 @@ describe("depin parking space marketplace", () => {
     )[0];
 
     //#mock data feed driver leaves 
-    const feed = new PublicKey("43qXTGQdvEiPYj9GQvDfvQi7Shx8ahSd3d2sYBeEizuR");
-     //const feed = new PublicKey("J748azokS8cKaiGKgN5hsTsTuB1FJ1ikVNXKjq9DQnjg");
+   const feed = new PublicKey("9jfL52Gmudwee1RK8yuNguoZET7DMDqKSR6DePBJNXot");
+   //  const feed = new PublicKey("43qXTGQdvEiPYj9GQvDfvQi7Shx8ahSd3d2sYBeEizuR"); //no longer works since api data changed
+    /* try {
+      // Fetch the account info
+      const provConnection = provider.connection;
+     // const accountInfo = await provConnection.getAccountInfo(feed);
+  
+      // Check if the account exists
+     /*  if (accountInfo === null) {
+        console.log("Account not found");
+        return;
+      } */
+  
+      // Display the account data in a readable format
+    /*   console.log("Account Data:");
+     /*  console.log("Lamports:", accountInfo.lamports);
+      console.log("Owner:", accountInfo.owner.toBase58()); */
+    /*   console.log("Data Length:", accountInfo.data.length);
+      console.log("Data (Base64):", accountInfo.data.toString('base64'));
+      console.log("Data (Hex):", accountInfo.data.toString('hex')); */
+   /*  } catch (error) {
+      console.error("Error fetching account data:", error);
+    } */ 
+     
 
     const { keypair, connection, program } = await sb.AnchorUtils.loadEnv();
+
+    const feedAccountInfo = await connection.getAccountInfo(feed);
+   // console.log("feedAccountInfo", feedAccountInfo.data.toString());
+    
 
     const sbProgram = program;
 
     const feedAccount = new sb.PullFeed(sbProgram!, feed);
 
     await feedAccount.preHeatLuts();
+
+
 
     const [pullIx, responses, _ok, luts] = await feedAccount.fetchUpdateIx({
       numSignatures: 3,
