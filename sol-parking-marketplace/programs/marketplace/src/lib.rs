@@ -62,20 +62,23 @@ pub mod marketplace {
         Ok(())
     }
 
-    /* pub fn update_listing(
+    pub fn update_listing(
         ctx: Context<UpdateListing>,
-        address: String,
+        address: Option<String>,
         rental_rate: Option<u32>,
         sensor_id: Option<String>,
         latitude: Option<f64>,
         longitude: Option<f64>,
         additional_info: Option<String>,
-        availabilty_start: Option<String>,
-        availabilty_end: Option<String>
+        availabilty_start: Option<i64>,
+        availabilty_end: Option<i64>, 
+        email: Option<String>,
+        phone: Option<String>
     ) -> Result<()> {
-        ctx.accounts.update_listing(address, rental_rate, sensor_id, latitude, longitude, additional_info, availabilty_start, availabilty_end, &ctx.bumps)?;
+        ctx.accounts.update_listing(address, rental_rate, sensor_id, latitude, longitude, additional_info, availabilty_start, availabilty_end, email, phone, &ctx.bumps)?;
         Ok(())
-    } */
+    }
+
     pub fn set_notification_settings(
         ctx: Context<SetNotificationSettings>,
         app: bool,
@@ -101,7 +104,7 @@ pub mod marketplace {
         //when driver arrives or leaves
         // Feed account data
         let feed_account = ctx.accounts.feed.data.borrow();
-        msg!("feed_account.: {:?}", feed_account);
+       // msg!("feed_account.: {:?}", feed_account);
 
         // Verify that this account is the intended one by comparing public keys
         // if ctx.accounts.feed.key != &specific_pubkey {
@@ -133,7 +136,7 @@ pub mod marketplace {
 
         // Notify the homeowner of the change
 
-        msg!("Parking space is now available for listing: {:?}", listing);
+      //  msg!("Parking space is now available for listing: {:?}", listing);
 
         //check if driver left on time and/or within 5 min grace period
         //if not charge a penalty and transfer to homeowner

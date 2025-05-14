@@ -33,7 +33,18 @@ pub struct UpdateListing<'info> {
 impl <'info> UpdateListing<'info> {
     
     
-    pub fn update_listing(&mut self) -> Result<()> {
+    pub fn update_listing(&mut self, 
+        address: Option<String>, 
+        rental_rate:Option<u32>, 
+        sensor_id:Option<String>, 
+        latitude:Option<f64>, 
+        longitude:Option<f64>, 
+        additional_info:Option<String>, 
+        availabilty_start:Option<i64>, 
+        availabilty_end:Option<i64>,
+        email: Option<String>,
+        phone: Option<String>, 
+        bumps: &UpdateListingBumps) -> Result<()> {
         todo!();
     }
 }
