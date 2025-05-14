@@ -24,8 +24,8 @@ const jobs: OracleJob[] = [
       },
       {
         jsonParseTask: {
-        //  path: "$[0].distance_in_cm"
-         path: "$[0].decoded.payload.Distance_cm"
+          path: "$[0].distance_in_cm"
+     //    path: "$[0].decoded.payload.Distance_cm"
         }
       }
     ],
