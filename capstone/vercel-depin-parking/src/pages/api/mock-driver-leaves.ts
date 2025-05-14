@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 // Mock data 
-const sensor_data = [
+/* const sensor_data = [
   {
     "app_eui": "...",
     "dc": { "balance": 200, "nonce": 2 },
@@ -64,6 +64,10 @@ const sensor_data = [
     "uuid": "id..."
   }
   ,
+]; */
+
+const sensor_data = [
+  { id: 1, sensor: 'DS20L', distance_in_cm: 150 },
 ];
 
 // API route handler
