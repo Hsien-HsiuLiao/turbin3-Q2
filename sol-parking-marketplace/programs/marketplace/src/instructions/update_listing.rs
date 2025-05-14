@@ -1,6 +1,8 @@
 use anchor_lang::{prelude::*,  system_program::Transfer};
 
 use crate::state::{Listing, Marketplace};
+use crate::error::ErrorCode;
+
 
 #[derive(Accounts)]
 #[instruction(sensor_id: u64)]
@@ -45,6 +47,12 @@ impl <'info> UpdateListing<'info> {
         email: Option<String>,
         phone: Option<String>, 
         bumps: &UpdateListingBumps) -> Result<()> {
-        todo!();
+
+         //   if self.admin.key() != self.marketplace.admin {
+            if self.owner.key() != self.listing.maker {
+
+                return Err(ErrorCode::Unauthorized.into());
+            }
+todo!()
     }
 }
