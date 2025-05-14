@@ -59,7 +59,6 @@ pub mod marketplace {
 
     pub fn add_feed_to_listing(ctx: Context<AddFeedToListing>, feed: Pubkey) -> Result<()> {
         ctx.accounts.add_feed(feed)?;
-       
         Ok(())
     }
 
@@ -102,15 +101,18 @@ pub mod marketplace {
         //when driver arrives or leaves
         // Feed account data
         let feed_account = ctx.accounts.feed.data.borrow();
+        msg!("feed_account.: {:?}", feed_account);
 
         // Verify that this account is the intended one by comparing public keys
         // if ctx.accounts.feed.key != &specific_pubkey {
         //     throwSomeError
         // }
+        //
 
         // Docs at: https://switchboard-on-demand-rust-docs.web.app/on_demand/accounts/pull_feed/struct.PullFeedAccountData.html
         let feed = PullFeedAccountData::parse(feed_account).unwrap();
         // Log the value
+       // msg!("feeed.: {:?}", feed);
         msg!("sensor data, distance_in_cm: {:?}", feed.value().unwrap());
         //distance < 30 cm, car parked, >30cm car left space
 
@@ -132,9 +134,13 @@ pub mod marketplace {
         // Notify the homeowner of the change
 
         msg!("Parking space is now available for listing: {:?}", listing);
+
+        //check if driver left on time and/or within 5 min grace period
+        //if not charge a penalty and transfer to homeowner
+
     }
    /*  if distance <= Decimal::from(30){
-
+        //cannot yet confirm parking space in use, driver needs to also scan QR code to confirm
     } */
 
         Ok(())
@@ -144,8 +150,6 @@ pub mod marketplace {
     //should also send alert to homeowner
     pub fn confirm_parking(ctx: Context<ConfirmParking>, sensor_id: String) -> Result<()> {
         ctx.accounts.confirm_parking(sensor_id)?;
-        
-
         Ok(())
     }
     
