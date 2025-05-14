@@ -279,8 +279,23 @@ describe("depin parking space marketplace", () => {
 
   });
 
-  xit("Should not allow other accounts to update listing", async () => {
+  it("Should not allow other accounts to update listing", async () => {
+    let email = "homeowner1@email.com";
+    let phone = "555-555-6309"
+    let address = "1234 MyStreet, Los Angeles, CA 90210";
+    let sensorId = "A946444646";
+    let additional_info = "gate code is 2342";
+    let availabilty_start = new anchor.BN(Math.floor(new Date('2025-05-07T10:33:30').getTime() / 1000)); //unix time stamp in seconds
+    let availabilty_end = new anchor.BN(Math.floor(new Date('2025-015-07T10:33:30').getTime() / 1000));
+    console.log("date time", availabilty_end);
 
+    //[latitude, longitude] =getLatLon(address);
+    let latitude;
+    let longitude;
+    [latitude, longitude] = [34.2273574, -118.4500036];
+   
+
+    
     //have different homeowner or driver try to changes
     const listing = PublicKey.findProgramAddressSync(
       [marketplace.toBuffer(), homeowner1.publicKey.toBuffer()],
@@ -291,14 +306,17 @@ describe("depin parking space marketplace", () => {
 
     try {
       await program.methods
-        .updateListing(newRentalRate)
+        .updateListing(address, newRentalRate, sensorId, latitude, longitude, additional_info, availabilty_start, availabilty_end, email, phone)
         .accountsPartial({
-          maker: homeowner2.publicKey, // Unauthorized user
+          maker: homeowner1.publicKey, 
           marketplace: marketplace,
           listing: listing,
+          owner: homeowner2.publicKey // Unauthorized user homeowner2
         })
         .signers([homeowner2])
-        .rpc();
+        .rpc()
+        .then(confirm)
+        .then(log);
       assert.fail("Expected an error but did not get one");
     } catch (error) {
       assert.include(error.message, "Unauthorized", "Expected an unauthorized error");
@@ -360,7 +378,7 @@ describe("depin parking space marketplace", () => {
     assert.equal(filteredListings.length, 1);
 
 
-    console.log("Here's a list", filteredListings);
+   // console.log("Here's a list", filteredListings);
   });
 
 
@@ -371,7 +389,7 @@ describe("depin parking space marketplace", () => {
     )[0];
 
     const listingAccountInfo = await connection.getAccountInfo(listing);
-    console.log('Account data:', listingAccountInfo.data.toString());
+   // console.log('Account data:', listingAccountInfo.data.toString());
 
 
     // duration 1 hour
@@ -424,7 +442,7 @@ describe("depin parking space marketplace", () => {
     //const feed = new PublicKey("J748azokS8cKaiGKgN5hsTsTuB1FJ1ikVNXKjq9DQnjg");
     const feedAccountInfo = await connection.getAccountInfo(feed);
     //console.log("feedAccountInfo", feedAccountInfo);
-    console.log("feedAccountInfo", feedAccountInfo.data.toString());
+    //console.log("feedAccountInfo", feedAccountInfo.data.toString());
 
 
     const feedAccount = new sb.PullFeed(sbProgram!, feed);
@@ -492,7 +510,7 @@ describe("depin parking space marketplace", () => {
 
     // Listen for the ParkingConfirmed event
     const eventListener = program.addEventListener("parkingConfirmed", (event) => {
-      console.log("Parking confirmed event received:", event);
+     // console.log("Parking confirmed event received:", event);
       assert.equal(event.listingId.toString(), listing.toString(), "Listing ID should match");
       assert.equal(event.sensorId, sensorId, "Sensor ID should match the one used in the transaction");
 
