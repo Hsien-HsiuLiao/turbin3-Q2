@@ -34,6 +34,18 @@ pub struct Reserve<'info> {
         constraint = listing.parking_space_status == ParkingSpaceStatus::Available
         )]
     pub listing: Account<'info, Listing>,   //
+   /*  #[account(
+        mut,
+        seeds = [marketplace.key().as_ref(), 
+        maker.key().as_ref()
+        //&sensor_id.to_le_bytes()
+        ], 
+        bump, 
+        realloc = 8 + Listing::INIT_SPACE,
+        realloc::payer = owner, 
+        realloc::zero = true, 
+    )]
+    pub listing: Account<'info, Listing>, */
    
 
     pub system_program: Program<'info, System>,
@@ -82,7 +94,7 @@ impl <'info> Reserve<'info> {
     );
     msg!("{}", homeowner_msg);
 
-    // Optionally, you could also send a message to the driver with reservation info
+    //send a message to the driver with reservation info
     let driver_msg = format!(
         "Reservation confirmed! Your parking space is reserved from {} to {}.",
         start_time,
