@@ -140,7 +140,7 @@ describe("depin parking space marketplace", () => {
     let sensorId = "A946444646";
     let additional_info = "gate code is 2342";
     let availabilty_start = new anchor.BN(Math.floor(new Date('2025-05-07T10:33:30').getTime() / 1000)); //unix time stamp in seconds
-    let availabilty_end = new anchor.BN(Math.floor(new Date('2026-05-015T10:33:30').getTime() / 1000));
+    let availabilty_end = new anchor.BN(Math.floor(new Date('2026-05-15T10:33:30').getTime() / 1000));
     console.log("date time", availabilty_end);
 
     //[latitude, longitude] =getLatLon(address);
@@ -671,6 +671,19 @@ describe("depin parking space marketplace", () => {
   });
 
   xit("delete listing", async () => {
+  await program.methods
+  .deleteListing()
+  .accountsPartial({
+    maker: homeowner1.publicKey, //
+    marketplace: marketplace,
+   // listing: listing,
+    owner: homeowner1.publicKey //
+  })
+  .signers([homeowner1])//
+  .rpc()
+  .then(confirm)
+  .then(log);
+
   await program.methods
   .deleteListing()
   .accountsPartial({
