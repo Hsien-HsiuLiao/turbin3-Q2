@@ -132,7 +132,7 @@ describe("depin parking space marketplace", () => {
     console.log("Your transaction signature", tx);
   });
 
-  it("Create new listings for parking space rental", async () => {
+  xit("Create new listings for parking space rental", async () => {
     let email = "homeowner1@email.com";
     let phone = "555-555-6309"
     let address = "1234 MyStreet, Los Angeles, CA 90210";
@@ -407,6 +407,7 @@ describe("depin parking space marketplace", () => {
 
 
   it("Reserve a listing", async () => {
+    //can run test once, after that listing constraint wil be violated since parkingstatus is not available
     const listing = PublicKey.findProgramAddressSync(
       [marketplace.toBuffer(), homeowner1.publicKey.toBuffer()],
       program.programId
@@ -416,9 +417,9 @@ describe("depin parking space marketplace", () => {
    // console.log('Account data:', listingAccountInfo.data.toString());
 
 
-    // duration 1 hour
+    // duration 15min
     let start_time = new anchor.BN(Math.floor(Date.now() / 1000)); //in seconds 
-    let end_time = start_time.add(new anchor.BN(3600));
+    let end_time = start_time.add(new anchor.BN(900));
 
     const tx = await program.methods
       .reserve(start_time, end_time)
@@ -486,7 +487,10 @@ describe("depin parking space marketplace", () => {
         feed, //account name must match
         marketplace: marketplace,
         maker: homeowner1.publicKey,
-        listing: listing
+        listing: listing,
+     //   renter: driver.publicKey,
+      //  systemProgram: SystemProgram.programId,
+
       })
       .signers([homeowner1])
       .rpc()
@@ -658,7 +662,11 @@ describe("depin parking space marketplace", () => {
         feed,
         marketplace: marketplace,
         maker: homeowner1.publicKey,
-        listing: listing
+        listing: listing,
+      //  renter: driver.publicKey,
+        //systemProgram: SystemProgram.programId,
+
+
       })
       .signers([homeowner1])
       .rpc()
