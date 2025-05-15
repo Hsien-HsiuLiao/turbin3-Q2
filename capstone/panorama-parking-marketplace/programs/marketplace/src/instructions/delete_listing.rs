@@ -1,14 +1,12 @@
 use anchor_lang::{prelude::*,  system_program::Transfer};
 
 use crate::state::{Listing, Marketplace};
-//use crate::error::ErrorCode;
 
 
 #[derive(Accounts)]
 //#[instruction(sensor_id: u64)]
 pub struct DeleteListing<'info> {
     #[account(
-        //derivation
         seeds = [b"marketplace", marketplace.name.as_bytes()], //make generic
         bump = marketplace.bump
     )]

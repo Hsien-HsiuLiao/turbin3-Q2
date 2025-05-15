@@ -14,7 +14,7 @@ pub struct Reserve<'info> {
    #[account(mut)]
    pub renter: Signer<'info>,
    #[account(mut)]
-   pub maker: SystemAccount<'info>, //why systemaccount
+   pub maker: SystemAccount<'info>, 
    
     #[account(
        
@@ -66,8 +66,6 @@ impl <'info> Reserve<'info> {
         if !driver_has_sufficient_funds {
             return Err(ErrorCode::InsufficientFunds.into());
         }
-
-
     
         if listing.parking_space_status != ParkingSpaceStatus::Available {
             return Err(ErrorCode::ListingNotAvailable.into());

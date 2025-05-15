@@ -7,7 +7,6 @@ use crate::error::ErrorCode;
 #[derive(Accounts)]
 pub struct AddFeedToListing<'info> {
     #[account(
-        //derivation
         seeds = [b"marketplace", marketplace.name.as_bytes()], //make generic
         bump = marketplace.bump
     )]

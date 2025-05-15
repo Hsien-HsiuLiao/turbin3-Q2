@@ -8,7 +8,6 @@ use crate::error::ErrorCode;
 #[instruction(sensor_id: u64)]
 pub struct UpdateListing<'info> {
     #[account(
-        //derivation
         seeds = [b"marketplace", marketplace.name.as_bytes()], //make generic
         bump = marketplace.bump
     )]
@@ -48,7 +47,6 @@ impl <'info> UpdateListing<'info> {
         phone: Option<String>, 
         bumps: &UpdateListingBumps) -> Result<()> {
 
-         //   if self.admin.key() != self.marketplace.admin {
             if self.owner.key() != self.listing.maker {
 
                 return Err(ErrorCode::Unauthorized.into());

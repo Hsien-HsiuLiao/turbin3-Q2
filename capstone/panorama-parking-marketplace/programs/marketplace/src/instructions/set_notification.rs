@@ -17,7 +17,6 @@ pub struct SetNotificationSettings<'info> {
     )]
     pub notification: Account<'info, NotificationSettings>,
   
-
     pub system_program: Program<'info, System>,
 
 }

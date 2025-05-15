@@ -9,13 +9,11 @@ use crate::{ state::{Listing, Marketplace, ParkingSpaceStatus}};
 
 #[derive(Accounts)]
 pub struct SwitchboardFeed<'info> {
-    //safety check: Struct field "feed" is unsafe, but is not documented.add ///CHECK
+    //safety check: Struct field "feed" is unsafe, but is not documented.   add ///CHECK
         /// CHECK: via switchboard sdk
     pub feed: AccountInfo<'info>,
 
-    
     #[account(
-        //derivation
         seeds = [b"marketplace", marketplace.name.as_bytes()], //make generic
         bump = marketplace.bump
     )]
@@ -45,7 +43,6 @@ impl <'info> SwitchboardFeed<'info> {
     pub fn sensor_change(&mut self) -> Result<()> { //when driver arrives or leaves
       // Feed account data
       let feed_account = self.feed.data.borrow();//ctx.accounts.feed.data.borrow();
-      // msg!("feed_account.: {:?}", feed_account);
 
        // Verify that this account is the intended one by comparing public keys
        // if ctx.accounts.feed.key != &specific_pubkey {
@@ -55,8 +52,7 @@ impl <'info> SwitchboardFeed<'info> {
 
        // Docs at: https://switchboard-on-demand-rust-docs.web.app/on_demand/accounts/pull_feed/struct.PullFeedAccountData.html
        let feed = PullFeedAccountData::parse(feed_account).unwrap();
-       // Log the value
-      // msg!("feeed.: {:?}", feed);
+      
        msg!("sensor data, distance_in_cm: {:?}", feed.value().unwrap());
        //distance < 30 cm, car parked, >30cm car left space
 
@@ -76,11 +72,9 @@ impl <'info> SwitchboardFeed<'info> {
        listing.parking_space_status = ParkingSpaceStatus::Available;
 
        // Notify the homeowner of the change
-
      //  msg!("Parking space is now available for listing: {:?}", listing);
 
        //check if driver left on time and/or within 5 min grace period
-
        //if not charge a penalty and transfer to homeowner
 
        let current_time = Clock::get()?.unix_timestamp;

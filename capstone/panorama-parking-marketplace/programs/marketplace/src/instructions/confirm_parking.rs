@@ -10,7 +10,6 @@ pub struct ConfirmParking<'info> {
     #[account(mut)]
    pub renter: Signer<'info>,
     #[account(
-        //derivation
         seeds = [b"marketplace", marketplace.name.as_bytes()], //make generic
         bump = marketplace.bump
     )]
@@ -72,7 +71,6 @@ impl <'info> ConfirmParking<'info> {
 
         //how to emit and listen for events https://www.rareskills.io/post/solana-logs-transaction-history
         //event triggers script to check sensor 5 min before end time
-              //  emit!(event, "Parking confirmed");
               emit!(ParkingConfirmed {
                 listing_id: listing.key(),
               //  driver: driver.key,
@@ -82,9 +80,8 @@ impl <'info> ConfirmParking<'info> {
             });
 
         // if driver leaves early, they will still be charged reserved time, similar to parking meter 
+       
         // Notify the homeowner
-        
-
         // Notify the driver
        
         Ok(())
