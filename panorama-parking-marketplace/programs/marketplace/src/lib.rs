@@ -11,6 +11,7 @@ pub use error::ErrorCode;
 
 
 use instructions::*;
+//use crate::instruction::*;
 
 declare_id!("FXUQwDsKJNrYFsfiUokPbH4BSrZtoC9m8HpoiMvYxtSE");
 
@@ -79,10 +80,10 @@ pub mod marketplace {
         Ok(())
     }
 
-    /* pub fn delete_listing(_ctx: Context<DeleteListing>) -> Result<()> {
+    pub fn delete_listing(_ctx: Context<DeleteListing>) -> Result<()> {
         msg!("Listing deleted");
         Ok(())
-    } */
+    }
 
     pub fn set_notification_settings(
         ctx: Context<SetNotificationSettings>,
