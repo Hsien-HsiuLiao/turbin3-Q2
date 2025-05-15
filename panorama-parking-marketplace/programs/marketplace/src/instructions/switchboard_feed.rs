@@ -34,8 +34,8 @@ pub struct SwitchboardFeed<'info> {
      //   realloc::zero = true, 
     )]
     pub listing: Account<'info, Listing>,
-   /*  #[account(mut)]
-    pub renter: Signer<'info>, */
+    #[account(mut)]
+    pub renter: Signer<'info>,
     pub system_program: Program<'info, System>,
 
 }
@@ -85,7 +85,7 @@ impl <'info> SwitchboardFeed<'info> {
 
        let current_time = Clock::get()?.unix_timestamp;
        let grace_period = 300; // 5min
-     /*    if current_time > listing.availabilty_end + grace_period{
+        if current_time > listing.availabilty_end + grace_period{
             let cpi_program = self.system_program.to_account_info();
 
             let cpi_account = Transfer{
@@ -103,7 +103,7 @@ impl <'info> SwitchboardFeed<'info> {
      
             transfer(cpi_ctx, penalty)?;
      
-        } */
+        }
        
    }
   /*  if distance <= Decimal::from(30){
