@@ -20,7 +20,7 @@ import driverwallet from "../driver-wallet.json";
 import wallet from "../HTurbin3-wallet.json";
 
 
-describe("depin parking space marketplace", () => {
+describe("DePIN parking space marketplace", () => {
   // Configure the client to use the local cluster.
   anchor.setProvider(anchor.AnchorProvider.env());
 
@@ -132,7 +132,7 @@ describe("depin parking space marketplace", () => {
     console.log("Your transaction signature", tx);
   });
 
-  xit("Create new listings for parking space rental", async () => {
+  it("Create new listings for parking space rental", async () => {
     let email = "homeowner1@email.com";
     let phone = "555-555-6309"
     let address = "1234 MyStreet, Los Angeles, CA 90210";
@@ -141,7 +141,7 @@ describe("depin parking space marketplace", () => {
     let additional_info = "gate code is 2342";
     let availabilty_start = new anchor.BN(Math.floor(new Date('2025-05-07T10:33:30').getTime() / 1000)); //unix time stamp in seconds
     let availabilty_end = new anchor.BN(Math.floor(new Date('2026-05-15T10:33:30').getTime() / 1000));
-    console.log("date time", availabilty_end);
+    //console.log("date time", availabilty_end);
 
     //[latitude, longitude] =getLatLon(address);
     let latitude;
@@ -289,7 +289,7 @@ describe("depin parking space marketplace", () => {
     // Fetch the notification settings account to verify the changes
     const notificationAccount = await program.account.notificationSettings.fetch(notification);
 
-    console.log(notificationAccount);
+  //  console.log(notificationAccount);
 
     assert.isTrue(notificationAccount.app);
     assert.isFalse(notificationAccount.email);
@@ -309,8 +309,8 @@ describe("depin parking space marketplace", () => {
     let sensorId = "A946444646";
     let additional_info = "gate code is 2342";
     let availabilty_start = new anchor.BN(Math.floor(new Date('2025-05-07T10:33:30').getTime() / 1000)); //unix time stamp in seconds
-    let availabilty_end = new anchor.BN(Math.floor(new Date('2026-015-07T10:33:30').getTime() / 1000));
-    console.log("date time", availabilty_end);
+    let availabilty_end = new anchor.BN(Math.floor(new Date('2026-05-15T10:33:30').getTime() / 1000));
+    //console.log("date time", availabilty_end);
 
     //[latitude, longitude] =getLatLon(address);
     let latitude;
@@ -358,7 +358,7 @@ describe("depin parking space marketplace", () => {
 
 
     const listings = await program.account.listing.all();
-    console.log("Here's all", listings);
+    //console.log("Here's all", listings);
 
     //filter listings by rental_rate and distance from destination
     //listings[0].account.rentalRate
@@ -387,11 +387,11 @@ describe("depin parking space marketplace", () => {
 
     // Filter listings based on distance and rental rate
     const filteredListings = listings.filter(listing => {
-      console.log("address", listing.account.address);
+    //  console.log("address", listing.account.address);
       const listingLatitude = listing.account.latitude; // Assuming latitude is stored as a number
       const listingLongitude = listing.account.longitude; // Assuming longitude is stored as a number
       const distance = calculateDistance(dest_latitude, dest_longitude, listingLatitude, listingLongitude);
-      console.log("distance:", distance);
+    //  console.log("distance:", distance);
       // Check if the listing is within the max distance and meets rental rate criteria
       const isWithinDistance = distance <= maxDistance;
       const isRentalRateAcceptable = listing.account.rentalRate <= desired_rental_rate;
@@ -567,7 +567,7 @@ describe("depin parking space marketplace", () => {
     // Fetch the listing to verify the parking status
     const listingAccount = await program.account.listing.fetch(listing);
 
-    console.log("listingAccount.parkingSpaceStatus", listingAccount.parkingSpaceStatus);
+   // console.log("listingAccount.parkingSpaceStatus", listingAccount.parkingSpaceStatus);
 
     assert.equal(Object.keys(listingAccount.parkingSpaceStatus)[0], "occupied", "Parking space status should be Occupied");
 
@@ -601,9 +601,10 @@ describe("depin parking space marketplace", () => {
 
   //driver arrives early and tried to scan QR
 
-
   //driver leaves late and is charged penalty
-  it("Driver  leaves late and is charged penalty", async () => {
+
+
+  it("Driver  leaves on time", async () => {
     //function running on a server is monitring sensor data and calls solana program when there is a change
     // Instruction to  program using the switchboard feed
     const myProgram = anchor.workspace.marketplace as Program<Marketplace>;
@@ -663,12 +664,12 @@ describe("depin parking space marketplace", () => {
         marketplace: marketplace,
         maker: homeowner1.publicKey,
         listing: listing,
-      //  renter: driver.publicKey,
+        renter: driver.publicKey,
         //systemProgram: SystemProgram.programId,
 
 
       })
-      .signers([homeowner1])
+      .signers([homeowner1, driver])
       .rpc()
       .then(confirm)
       .then(log);
@@ -678,7 +679,7 @@ describe("depin parking space marketplace", () => {
     //assert driver lamports reduced by penalty amount
   });
 
-  xit("delete listing", async () => {
+  it("delete listing", async () => {
   await program.methods
   .deleteListing()
   .accountsPartial({
