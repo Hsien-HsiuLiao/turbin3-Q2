@@ -206,3 +206,16 @@ Error: Error creating IDL account: RPC response error -32002: Transaction simula
 https://www.rareskills.io/post/solana-anchor-deploy
 
 anchor test --skip-deploy
+
+to deploy your idl you need to:
+anchor idl init -f <target/idl/program.json> <program-id>
+
+to update a deployed idl:
+anchor idl upgrade <program-id> -f <target/idl/program.json>
+
+anchor idl upgrade FXUQwDsKJNrYFsfiUokPbH4BSrZtoC9m8HpoiMvYxtSE -f target/idl/marketplace.json
+Idl data length: 1375 bytes
+Step 0/1375 
+Step 600/1375 
+Step 1200/1375 
+Idl account 81xa3F77MeurQs2pMEtv2MnusHMgpVn3h5R3DvoHZr4L successfully upgraded
