@@ -1,0 +1,37 @@
+DePIN parking space marketplace
+Balance for maker/homeowner1: DmipzvprT5w4sYLVLARzUuxazAMUqm1iUbJZ88Yk58XS 3.99394904 SOL
+    ✔ Airdrop (424ms)
+    - Is initialized!
+Your transaction signature: https://explorer.solana.com/transaction/3S8LDYAKXyaSYsRqLdyzEUNU9DAqPeZiJ5jDgmS6QA5QQEk2GPFN297KmAReNaix5C8Cb8NZ1EBa6MaD5xadjZZN?cluster=custom&customUrl=https://turbine-solanad-4cde.devnet.rpcpool.com/168dd64f-ce5e-4e19-a836-f6482ad6b396
+Your transaction signature: https://explorer.solana.com/transaction/4tmxJpHSsTdswTBdSsHc53RwnZYfz9xY9qn398e7gPXDH7a5w3e9Rsu87HJXcC7CmG6475UYbqiLqgUDzXtssZWZ?cluster=custom&customUrl=https://turbine-solanad-4cde.devnet.rpcpool.com/168dd64f-ce5e-4e19-a836-f6482ad6b396
+    ✔ Create new listings for parking space rental (4712ms)
+Your transaction signature: https://explorer.solana.com/transaction/5kW5nNfm7gQncHeM3JGxH88LuEwC8v8arsxs2KnqJtSqdSHhkR19gEH6W576AgVDMAbzVu51hxShYQEMgx1ugeQ6?cluster=custom&customUrl=https://turbine-solanad-4cde.devnet.rpcpool.com/168dd64f-ce5e-4e19-a836-f6482ad6b396
+    ✔ should allow only admin to add feed account to listing (3870ms)
+    ✔ should not allow an unauthorized account to add feed account to listing (195ms)
+Transaction signature YLrNCrVFSXBGMDm4NfySphJ6AfMXxprqnVyByAanQww53RggWCNwpJpJbQBjBsrmic8h5axrjgpQLa7tLqp7eCu
+    ✔ should let user set notification settings (1995ms)
+    ✔ Should not allow other accounts to update listing (261ms)
+    ✔ Driver gets a list of parking spaces near destination and specified rental rate (92ms)
+Your transaction signature: https://explorer.solana.com/transaction/2KHoj3qj6RCLxa5LUAUTjLRE86xwmSVK4p3kaV5WCFcD6nGoCbzPmBy1ULM86CiR6BoRwX8K4DoLaWvkqxd2EuQh?cluster=custom&customUrl=https://turbine-solanad-4cde.devnet.rpcpool.com/168dd64f-ce5e-4e19-a836-f6482ad6b396
+Your transaction signature 2KHoj3qj6RCLxa5LUAUTjLRE86xwmSVK4p3kaV5WCFcD6nGoCbzPmBy1ULM86CiR6BoRwX8K4DoLaWvkqxd2EuQh
+    ✔ Reserve a listing (2270ms)
+Your transaction signature: https://explorer.solana.com/transaction/9uoqVHjR24xHr5jVbV7wvVzxc2KkTUjsXR36gm5e89WzL79QLz9aFxx3fcvr2soovGCdXBMrLTogjkdF5k3j3vj?cluster=custom&customUrl=https://turbine-solanad-4cde.devnet.rpcpool.com/168dd64f-ce5e-4e19-a836-f6482ad6b396
+simulating..
+feed value from oracle:  20.000000000000000000
+Transaction sent: tC6dFQ9tCKcBGZATZRQEds477emrzqYBD125angfLnJbro5kKLXQqmJaKX3zXXRhsPNp1WBJFmjc5jxEhe1cXMs
+    ✔ Call switchboard feed and program ix (10213ms)
+Your transaction signature: https://explorer.solana.com/transaction/5XTnZM65ZASkDcoV8QFDL3oSRkMP4eFZq95s1EXk6Mawui9YXG1ujbis2LTtrzfRTqFdbMJaBukoqAS6G2sorzeX?cluster=custom&customUrl=https://turbine-solanad-4cde.devnet.rpcpool.com/168dd64f-ce5e-4e19-a836-f6482ad6b396
+Parking confirmation transaction signature 5XTnZM65ZASkDcoV8QFDL3oSRkMP4eFZq95s1EXk6Mawui9YXG1ujbis2LTtrzfRTqFdbMJaBukoqAS6G2sorzeX
+    ✔ Driver confirms arrival by scanning QR code (2831ms)
+Your transaction signature: https://explorer.solana.com/transaction/4MoabAAnscuVXeLCM8EimAZrMSGEQpiLcCLLZ9z4X28iK799UV3hM7W9qJzBQ7dB6iVVmQHPfFNK5vmaEwHAMbRR?cluster=custom&customUrl=https://turbine-solanad-4cde.devnet.rpcpool.com/168dd64f-ce5e-4e19-a836-f6482ad6b396
+Your transaction signature 4MoabAAnscuVXeLCM8EimAZrMSGEQpiLcCLLZ9z4X28iK799UV3hM7W9qJzBQ7dB6iVVmQHPfFNK5vmaEwHAMbRR
+    ✔ Driver  leaves on time (6753ms)
+Your transaction signature: https://explorer.solana.com/transaction/5T8ChhNnv1QEfPbzcZNs8z5KvAJYDes1yX2c3yQLFU8H4aSipLbD7bzR2WLJvbHSEW29khonGafNT4FvdhFXS4mV?cluster=custom&customUrl=https://turbine-solanad-4cde.devnet.rpcpool.com/168dd64f-ce5e-4e19-a836-f6482ad6b396
+Your transaction signature: https://explorer.solana.com/transaction/48iX6QALJBNYB5fyYZKRcfGgAvqS2xV7dFAQSsMcuri1dhrGKHCxH1FopxVjnNUS99u5DmQgeFit9xemDDNDkhyV?cluster=custom&customUrl=https://turbine-solanad-4cde.devnet.rpcpool.com/168dd64f-ce5e-4e19-a836-f6482ad6b396
+    ✔ delete listing (6523ms)
+
+
+  12 passing (40s)
+  1 pending
+
+Done in 42.66s.
