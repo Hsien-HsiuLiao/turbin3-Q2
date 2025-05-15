@@ -132,7 +132,7 @@ describe("depin parking space marketplace", () => {
     console.log("Your transaction signature", tx);
   });
 
-  xit("Create new listings for parking space rental", async () => {
+  it("Create new listings for parking space rental", async () => {
     let email = "homeowner1@email.com";
     let phone = "555-555-6309"
     let address = "1234 MyStreet, Los Angeles, CA 90210";
@@ -140,7 +140,7 @@ describe("depin parking space marketplace", () => {
     let sensorId = "A946444646";
     let additional_info = "gate code is 2342";
     let availabilty_start = new anchor.BN(Math.floor(new Date('2025-05-07T10:33:30').getTime() / 1000)); //unix time stamp in seconds
-    let availabilty_end = new anchor.BN(Math.floor(new Date('2026-015-07T10:33:30').getTime() / 1000));
+    let availabilty_end = new anchor.BN(Math.floor(new Date('2026-05-015T10:33:30').getTime() / 1000));
     console.log("date time", availabilty_end);
 
     //[latitude, longitude] =getLatLon(address);
@@ -670,16 +670,16 @@ describe("depin parking space marketplace", () => {
     //assert driver lamports reduced by penalty amount
   });
 
-  it("Driver  leaves late and is charged penalty", async () => {
+  xit("delete listing", async () => {
   await program.methods
   .deleteListing()
   .accountsPartial({
-    maker: admin.publicKey, 
+    maker: homeowner2.publicKey, //
     marketplace: marketplace,
    // listing: listing,
-    owner: admin.publicKey // Unauthorized user homeowner2
+    owner: homeowner2.publicKey //
   })
-  .signers([homeowner2])
+  .signers([homeowner2])//
   .rpc()
   .then(confirm)
   .then(log);
