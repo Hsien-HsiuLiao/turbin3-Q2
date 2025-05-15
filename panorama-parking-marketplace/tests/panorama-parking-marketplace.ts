@@ -140,7 +140,7 @@ describe("depin parking space marketplace", () => {
     let sensorId = "A946444646";
     let additional_info = "gate code is 2342";
     let availabilty_start = new anchor.BN(Math.floor(new Date('2025-05-07T10:33:30').getTime() / 1000)); //unix time stamp in seconds
-    let availabilty_end = new anchor.BN(Math.floor(new Date('2025-015-07T10:33:30').getTime() / 1000));
+    let availabilty_end = new anchor.BN(Math.floor(new Date('2026-015-07T10:33:30').getTime() / 1000));
     console.log("date time", availabilty_end);
 
     //[latitude, longitude] =getLatLon(address);
@@ -309,7 +309,7 @@ describe("depin parking space marketplace", () => {
     let sensorId = "A946444646";
     let additional_info = "gate code is 2342";
     let availabilty_start = new anchor.BN(Math.floor(new Date('2025-05-07T10:33:30').getTime() / 1000)); //unix time stamp in seconds
-    let availabilty_end = new anchor.BN(Math.floor(new Date('2025-015-07T10:33:30').getTime() / 1000));
+    let availabilty_end = new anchor.BN(Math.floor(new Date('2026-015-07T10:33:30').getTime() / 1000));
     console.log("date time", availabilty_end);
 
     //[latitude, longitude] =getLatLon(address);
@@ -669,6 +669,23 @@ describe("depin parking space marketplace", () => {
 
     //assert driver lamports reduced by penalty amount
   });
+
+  it("Driver  leaves late and is charged penalty", async () => {
+  await program.methods
+  .deleteListing()
+  .accountsPartial({
+    maker: admin.publicKey, 
+    marketplace: marketplace,
+   // listing: listing,
+    owner: admin.publicKey // Unauthorized user homeowner2
+  })
+  .signers([homeowner2])
+  .rpc()
+  .then(confirm)
+  .then(log);
+
+});
+
 
 
 });
