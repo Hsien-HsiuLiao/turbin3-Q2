@@ -53,6 +53,29 @@ impl <'info> UpdateListing<'info> {
 
                 return Err(ErrorCode::Unauthorized.into());
             }
-todo!()
+            self.listing.set_inner(Listing { 
+                maker: self.owner.key(), 
+                email,
+                phone,
+                bump: bumps.listing,
+                address,
+                rental_rate,
+                availabilty_start, 
+                availabilty_end,
+                sensor_id,
+                parking_space_status,
+                reserved_by: self.listing.reserved_by,
+                reservation_start: self.listing.reservation_start,
+                reservation_end: self.listing.reservation_end,
+                latitude, 
+                longitude, 
+                additional_info, 
+                feed: self.listing.feed
+            });
+    
+            msg!("You updated a listing");
+
+            Ok(())
+
     }
 }
