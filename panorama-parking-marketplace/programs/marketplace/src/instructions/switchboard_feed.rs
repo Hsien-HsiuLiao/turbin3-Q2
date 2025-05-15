@@ -1,4 +1,4 @@
-use anchor_lang::prelude::*;
+use anchor_lang::{prelude::*, system_program::{Transfer, transfer}};
 use switchboard_on_demand::on_demand::accounts::pull_feed::PullFeedAccountData;
 use switchboard_on_demand::prelude::rust_decimal::Decimal;
 
@@ -13,6 +13,7 @@ pub struct SwitchboardFeed<'info> {
         /// CHECK: via switchboard sdk
     pub feed: AccountInfo<'info>,
 
+    
     #[account(
         //derivation
         seeds = [b"marketplace", marketplace.name.as_bytes()], //make generic
@@ -28,11 +29,13 @@ pub struct SwitchboardFeed<'info> {
         //&sensor_id.to_le_bytes()
         ], 
         bump, 
-        realloc = 8 + Listing::INIT_SPACE,
-        realloc::payer = maker, 
-        realloc::zero = true, 
+      //  realloc = 8 + Listing::INIT_SPACE,
+      //  realloc::payer = maker, 
+     //   realloc::zero = true, 
     )]
     pub listing: Account<'info, Listing>,
+   /*  #[account(mut)]
+    pub renter: Signer<'info>, */
     pub system_program: Program<'info, System>,
 
 }
@@ -77,8 +80,31 @@ impl <'info> SwitchboardFeed<'info> {
      //  msg!("Parking space is now available for listing: {:?}", listing);
 
        //check if driver left on time and/or within 5 min grace period
+
        //if not charge a penalty and transfer to homeowner
 
+       let current_time = Clock::get()?.unix_timestamp;
+       let grace_period = 300; // 5min
+     /*    if current_time > listing.availabilty_end + grace_period{
+            let cpi_program = self.system_program.to_account_info();
+
+            let cpi_account = Transfer{
+                from: self.renter.to_account_info(),
+                to: self.maker.to_account_info()
+            };
+     
+            let cpi_ctx: CpiContext<'_, '_, '_, '_, Transfer<'_>> = CpiContext::new(cpi_program, cpi_account);
+     
+            let duration = current_time - listing.reservation_start.unwrap() + grace_period;
+            let rate_per_hour:i64 = listing.rental_rate.into();
+            
+            let penalty:u64 = ((duration / 3600) * rate_per_hour).try_into().unwrap();
+     
+     
+            transfer(cpi_ctx, penalty)?;
+     
+        } */
+       
    }
   /*  if distance <= Decimal::from(30){
        //cannot yet confirm parking space in use, driver needs to also scan QR code to confirm
