@@ -79,6 +79,11 @@ pub mod marketplace {
         Ok(())
     }
 
+    /* pub fn delete_listing(_ctx: Context<DeleteListing>) -> Result<()> {
+        msg!("Listing deleted");
+        Ok(())
+    } */
+
     pub fn set_notification_settings(
         ctx: Context<SetNotificationSettings>,
         app: bool,
