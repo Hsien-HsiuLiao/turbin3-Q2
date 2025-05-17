@@ -75,7 +75,7 @@ describe("DePIN parking space marketplace", () => {
   let marketplace: PublicKey;
   let marketplaceBump;
 
-
+//https://solana.com/docs/core/pda#create-pda-accounts
   [marketplace, marketplaceBump] = PublicKey.findProgramAddressSync(
     [Buffer.from("marketplace"), Buffer.from(marketplace_name)],
     program.programId

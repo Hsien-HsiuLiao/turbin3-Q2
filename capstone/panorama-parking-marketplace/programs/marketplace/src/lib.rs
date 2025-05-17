@@ -24,6 +24,8 @@ pub mod marketplace {
 
     use super::*;
 
+    //https://solana.com/docs/programs/examples#basics
+
     pub fn initialize(ctx: Context<Initialize>, name: String, fee: u32) -> Result<()> {
         ctx.accounts.init(name, fee, &ctx.bumps)?;
         Ok(())

@@ -48,6 +48,8 @@ impl <'info> ConfirmParking<'info> {
        
         if sensor_id == listing.sensor_id {
             listing.parking_space_status = ParkingSpaceStatus::Occupied;
+
+            //https://solana.com/docs/core/cpi
             //transfer sol from driver to homeowner
             let cpi_program = self.system_program.to_account_info();
 

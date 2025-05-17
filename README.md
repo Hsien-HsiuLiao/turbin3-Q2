@@ -32,6 +32,9 @@ Enrichment
 - Metaplex
 - https://www.walrus.xyz/
 
+
+- https://github.com/magicblock-labs/real-time-pricing-oracle
+
 When is class? What's UTC?
 - https://www.worldtimebuddy.com/
 
