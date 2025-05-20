@@ -146,7 +146,7 @@ describe("DePIN parking space marketplace", () => {
     //[latitude, longitude] =getLatLon(address);
     let latitude;
     let longitude;
-    [latitude, longitude] = [34.2273574, -118.4500036];
+    [latitude, longitude] = [34.2273574, -118.4500036]; //https://www.gps-coordinates.net/
 
     await program.methods
       .list(address, rentalRate, sensorId, latitude, longitude, additional_info, availabilty_start, availabilty_end, email, phone)

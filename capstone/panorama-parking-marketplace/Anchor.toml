@@ -22,6 +22,8 @@ wallet = "./HTurbin3-wallet.json"
 [scripts]
 test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"
 
+#https://www.anchor-lang.com/docs/references/anchor-toml#testvalidator
+
 [test.validator]
 url = "https://api.devnet.solana.com"
 #url = "https://turbine-solanad-4cde.devnet.rpcpool.com/168dd64f-ce5e-4e19-a836-f6482ad6b396";
