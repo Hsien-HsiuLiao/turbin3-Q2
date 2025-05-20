@@ -53,3 +53,7 @@ https://docs.switchboard.xyz/product-documentation/data-feeds
 https://ondemand.switchboard.xyz/solana/devnet/build
 
 switchboard - https://www.youtube.com/watch?v=XGD-shfSZb4
+
+https://heliummart.com/blog/smart-parking-with-lorawan-solutions/
+- "Helium hotspots can allow for up to 2 km. of range in urban areas to up to 15 km. in rural zones. ... The good news is that thousands of cities around the world already have Helium coverage. .... Basically, you don’t need to worry about whether you will have Helium coverage, or not. Chances are you already do. "
+- "According to a GSMA analysis, smart parking is more than just for convenience. A well optimized parking solution will reduce traffic volume by 8% on average and it will reduce the distance travelled in search for a parking space by 30%. People will also save 43% of time on average to find a parking spot. All of this will also reduce pollution. And parking operators can get up to $93.70 increase in monthly revenue per parking space (average price is high because in a lot of big cities parking is already an expensive service)."
