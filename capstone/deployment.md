@@ -207,6 +207,10 @@ https://www.rareskills.io/post/solana-anchor-deploy
 
 anchor test --skip-deploy
 
+anchor test --skip-local-validator --skip-deploy
+
+
+
 to deploy your idl you need to:
 anchor idl init -f <target/idl/program.json> <program-id>
 
