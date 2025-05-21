@@ -57,3 +57,19 @@ switchboard - https://www.youtube.com/watch?v=XGD-shfSZb4
 https://heliummart.com/blog/smart-parking-with-lorawan-solutions/
 - "Helium hotspots can allow for up to 2 km. of range in urban areas to up to 15 km. in rural zones. ... The good news is that thousands of cities around the world already have Helium coverage. .... Basically, you don’t need to worry about whether you will have Helium coverage, or not. Chances are you already do. "
 - "According to a GSMA analysis, smart parking is more than just for convenience. A well optimized parking solution will reduce traffic volume by 8% on average and it will reduce the distance travelled in search for a parking space by 30%. People will also save 43% of time on average to find a parking spot. All of this will also reduce pollution. And parking operators can get up to $93.70 increase in monthly revenue per parking space (average price is high because in a lot of big cities parking is already an expensive service)."
+
+Choovio
+- "Founded in Irvine, CA, by long-time industry experts, CHOOVIO offers provisioning and configuration services across a plug-and-play product line, perfecting the art of warehousing, distributing thousands of products, and bringing scalability and value to the industry.
+
+Our extensive line of IoT LoRaWAN gateways, sensors, and monitoring devices delivers the required performance while offering limitless design flexibility. In addition, our solutions come equipped with simple, out-of-the-box integrations that provide everything needed to create your complete end-to-end IoT network. Your business seamlessly connects wireless, battery-operated devices to the internet in regional, national, or global networks.
+
+Whether you are interested in using IoT to develop new business practices and processes or have a unique solution you want to bring to market, we can work with you to transform your ideas into a reality.
+
+CHOOVIO has developed partnerships with top manufacturers and suppliers to, in turn, provide our customers with the latest technology at the best prices. As an official Nova Labs (Formly Helium) partner, CHOOVIO utilizes the Helium Decentralized Wireless LoRaWAN public network as a new method of deploying, maintaining, and capitalizing on physical wireless infrastructure."
+
+- "Business Address:
+23191 LA CADENA DR STE 102
+LAGUNA HILLS
+CA
+92653-1429
+US"
