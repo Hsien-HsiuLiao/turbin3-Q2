@@ -1,5 +1,5 @@
-import AccountListFeature from '@/components/account/account-list-feature'
+import HomeownerListFeature from '@/components/homeowners/homeowner-list-feature'
 
 export default function Page() {
-  return <AccountListFeature />
+  return <HomeownerListFeature />
 }
