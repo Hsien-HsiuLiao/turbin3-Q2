@@ -16,7 +16,6 @@ export default function HomeownerListFeature() {
     <div className="hero py-[64px]">
       <div className="hero-content text-center">
         Enter parking space details
-        <WalletButton />
       </div>
     </div>
   )
