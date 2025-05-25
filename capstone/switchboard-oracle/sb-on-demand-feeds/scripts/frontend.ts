@@ -1,4 +1,4 @@
-import { fetchMyAnchorProgram, crossbar } from "../";
+import { fetchMyAnchorProgram, crossbar } from "..";
 
 import { web3, AnchorProvider, Program } from "@coral-xyz/anchor";
 import { PullFeed, ON_DEMAND_DEVNET_PID } from "@switchboard-xyz/on-demand";
