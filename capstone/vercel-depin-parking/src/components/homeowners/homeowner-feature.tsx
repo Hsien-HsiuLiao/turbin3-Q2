@@ -11,7 +11,7 @@ import { ExplorerLink } from '../cluster/cluster-ui';
 import { useMarketplaceProgram } from './homeowner-data-access';
 
 //import { JournalCreate, JournalList } from './journal-ui';
-
+import {ListingCreate} from './homeowner-ui';
 //import { useWalletUiCluster } from '@wallet-ui/react';
 
 
@@ -41,7 +41,7 @@ export default function HomeownerFeature() {
             label={ellipsify(programId.toString())}
           />
         </p>
-        {/*   <JournalCreate /> */}
+          <ListingCreate />
       </AppHero>
       {/*  <JournalList /> */}
     </div>
