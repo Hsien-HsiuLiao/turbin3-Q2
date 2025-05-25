@@ -1,5 +1,15 @@
 CRUD dApp example - https://solana.com/developers/guides/dapps/journal#connecting-a-solana-program-to-a-ui
 
+https://youtu.be/amAq-WHAFs8?si=wRf48qbInjDaixSk&t=10592
+
+To run a local validator: solana-test-validator
+
+In Anchor program directory, anchor deploy --provider.cluster localnet
+
+make sure program id keys are synced - anchor keys sync
+
+yarn dev
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [
 `create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
