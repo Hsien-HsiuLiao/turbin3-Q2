@@ -8,40 +8,48 @@ import { AppHero } from '../app-hero'
 import { ellipsify } from '@/lib/utils'
 import { ExplorerLink } from '../cluster/cluster-ui';
 //import { useJournalProgram } from './journal-data-access';
+import { useMarketplaceProgram } from './homeowner-data-access';
+
 //import { JournalCreate, JournalList } from './journal-ui';
+
+//import { useWalletUiCluster } from '@wallet-ui/react';
 
 
 
 
 export default function HomeownerFeature() {
- // const { publicKey } = useWallet();
+  // const { publicKey } = useWallet();
   const { account } = useWalletUi()
+  //  const { cluster } = useWalletUiCluster()
 
 
-  const { programId } = useJournalProgram();
+  const { programId } = useMarketplaceProgram();
 
   return account ? (
     <div>
       <AppHero
-        title="My Solana Journal"
+        title="Welcome Homeowners"
         subtitle={
-          'Create your journal here!'
+          'Create your listing here!'
         }
       >
         <p className="mb-6">
           <ExplorerLink
-            path={`account/${programId}`}
+            //        path={`account/${programId}`}
+            cluster="devnet"
+            address={programId.toString()} 
             label={ellipsify(programId.toString())}
           />
         </p>
-        <JournalCreate />
+        {/*   <JournalCreate /> */}
       </AppHero>
-      <JournalList />
+      {/*  <JournalList /> */}
     </div>
   ) : (
     <div className="max-w-4xl mx-auto">
       <div className="hero py-[64px]">
         <div className="hero-content text-center">
+          Before you can continue, please connect a wallet to create a listing
           <WalletButton />
         </div>
       </div>

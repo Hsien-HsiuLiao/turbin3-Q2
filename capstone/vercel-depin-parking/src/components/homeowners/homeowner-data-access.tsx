@@ -2,8 +2,9 @@
 
 //import { getJournalProgram, getJournalProgramId } from "@journal/anchor";
 import {PROGRAM, PROGRAM_ID} from "../../util/const";
-//import { useConnection } from "@solana/wallet-adapter-react";
-import { useConnect } from '@wallet-ui/react'; //instead of useConnection?
+import { AnchorProvider } from '@coral-xyz/anchor';
+import { AnchorWallet,useConnection ,useWallet} from "@solana/wallet-adapter-react";
+//import { useConnect } from '@wallet-ui/react'; //instead of useConnection?
 
 import { Cluster, PublicKey } from "@solana/web3.js";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -24,24 +25,27 @@ interface CreateEntryArgs {
   owner: PublicKey;
 }
 
-export function useJournalProgram() {
- // const { connection } = useConnection();
-  const { connection } = useConnect();
+export function useMarketplaceProgram() {
+  const { connection } = useConnection();
 
  // const { cluster } = useCluster();
     const { cluster } = useWalletUiCluster()
   
   const transactionToast = useTransactionToast();
-  const provider = useAnchorProvider();
-  const programId = useMemo(
+  //const provider = useAnchorProvider();
+  //const wallet = useWallet()
+
+  //const provider = new AnchorProvider(connection, wallet as AnchorWallet, { commitment: 'confirmed' })
+
+  const programId = PROGRAM_ID;/* useMemo(
     () => getJournalProgramId(cluster.network as Cluster),
     [cluster]
-  );
-  const program = getJournalProgram(provider);
+  ); */
+  const program = PROGRAM;//getJournalProgram(provider);
 
   const accounts = useQuery({
-    queryKey: ["journal", "all", { cluster }],
-    queryFn: () => program.account.journalEntryState.all(),
+    queryKey: ["listings", "all", { cluster }],
+    queryFn: () => program.account.listing.all(),
   });
 
   const getProgramAccount = useQuery({
@@ -68,12 +72,14 @@ export function useJournalProgram() {
     programId,
     accounts,
     getProgramAccount,
-    createEntry,
+  //  createEntry,
   };
 }
 
-export function useJournalProgramAccount({ account }: { account: PublicKey }) {
-  const { cluster } = useCluster();
+/* export function useJournalProgramAccount({ account }: { account: PublicKey }) {
+//  const { cluster } = useCluster();
+  const { cluster } = useWalletUiCluster()
+
   const transactionToast = useTransactionToast();
   const { program, accounts } = useJournalProgram();
 
@@ -111,4 +117,4 @@ export function useJournalProgramAccount({ account }: { account: PublicKey }) {
     updateEntry,
     deleteEntry,
   };
-}
+} */
