@@ -9,15 +9,15 @@ import {
     useMarketplaceProgram
     //useJournalProgramAccount,
 } from "./homeowner-data-access";
-//import { useWallet } from "@solana/wallet-adapter-react";
+import { useWallet } from "@solana/wallet-adapter-react";
 import { useWalletUi } from '@wallet-ui/react';
 
 import { useState } from "react";
 
 export function ListingCreate() {
     const { createListing } = useMarketplaceProgram();
-     const { publicKey } = useWallet();
-  //  const { account } = useWalletUi();
+  //   const { publicKey } = useWallet();
+    const { account } = useWalletUi();
 
     const [address, setAddress] = useState("");              // Address (String)
     const [rentalRate, setRentalRate] = useState(0);        // Rental rate (u32)

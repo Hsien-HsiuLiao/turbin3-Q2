@@ -1,7 +1,7 @@
 'use client'
 
 import { useWalletUi } from '@wallet-ui/react';
-//import { useWallet } from '@solana/wallet-adapter-react'; //crud example
+import { useWallet } from '@solana/wallet-adapter-react'; //crud example
 import { WalletButton } from '../solana/solana-provider';
 //import { AppHero, ellipsify } from '../ui/ui-layout'; //crud example
 import { AppHero } from '../app-hero'

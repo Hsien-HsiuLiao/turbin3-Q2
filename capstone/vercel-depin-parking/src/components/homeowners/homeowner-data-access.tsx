@@ -86,7 +86,7 @@ export function useMarketplaceProgram() {
             phone,
         homeowner1}) => {
                 const listingPDA = PublicKey.findProgramAddressSync(
-                    [marketplace.toBuffer(), homeowner1.toBuffer()],
+                    [marketplace.toBuffer(), homeowner1],
                     program.programId
                   )[0];
             return program.methods.list(
@@ -99,8 +99,16 @@ export function useMarketplaceProgram() {
                 availabilityStart,   // number (i64)
                 availabilityEnd,     // number (i64)
                 email,              // string
-                phone                 // string
-            ).rpc();
+                phone,                 // string
+                
+            )
+            .accountsPartial({
+                maker: homeowner1.publicKey,
+                marketplace: marketplace,
+                //     listing: listing
+              })
+              .signers([homeowner1])
+            .rpc();
     },
         onSuccess: (signature) => {
             transactionToast(signature);
