@@ -1,3 +1,5 @@
+CRUD dApp example - https://solana.com/developers/guides/dapps/journal#connecting-a-solana-program-to-a-ui
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [
 `create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
