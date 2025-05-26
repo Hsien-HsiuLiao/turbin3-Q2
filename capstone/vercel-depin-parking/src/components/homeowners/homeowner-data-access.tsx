@@ -1,6 +1,6 @@
 "use client";
 
-//import { getJournalProgram, getJournalProgramId } from "@journal/anchor";
+import { getMarketplaceProgram, getMarketplaceProgramId } from "../../util/marketplace-exports";
 import { PROGRAM, PROGRAM_ID } from "../../util/const";
 import { AnchorProvider } from '@coral-xyz/anchor';
 import { AnchorWallet, useConnection, useWallet } from "@solana/wallet-adapter-react";
@@ -11,8 +11,8 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 //import toast from "react-hot-toast";
 import { toast } from 'sonner'
 
-//import { useCluster } from "../cluster/cluster-data-access";
-import { useWalletUiCluster } from '@wallet-ui/react';
+import { useCluster } from "../cluster/cluster-data-access";
+import { UiWalletAccount, useWalletUiCluster } from '@wallet-ui/react';
 import { /* useAnchorProvider */SolanaProvider } from "../solana/solana-provider";
 //import { useTransactionToast } from "../ui/ui-layout";
 import { useTransactionToast } from '../use-transaction-toast'
@@ -37,20 +37,22 @@ interface CreateListingArgs {
 export function useMarketplaceProgram() {
     const { connection } = useConnection();
 
-    // const { cluster } = useCluster();
-    const { cluster } = useWalletUiCluster()
+    const { cluster } = useCluster();
+   // const { cluster } = useWalletUiCluster()
 
     const transactionToast = useTransactionToast();
     //const provider = useAnchorProvider();
-    //const wallet = useWallet()
+    const wallet = useWallet()
 
-    //const provider = new AnchorProvider(connection, wallet as AnchorWallet, { commitment: 'confirmed' })
+    const provider = new AnchorProvider(connection, wallet as AnchorWallet, { commitment: 'confirmed' })
 
-    const programId = PROGRAM_ID;/* useMemo(
-    () => getJournalProgramId(cluster.network as Cluster),
+    const programId = useMemo(
+    () => getMarketplaceProgramId(cluster.network as Cluster),
     [cluster]
-  ); */
-    const program = PROGRAM;//getJournalProgram(provider);
+  );
+    const program = getMarketplaceProgram(provider);
+
+    program
 
     const accounts = useQuery({
         queryKey: ["listings", "all", { cluster }],
@@ -86,7 +88,7 @@ export function useMarketplaceProgram() {
             phone,
         homeowner1}) => {
                 const listingPDA = PublicKey.findProgramAddressSync(
-                    [marketplace.toBuffer(), homeowner1],
+                    [marketplace.toBuffer(), homeowner1.publicKey.],
                     program.programId
                   )[0];
             return program.methods.list(

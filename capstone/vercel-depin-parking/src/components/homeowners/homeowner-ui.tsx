@@ -55,7 +55,7 @@ export function ListingCreate() {
                 availabilityEnd,
                 email,
                 phone,
-                homeowner1: account.publicKey
+                homeowner1: account
             });
         }
     };
