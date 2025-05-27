@@ -1,4 +1,4 @@
-// Here we export some useful types and functions for interacting with the Anchor program.
+/* // Here we export some useful types and functions for interacting with the Anchor program.
 import { AnchorProvider, Program } from '@coral-xyz/anchor'
 import { Cluster, PublicKey } from '@solana/web3.js'
 import CounterIDL from '../target/idl/counter.json'
@@ -27,3 +27,4 @@ export function getCounterProgramId(cluster: Cluster) {
       return COUNTER_PROGRAM_ID
   }
 }
+ */
