@@ -15,7 +15,8 @@ const eslintConfig = [...compat.extends('next/core-web-vitals', 'next/typescript
       '@typescript-eslint/no-unused-vars' : 'off',
       '@typescript-eslint/no-unused-expressions' : 'off',
       'prefer-const' : 'off',
-      'react-hooks/rules-of-hooks' : 'off'
+      'react-hooks/rules-of-hooks' : 'off',
+      'react/no-unescaped-entities' : 'off',
     },
   },
 ]
