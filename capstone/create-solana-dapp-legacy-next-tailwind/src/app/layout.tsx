@@ -15,6 +15,8 @@ const links: { label: string; path: string }[] = [
   { label: 'Account', path: '/account' },
  // { label: 'Counter Program', path: '/counter' },
   { label: 'Homeowners', path: '/homeowners' },
+  { label: 'Drivers', path: '/drivers' },
+
 
 ]
 
