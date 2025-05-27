@@ -8,8 +8,9 @@ import { ellipsify } from '@/lib/utils'
 import { ExplorerLink } from "../cluster/cluster-ui";
 import {
 
-    useMarketplaceProgram
-    //useJournalProgramAccount,
+  useMarketplaceProgram,
+  //useJournalProgramAccount,
+  useMarketplaceProgramAccount
 } from "./homeowner-data-access";
 import { useWallet } from "@solana/wallet-adapter-react";
 //import { useWalletUi } from '@wallet-ui/react';
@@ -17,129 +18,131 @@ import { useWallet } from "@solana/wallet-adapter-react";
 import { useState } from "react";
 
 export function ListingCreate() {
-    const { createListing } = useMarketplaceProgram();
-    const { publicKey } = useWallet();
-   // const { account } = useWalletUi();
+  const { createListing } = useMarketplaceProgram();
+  const { publicKey } = useWallet();
+  // const { account } = useWalletUi();
 
-    const [address, setAddress] = useState("");              // Address (String)
-    const [rentalRate, setRentalRate] = useState(0);        // Rental rate (u32)
-    const [sensorId, setSensorId] = useState("");            // Sensor ID (String)
-    const [latitude, setLatitude] = useState(0);             // Latitude (f64)
-    const [longitude, setLongitude] = useState(0);           // Longitude (f64)
-    const [additionalInfo, setAdditionalInfo] = useState(""); // Additional information (Option<String>)
-    const [availabilityStart, setAvailabilityStart] = useState(new anchor.BN(0)); // Availability start (i64)
-    const [availabilityEnd, setAvailabilityEnd] = useState(new anchor.BN(0));     // Availability end (i64)
-    const [email, setEmail] = useState("");                  // Email (String)
-    const [phone, setPhone] = useState("");                  // Phone (String)
+  const [address, setAddress] = useState("");              // Address (String)
+  const [rentalRate, setRentalRate] = useState(0);        // Rental rate (u32)
+  const [sensorId, setSensorId] = useState("");            // Sensor ID (String)
+  const [latitude, setLatitude] = useState(0);             // Latitude (f64)
+  const [longitude, setLongitude] = useState(0);           // Longitude (f64)
+  const [additionalInfo, setAdditionalInfo] = useState(""); // Additional information (Option<String>)
+  const [availabilityStart, setAvailabilityStart] = useState(new anchor.BN(0)); // Availability start (i64)
+  const [availabilityEnd, setAvailabilityEnd] = useState(new anchor.BN(0));     // Availability end (i64)
+  const [email, setEmail] = useState("");                  // Email (String)
+  const [phone, setPhone] = useState("");                  // Phone (String)
 
-    const isFormValid =
-        address.trim() !== "" &&
-        rentalRate > 0 && // Assuming rentalRate should be greater than 0
-        sensorId.trim() !== "" &&
-        latitude !== 0 && // Assuming latitude should not be 0 (or you can adjust this based on your requirements)
-        longitude !== 0 && // Assuming longitude should not be 0 (or you can adjust this based on your requirements)
-        additionalInfo.trim() !== "" && // Optional, but you can check if it's not empty if needed
-   //     availabilityStart > new anchor.BN(0) && // Assuming availabilityStart should be a positive number
-      //  availabilityEnd > new anchor.BN(0) && // Assuming availabilityEnd should be a positive number
-        email.trim() !== "" &&
-        phone.trim() !== "";
+  const isFormValid =
+    address.trim() !== "" &&
+    rentalRate > 0 && // Assuming rentalRate should be greater than 0
+    sensorId.trim() !== "" &&
+    latitude !== 0 && // Assuming latitude should not be 0 (or you can adjust this based on your requirements)
+    longitude !== 0 && // Assuming longitude should not be 0 (or you can adjust this based on your requirements)
+    additionalInfo.trim() !== "" && // Optional, but you can check if it's not empty if needed
+    //     availabilityStart > new anchor.BN(0) && // Assuming availabilityStart should be a positive number
+    //  availabilityEnd > new anchor.BN(0) && // Assuming availabilityEnd should be a positive number
+    email.trim() !== "" &&
+    phone.trim() !== "";
 
-    const handleSubmit = async () => {
-        if (publicKey && isFormValid) {
-            await createListing.mutateAsync({
-                address,
-                rentalRate,
-                sensorId,
-                latitude,
-                longitude,
-                additionalInfo,
-                availabilityStart,
-                availabilityEnd,
-                email,
-                phone,
-                homeowner1: publicKey
-            });
-        }
-    };
-
-    if (!publicKey) {
-        return <p>Connect your wallet</p>;
+  const handleSubmit = async () => {
+    if (publicKey && isFormValid) {
+      await createListing.mutateAsync({
+        address,
+        rentalRate,
+        sensorId,
+        latitude,
+        longitude,
+        additionalInfo,
+        availabilityStart,
+        availabilityEnd,
+        email,
+        phone,
+        homeowner1: publicKey
+      });
     }
+  };
 
-    return (
-        <div>
-            <label htmlFor="address" className="block text-sm font-medium text-white">
-    Home Address to rent out
-</label>
-<input
-    type="text"
-    id="address"
-    placeholder="Home Address to rent out"
-    value={address}
-    onChange={(e) => setAddress(e.target.value)}
-    className="input input-bordered w-full max-w-xs border border-white" // Added border class
-/>
+  if (!publicKey) {
+    return <p>Connect your wallet</p>;
+  }
 
-<label htmlFor="rentalRate" className="block text-sm font-medium text-white">
-    Rental Rate
-</label>
-<input
-    type="number"
-    id="rentalRate"
-    placeholder="Rental Rate"
-    value={rentalRate}
-    onChange={(e) => setRentalRate(Number(e.target.value))} // Convert to number
-    className="input input-bordered w-full max-w-xs border border-white" // Added border class
-/>
+  return (
+    <div>
+      <label htmlFor="address" className="block text-sm font-medium text-white">
+        Home Address to rent out
+      </label>
+      <input
+        type="text"
+        id="address"
+        placeholder="Home Address to rent out"
+        value={address}
+        onChange={(e) => setAddress(e.target.value)}
+        className="input input-bordered w-full max-w-xs border border-white" // Added border class
+      />
+      <p className="mt-2 text-sm text-gray-300">
+        Get latitude and longitude from <a href="https://www.gps-coordinates.net/" className="text-blue-400 underline" target="_blank" rel="noopener noreferrer">https://www.gps-coordinates.net/</a>
+      </p>
+      <label htmlFor="rentalRate" className="block text-sm font-medium text-white">
+        Rental Rate per hour
+      </label>
+      <input
+        type="number"
+        id="rentalRate"
+        placeholder="Rental Rate"
+        value={rentalRate}
+        onChange={(e) => setRentalRate(Number(e.target.value))} // Convert to number
+        className="input input-bordered w-full max-w-xs border border-white" // Added border class
+      />
 
-<label htmlFor="sensorId" className="block text-sm font-medium text-white">
-    Sensor ID
-</label>
-<input
-    type="text"
-    id="sensorId"
-    placeholder="Sensor ID"
-    value={sensorId}
-    onChange={(e) => setSensorId(e.target.value)}
-    className="input input-bordered w-full max-w-xs border border-white" // Added border class
-/>
+      <label htmlFor="sensorId" className="block text-sm font-medium text-white">
+        Sensor ID
+      </label>
+      <input
+        type="text"
+        id="sensorId"
+        placeholder="Sensor ID"
+        value={sensorId}
+        onChange={(e) => setSensorId(e.target.value)}
+        className="input input-bordered w-full max-w-xs border border-white" // Added border class
+      />
 
-<label htmlFor="latitude" className="block text-sm font-medium text-white">
-    Latitude
-</label>
-<input
-    type="number"
-    id="latitude"
-    placeholder="Latitude"
-    value={latitude}
-    onChange={(e) => setLatitude(Number(e.target.value))} // Convert to number
-    className="input input-bordered w-full max-w-xs border border-white" // Added border class
-/>
+      <label htmlFor="latitude" className="block text-sm font-medium text-white">
+        Latitude
+      </label>
+      <input
+        type="number"
+        id="latitude"
+        placeholder="Latitude"
+        value={latitude}
+        onChange={(e) => setLatitude(Number(e.target.value))} // Convert to number
+        className="input input-bordered w-full max-w-xs border border-white" // Added border class
+      />
 
-<label htmlFor="longitude" className="block text-sm font-medium text-white">
-    Longitude
-</label>
-<input
-    type="number"
-    id="longitude"
-    placeholder="Longitude"
-    value={longitude}
-    onChange={(e) => setLongitude(Number(e.target.value))} // Convert to number
-    className="input input-bordered w-full max-w-xs border border-white" // Added border class
-/>
+      <label htmlFor="longitude" className="block text-sm font-medium text-white">
+        Longitude
+      </label>
+      <input
+        type="number"
+        id="longitude"
+        placeholder="Longitude"
+        value={longitude}
+        onChange={(e) => setLongitude(Number(e.target.value))} // Convert to number
+        className="input input-bordered w-full max-w-xs border border-white" // Added border class
+      />
 
-<label htmlFor="additionalInfo" className="block text-sm font-medium text-white">
-    Additional Info
-</label>
-<textarea
-    id="additionalInfo"
-    placeholder="Additional Info"
-    value={additionalInfo}
-    onChange={(e) => setAdditionalInfo(e.target.value)}
-    className="textarea textarea-bordered w-full max-w-xs border border-white" // Added border class
-/>
+      <label htmlFor="additionalInfo" className="block text-sm font-medium text-white">
+        Additional Info
+      </label>
+      <textarea
+        id="additionalInfo"
+        placeholder="Additional Info"
+        value={additionalInfo}
+        onChange={(e) => setAdditionalInfo(e.target.value)}
+        className="textarea textarea-bordered w-full max-w-xs border border-white" // Added border class
+      />
 
-{/* <label htmlFor="availabilityStart" className="block text-sm font-medium text-white">
+      {/* <label htmlFor="availabilityStart" className="block text-sm font-medium text-white">
     Availability Start
 </label>
 <input
@@ -163,42 +166,42 @@ export function ListingCreate() {
     className="input input-bordered w-full max-w-xs border border-white" // Added border class
 />
  */}
-<label htmlFor="email" className="block text-sm font-medium text-white">
-    Email
-</label>
-<input
-    type="email"
-    id="email"
-    placeholder="Email"
-    value={email}
-    onChange={(e) => setEmail(e.target.value)}
-    className="input input-bordered w-full max-w-xs border border-white" // Added border class
-/>
-<label htmlFor="phone" className="block text-sm font-medium text-white">
-    Phone
-</label>
-<input
-    type="tel"
-    id="phone"
-    placeholder="Phone"
-    value={phone}
-    onChange={(e) => setPhone(e.target.value)}
-    className="input input-bordered w-full max-w-xs border border-white" // Added border class
-/>
+      <label htmlFor="email" className="block text-sm font-medium text-white">
+        Email
+      </label>
+      <input
+        type="email"
+        id="email"
+        placeholder="Email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        className="input input-bordered w-full max-w-xs border border-white" // Added border class
+      />
+      <label htmlFor="phone" className="block text-sm font-medium text-white">
+        Phone
+      </label>
+      <input
+        type="tel"
+        id="phone"
+        placeholder="Phone"
+        value={phone}
+        onChange={(e) => setPhone(e.target.value)}
+        className="input input-bordered w-full max-w-xs border border-white" // Added border class
+      />
 
-            <br></br>
-            <button
-                className="btn btn-xs lg:btn-md btn-primary"
-                onClick={handleSubmit}
-                disabled={createListing.isPending || !isFormValid}
-            >
-                Create A Listing {createListing.isPending && "..."}
-            </button>
-        </div>
-    );
+      <br></br>
+      <button
+        className="bg-blue-500 text-white border-2 border-blue-700 hover:bg-blue-600 hover:border-blue-800 transition-all duration-300 ease-in-out px-6 py-3 rounded-lg shadow-lg"
+        onClick={handleSubmit}
+        disabled={createListing.isPending || !isFormValid}
+      >
+        Create A Listing {createListing.isPending && "..."}
+      </button>
+    </div>
+  );
 }
 
-/* export function JournalList() {
+export function ParkingSpaceList() {
   const { accounts, getProgramAccount } = useMarketplaceProgram();
 
   if (getProgramAccount.isLoading) {
@@ -221,7 +224,7 @@ export function ListingCreate() {
       ) : accounts.data?.length ? (
         <div className="grid gap-4 md:grid-cols-2">
           {accounts.data?.map((account) => (
-            <JournalCard
+            <ListingCard
               key={account.publicKey.toString()}
               account={account.publicKey}
             />
@@ -235,21 +238,46 @@ export function ListingCreate() {
       )}
     </div>
   );
-} */
+}
 
-/* function JournalCard({ account }: { account: PublicKey }) {
-  const { accountQuery, updateEntry, deleteEntry } = useJournalProgramAccount({
+function ListingCard({ account }: { account: PublicKey }) {
+ // const { accountQuery, updateEntry, deleteEntry } = useJournalProgramAccount({
+    const { accountQuery, updateListing, deleteListing } = useMarketplaceProgramAccount({
+
     account,
   });
   const { publicKey } = useWallet();
   const [message, setMessage] = useState("");
-  const title = accountQuery.data?.title;
+
+  const [address, setAddress] = useState("");              // Address (String)
+  const [rentalRate, setRentalRate] = useState(0);        // Rental rate (u32)
+  const [sensorId, setSensorId] = useState("");            // Sensor ID (String)
+  const [latitude, setLatitude] = useState(0);             // Latitude (f64)
+  const [longitude, setLongitude] = useState(0);           // Longitude (f64)
+  const [additionalInfo, setAdditionalInfo] = useState(""); // Additional information (Option<String>)
+  const [availabilityStart, setAvailabilityStart] = useState(new anchor.BN(0)); // Availability start (i64)
+  const [availabilityEnd, setAvailabilityEnd] = useState(new anchor.BN(0));     // Availability end (i64)
+  const [email, setEmail] = useState("");                  // Email (String)
+  const [phone, setPhone] = useState("");                  // Phone (String)
+
+
+  const title = accountQuery.data?.address;
 
   const isFormValid = message.trim() !== "";
 
   const handleSubmit = () => {
     if (publicKey && isFormValid && title) {
-      updateEntry.mutateAsync({ title, message, owner: publicKey });
+      updateListing.mutateAsync({  address,
+        rentalRate,
+        sensorId,
+        latitude,
+        longitude,
+        additionalInfo,
+        availabilityStart,
+        availabilityEnd,
+        email,
+        phone,
+    homeowner1: publicKey });
     }
   };
 
@@ -267,9 +295,9 @@ export function ListingCreate() {
             className="card-title justify-center text-3xl cursor-pointer"
             onClick={() => accountQuery.refetch()}
           >
-            {accountQuery.data?.title}
+            {accountQuery.data?.address}
           </h2>
-          <p>{accountQuery.data?.message}</p>
+          <p>{accountQuery.data?.address}</p>
           <div className="card-actions justify-around">
             <textarea
               placeholder="Update message here"
@@ -280,9 +308,9 @@ export function ListingCreate() {
             <button
               className="btn btn-xs lg:btn-md btn-primary"
               onClick={handleSubmit}
-              disabled={updateEntry.isPending || !isFormValid}
+              disabled={updateListing.isPending || !isFormValid}
             >
-              Update Journal Entry {updateEntry.isPending && "..."}
+              Update Journal Entry {updateListing.isPending && "..."}
             </button>
           </div>
           <div className="text-center space-y-4">
@@ -302,12 +330,12 @@ export function ListingCreate() {
                 ) {
                   return;
                 }
-                const title = accountQuery.data?.title;
+                const title = accountQuery.data?.address;
                 if (title) {
-                  return deleteEntry.mutateAsync(title);
+                  return deleteListing.mutateAsync(title);
                 }
               }}
-              disabled={deleteEntry.isPending}
+              disabled={deleteListing.isPending}
             >
               Close
             </button>
@@ -316,4 +344,4 @@ export function ListingCreate() {
       </div>
     </div>
   );
-} */
+}

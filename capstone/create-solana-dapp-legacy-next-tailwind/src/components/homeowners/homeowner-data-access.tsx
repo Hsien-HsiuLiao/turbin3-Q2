@@ -150,22 +150,49 @@ return {
 };
 }
 
-/* export function useJournalProgramAccount({ account }: { account: PublicKey }) {
-//  const { cluster } = useCluster();
-  const { cluster } = useWalletUiCluster()
+//export function useJournalProgramAccount({ account }: { account: PublicKey }) {
+  export function useMarketplaceProgramAccount({ account }: { account: PublicKey }) {
+
+  const { cluster } = useCluster();
+//  const { cluster } = useWalletUiCluster()
 
   const transactionToast = useTransactionToast();
-  const { program, accounts } = useJournalProgram();
+ // const { program, accounts } = useJournalProgram();
+  const { program, accounts } = useMarketplaceProgram();
+
 
   const accountQuery = useQuery({
     queryKey: ["journal", "fetch", { cluster, account }],
-    queryFn: () => program.account.journalEntryState.fetch(account),
+    queryFn: () => program.account.listing.fetch(account),
   });
 
-  const updateEntry = useMutation<string, Error, CreateEntryArgs>({
+ // const updateEntry = useMutation<string, Error, CreateEntryArgs>({
+    const updateListing = useMutation<string, Error, CreateListingArgs>({
+
     mutationKey: ["journalEntry", "update", { cluster }],
-    mutationFn: async ({ title, message, owner }) => {
-      return program.methods.updateJournalEntry(title, message).rpc();
+    mutationFn: async ({
+      address,
+      rentalRate,
+      sensorId,
+      latitude,
+      longitude,
+      additionalInfo,
+      availabilityStart,
+      availabilityEnd,
+      email,
+      phone,
+  homeowner1}) => {
+      return program.methods.updateListing( address,            // string
+        rentalRate,         // number
+        sensorId,           // string
+        latitude,           // number
+        longitude,          // number
+        additionalInfo ?? null,     // string (optional)
+        availabilityStart,   // number (i64)
+        availabilityEnd,     // number (i64)
+        email,              // string
+        phone,                 // string
+        ).rpc();
     },
     onSuccess: (signature) => {
       transactionToast(signature);
@@ -176,10 +203,10 @@ return {
     },
   });
 
-  const deleteEntry = useMutation({
+  const deleteListing = useMutation({
     mutationKey: ["journal", "deleteEntry", { cluster, account }],
     mutationFn: (title: string) =>
-      program.methods.deleteJournalEntry(title).rpc(),
+      program.methods.deleteListing().rpc(),
     onSuccess: (tx) => {
       transactionToast(tx);
       return accounts.refetch();
@@ -188,7 +215,7 @@ return {
 
   return {
     accountQuery,
-    updateEntry,
-    deleteEntry,
+    updateListing,
+    deleteListing,
   };
-} */
+}

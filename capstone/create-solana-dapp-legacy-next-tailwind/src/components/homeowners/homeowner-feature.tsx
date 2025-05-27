@@ -11,7 +11,7 @@ import { ExplorerLink } from '../cluster/cluster-ui';
 import { useMarketplaceProgram } from './homeowner-data-access';
 
 //import { JournalCreate, JournalList } from './journal-ui';
-import {ListingCreate} from './homeowner-ui';
+import {ListingCreate, ParkingSpaceList} from './homeowner-ui';
 //import { useWalletUiCluster } from '@wallet-ui/react';
 
 
@@ -43,7 +43,7 @@ export default function HomeownerFeature() {
         </p>
           <ListingCreate />
       </AppHero>
-      {/*  <JournalList /> */}
+       <ParkingSpaceList />
     </div>
   ) : (
     <div className="max-w-4xl mx-auto">
