@@ -117,7 +117,7 @@ console.log("Homeowner PublicKey:", homeowner1);
                 sensorId,           // string
                 latitude,           // number
                 longitude,          // number
-                additionalInfo,     // string (optional)
+                additionalInfo ?? null,     // string (optional)
                 availabilityStart,   // number (i64)
                 availabilityEnd,     // number (i64)
                 email,              // string
