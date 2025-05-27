@@ -13,7 +13,7 @@ const links: { label: string; path: string }[] = [
   // More links...
   { label: 'Home', path: '/' },
   { label: 'Account', path: '/account' },
-  { label: 'Counter Program', path: '/counter' },
+ // { label: 'Counter Program', path: '/counter' },
   { label: 'Homeowners', path: '/homeowners' },
 
 ]
