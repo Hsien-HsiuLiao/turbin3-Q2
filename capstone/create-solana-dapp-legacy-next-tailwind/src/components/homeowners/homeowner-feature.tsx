@@ -30,7 +30,7 @@ export default function HomeownerFeature() {
       <AppHero
         title="Welcome Homeowners"
         subtitle={
-          'Create your listing here!'
+          'Create your parking space listing here!'
         }
       >
         <p className="mb-6">
