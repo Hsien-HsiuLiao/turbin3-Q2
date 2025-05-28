@@ -36,6 +36,8 @@ interface CreateListingArgs {
 
 }
 
+
+
 export function useMarketplaceProgram() {
     const { connection } = useConnection();
 
@@ -70,14 +72,14 @@ export function useMarketplaceProgram() {
 
     const marketplace_name = "DePIN PANORAMA PARKING";
 
-  let marketplace: PublicKey;
-  let marketplaceBump;
+    let marketplace: PublicKey;
+    let marketplaceBump;
+    
+    [marketplace, marketplaceBump] = PublicKey.findProgramAddressSync(
+      [Buffer.from("marketplace"), Buffer.from(marketplace_name)],
+      program.programId
+    );
 
-//https://solana.com/docs/core/pda#create-pda-accounts
-  [marketplace, marketplaceBump] = PublicKey.findProgramAddressSync(
-    [Buffer.from("marketplace"), Buffer.from(marketplace_name)],
-    program.programId
-  );
     const createListing = useMutation<string, Error, CreateListingArgs>({
         mutationKey: ["journalEntry", "create", { cluster }],
         mutationFn: async ({address,
@@ -166,6 +168,20 @@ return {
     queryFn: () => program.account.listing.fetch(account),
   });
 
+  const marketplace_name = "DePIN PANORAMA PARKING";
+
+let marketplace: PublicKey;
+let marketplaceBump;
+
+[marketplace, marketplaceBump] = PublicKey.findProgramAddressSync(
+  [Buffer.from("marketplace"), Buffer.from(marketplace_name)],
+  program.programId
+);
+
+
+
+
+
  // const updateEntry = useMutation<string, Error, CreateEntryArgs>({
     const updateListing = useMutation<string, Error, CreateListingArgs>({
 
@@ -182,6 +198,16 @@ return {
       email,
       phone,
   homeowner1}) => {
+    const listingPDA = PublicKey.findProgramAddressSync(
+      [marketplace.toBuffer(), homeowner1.toBuffer()],
+      program.programId
+    )[0];
+
+    const listing = PublicKey.findProgramAddressSync(
+      [marketplace.toBuffer(), homeowner1.toBuffer()],
+      program.programId
+    )[0];
+
       return program.methods.updateListing( address,            // string
         rentalRate,         // number
         sensorId,           // string
@@ -192,21 +218,34 @@ return {
         availabilityEnd,     // number (i64)
         email,              // string
         phone,                 // string
-        ).rpc();
+        )
+        .accountsPartial({
+           maker: homeowner1,
+           marketplace: marketplace,
+                listing: listing
+         })
+         .rpc();
     },
     onSuccess: (signature) => {
       transactionToast(signature);
       accounts.refetch();
     },
     onError: (error) => {
-      toast.error(`Failed to update journal entry: ${error.message}`);
+      toast.error(`Failed to update listing: ${error.message}`);
     },
   });
 
   const deleteListing = useMutation({
     mutationKey: ["journal", "deleteEntry", { cluster, account }],
-    mutationFn: (title: string) =>
-      program.methods.deleteListing().rpc(),
+    mutationFn: (homeowner1) =>
+      program.methods.deleteListing()
+    .accountsPartial({
+      maker: homeowner1, //
+      marketplace: marketplace,
+     // listing: listing,
+      owner: homeowner1 //
+    })
+    .rpc(),
     onSuccess: (tx) => {
       transactionToast(tx);
       return accounts.refetch();
