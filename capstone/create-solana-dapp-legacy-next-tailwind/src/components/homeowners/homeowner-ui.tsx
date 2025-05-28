@@ -248,16 +248,16 @@ function ListingCard({ account }: { account: PublicKey }) {
   const [message, setMessage] = useState("");
 
   // State variables for listing fields
-  const [address, setAddress] = useState("");              
-  const [rentalRate, setRentalRate] = useState(0);        
-  const [sensorId, setSensorId] = useState("");            
-  const [latitude, setLatitude] = useState(0);             
-  const [longitude, setLongitude] = useState(0);           
-  const [additionalInfo, setAdditionalInfo] = useState(""); 
-  const [availabilityStart, setAvailabilityStart] = useState(new anchor.BN(0)); 
-  const [availabilityEnd, setAvailabilityEnd] = useState(new anchor.BN(0));     
-  const [email, setEmail] = useState("");                  
-  const [phone, setPhone] = useState("");                  
+  const [address, setAddress] = useState("");
+  const [rentalRate, setRentalRate] = useState(0);
+  const [sensorId, setSensorId] = useState("");
+  const [latitude, setLatitude] = useState(0);
+  const [longitude, setLongitude] = useState(0);
+  const [additionalInfo, setAdditionalInfo] = useState("");
+  const [availabilityStart, setAvailabilityStart] = useState(new anchor.BN(0));
+  const [availabilityEnd, setAvailabilityEnd] = useState(new anchor.BN(0));
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
 
   // Load data from accountQuery
   const title = accountQuery.data?.address;
@@ -266,8 +266,8 @@ function ListingCard({ account }: { account: PublicKey }) {
   const isFormValid = message.trim() !== "";
 
   const handleSubmit = () => {
-    if (publicKey && isFormValid && title) {
-      updateListing.mutateAsync({  
+    if (publicKey ) {
+      updateListing.mutateAsync({
         address,
         rentalRate,
         sensorId,
@@ -278,7 +278,7 @@ function ListingCard({ account }: { account: PublicKey }) {
         availabilityEnd,
         email,
         phone,
-        homeowner1: publicKey 
+        homeowner1: publicKey
       });
     }
   };
@@ -297,113 +297,113 @@ function ListingCard({ account }: { account: PublicKey }) {
             {accountQuery.data?.address}
           </h2>
           <div className="space-y-4">
-          <label htmlFor="address" className="block text-sm font-medium text-white">
-            Home Address: <span className="text-gray-300">{accountQuery.data?.address}</span>
-          </label>
-          <input
-            type="text"
-            id="address"
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
-            className="input input-bordered w-full max-w-xs border border-white"
-            placeholder="Home Address"
-          />
+            <label htmlFor="address" className="block text-sm font-medium text-white">
+              Home Address: <span className="text-gray-300">{accountQuery.data?.address}</span>
+            </label>
+            <input
+              type="text"
+              id="address"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              className="input input-bordered w-full max-w-xs border border-white"
+              placeholder="Home Address"
+            />
 
-          <label htmlFor="rentalRate" className="block text-sm font-medium text-white">
-            Rental Rate: <span className="text-gray-300">{accountQuery.data?.rentalRate}</span>
-          </label>
-          <input
-            type="number"
-            id="rentalRate"
-            value={rentalRate}
-            onChange={(e) => setRentalRate(Number(e.target.value))}
-            className="input input-bordered w-full max-w-xs border border-white"
-            placeholder="Rental Rate"
-          />
+            <label htmlFor="rentalRate" className="block text-sm font-medium text-white">
+              Rental Rate: <span className="text-gray-300">{accountQuery.data?.rentalRate}</span>
+            </label>
+            <input
+              type="number"
+              id="rentalRate"
+              value={rentalRate}
+              onChange={(e) => setRentalRate(Number(e.target.value))}
+              className="input input-bordered w-full max-w-xs border border-white"
+              placeholder="Rental Rate"
+            />
 
-          <label htmlFor="sensorId" className="block text-sm font-medium text-white">
-            Sensor ID: <span className="text-gray-300">{accountQuery.data?.sensorId}</span>
-          </label>
-          <input
-            type="text"
-            id="sensorId"
-            value={sensorId}
-            onChange={(e) => setSensorId(e.target.value)}
-            className="input input-bordered w-full max-w-xs border border-white"
-            placeholder="Sensor ID"
-          />
+            <label htmlFor="sensorId" className="block text-sm font-medium text-white">
+              Sensor ID: <span className="text-gray-300">{accountQuery.data?.sensorId}</span>
+            </label>
+            <input
+              type="text"
+              id="sensorId"
+              value={sensorId}
+              onChange={(e) => setSensorId(e.target.value)}
+              className="input input-bordered w-full max-w-xs border border-white"
+              placeholder="Sensor ID"
+            />
 
-          <label htmlFor="latitude" className="block text-sm font-medium text-white">
-            Latitude: <span className="text-gray-300">{accountQuery.data?.latitude}</span>
-          </label>
-          <input
-            type="number"
-            id="latitude"
-            value={latitude}
-            onChange={(e) => setLatitude(Number(e.target.value))}
-            className="input input-bordered w-full max-w-xs border border-white"
-            placeholder="Latitude"
-          />
+            <label htmlFor="latitude" className="block text-sm font-medium text-white">
+              Latitude: <span className="text-gray-300">{accountQuery.data?.latitude}</span>
+            </label>
+            <input
+              type="number"
+              id="latitude"
+              value={latitude}
+              onChange={(e) => setLatitude(Number(e.target.value))}
+              className="input input-bordered w-full max-w-xs border border-white"
+              placeholder="Latitude"
+            />
 
-          <label htmlFor="longitude" className="block text-sm font-medium text-white">
-            Longitude: <span className="text-gray-300">{accountQuery.data?.longitude}</span>
-          </label>
-          <input
-            type="number"
-            id="longitude"
-            value={longitude}
-            onChange={(e) => setLongitude(Number(e.target.value))}
-            className="input input-bordered w-full max-w-xs border border-white"
-            placeholder="Longitude"
-          />
+            <label htmlFor="longitude" className="block text-sm font-medium text-white">
+              Longitude: <span className="text-gray-300">{accountQuery.data?.longitude}</span>
+            </label>
+            <input
+              type="number"
+              id="longitude"
+              value={longitude}
+              onChange={(e) => setLongitude(Number(e.target.value))}
+              className="input input-bordered w-full max-w-xs border border-white"
+              placeholder="Longitude"
+            />
 
-          <label htmlFor="additionalInfo" className="block text-sm font-medium text-white">
-            Additional Info: <span className="text-gray-300">{accountQuery.data?.additionalInfo}</span>
-          </label>
-          <textarea
-            id="additionalInfo"
-            value={additionalInfo}
-            onChange={(e) => setAdditionalInfo(e.target.value)}
-            className="textarea textarea-bordered w-full max-w-xs border border-white"
-            placeholder="Additional Info"
-          />
+            <label htmlFor="additionalInfo" className="block text-sm font-medium text-white">
+              Additional Info: <span className="text-gray-300">{accountQuery.data?.additionalInfo}</span>
+            </label>
+            <textarea
+              id="additionalInfo"
+              value={additionalInfo}
+              onChange={(e) => setAdditionalInfo(e.target.value)}
+              className="textarea textarea-bordered w-full max-w-xs border border-white"
+              placeholder="Additional Info"
+            />
 
-          <label htmlFor="email" className="block text-sm font-medium text-white">
-            Email: <span className="text-gray-300">{accountQuery.data?.email}</span>
-          </label>
-          <input
-            type="email"
-            id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="input input-bordered w-full max-w-xs border border-white"
-            placeholder="Email"
-          />
+            <label htmlFor="email" className="block text-sm font-medium text-white">
+              Email: <span className="text-gray-300">{accountQuery.data?.email}</span>
+            </label>
+            <input
+              type="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="input input-bordered w-full max-w-xs border border-white"
+              placeholder="Email"
+            />
 
-          <label htmlFor="phone" className="block text-sm font-medium text-white">
-            Phone: <span className="text-gray-300">{accountQuery.data?.phone}</span>
-          </label>
-          <input
-            type="tel"
-            id="phone"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            className="input input-bordered w-full max-w-xs border border-white"
-            placeholder="Phone"
-          />
-        </div>
+            <label htmlFor="phone" className="block text-sm font-medium text-white">
+              Phone: <span className="text-gray-300">{accountQuery.data?.phone}</span>
+            </label>
+            <input
+              type="tel"
+              id="phone"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              className="input input-bordered w-full max-w-xs border border-white"
+              placeholder="Phone"
+            />
+          </div>
 
 
 
           <div className="card-actions justify-around">
-           
+
             <button
-    className="bg-blue-500 text-white border-2 border-blue-700 hover:bg-blue-600 hover:border-blue-800 transition-all duration-300 ease-in-out px-6 py-3 rounded-lg shadow-lg"
-    onClick={handleSubmit}
-    disabled={updateListing.isPending || !isFormValid}
-  >
-    Update Listing {updateListing.isPending && "..."}
-  </button>
+              className="bg-blue-500 text-white border-2 border-blue-700 hover:bg-blue-600 hover:border-blue-800 transition-all duration-300 ease-in-out px-6 py-3 rounded-lg shadow-lg"
+              onClick={handleSubmit}
+              disabled={updateListing.isPending }
+            >
+              Update Listing {updateListing.isPending && "..."}
+            </button>
           </div>
 
           <div className="text-center space-y-4">
