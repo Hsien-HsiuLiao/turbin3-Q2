@@ -241,33 +241,34 @@ export function ParkingSpaceList() {
 }
 
 function ListingCard({ account }: { account: PublicKey }) {
- // const { accountQuery, updateEntry, deleteEntry } = useJournalProgramAccount({
-    const { accountQuery, updateListing, deleteListing } = useMarketplaceProgramAccount({
-
+  const { accountQuery, updateListing, deleteListing } = useMarketplaceProgramAccount({
     account,
   });
   const { publicKey } = useWallet();
   const [message, setMessage] = useState("");
 
-  const [address, setAddress] = useState("");              // Address (String)
-  const [rentalRate, setRentalRate] = useState(0);        // Rental rate (u32)
-  const [sensorId, setSensorId] = useState("");            // Sensor ID (String)
-  const [latitude, setLatitude] = useState(0);             // Latitude (f64)
-  const [longitude, setLongitude] = useState(0);           // Longitude (f64)
-  const [additionalInfo, setAdditionalInfo] = useState(""); // Additional information (Option<String>)
-  const [availabilityStart, setAvailabilityStart] = useState(new anchor.BN(0)); // Availability start (i64)
-  const [availabilityEnd, setAvailabilityEnd] = useState(new anchor.BN(0));     // Availability end (i64)
-  const [email, setEmail] = useState("");                  // Email (String)
-  const [phone, setPhone] = useState("");                  // Phone (String)
+  // State variables for listing fields
+  const [address, setAddress] = useState("");              
+  const [rentalRate, setRentalRate] = useState(0);        
+  const [sensorId, setSensorId] = useState("");            
+  const [latitude, setLatitude] = useState(0);             
+  const [longitude, setLongitude] = useState(0);           
+  const [additionalInfo, setAdditionalInfo] = useState(""); 
+  const [availabilityStart, setAvailabilityStart] = useState(new anchor.BN(0)); 
+  const [availabilityEnd, setAvailabilityEnd] = useState(new anchor.BN(0));     
+  const [email, setEmail] = useState("");                  
+  const [phone, setPhone] = useState("");                  
 
-
+  // Load data from accountQuery
   const title = accountQuery.data?.address;
 
+  // Form validation
   const isFormValid = message.trim() !== "";
 
   const handleSubmit = () => {
     if (publicKey && isFormValid && title) {
-      updateListing.mutateAsync({  address,
+      updateListing.mutateAsync({  
+        address,
         rentalRate,
         sensorId,
         latitude,
@@ -277,7 +278,8 @@ function ListingCard({ account }: { account: PublicKey }) {
         availabilityEnd,
         email,
         phone,
-    homeowner1: publicKey });
+        homeowner1: publicKey 
+      });
     }
   };
 
@@ -291,28 +293,119 @@ function ListingCard({ account }: { account: PublicKey }) {
     <div className="card card-bordered border-base-300 border-4 text-neutral-content">
       <div className="card-body items-center text-center">
         <div className="space-y-6">
-          <h2
-            className="card-title justify-center text-3xl cursor-pointer"
-            onClick={() => accountQuery.refetch()}
-          >
+          <h2 className="card-title justify-center text-3xl cursor-pointer" onClick={() => accountQuery.refetch()}>
             {accountQuery.data?.address}
           </h2>
-          <p>{accountQuery.data?.address}</p>
+          <div className="space-y-4">
+          <label htmlFor="address" className="block text-sm font-medium text-white">
+            Home Address: <span className="text-gray-300">{accountQuery.data?.address}</span>
+          </label>
+          <input
+            type="text"
+            id="address"
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+            className="input input-bordered w-full max-w-xs border border-white"
+            placeholder="Home Address"
+          />
+
+          <label htmlFor="rentalRate" className="block text-sm font-medium text-white">
+            Rental Rate: <span className="text-gray-300">{accountQuery.data?.rentalRate}</span>
+          </label>
+          <input
+            type="number"
+            id="rentalRate"
+            value={rentalRate}
+            onChange={(e) => setRentalRate(Number(e.target.value))}
+            className="input input-bordered w-full max-w-xs border border-white"
+            placeholder="Rental Rate"
+          />
+
+          <label htmlFor="sensorId" className="block text-sm font-medium text-white">
+            Sensor ID: <span className="text-gray-300">{accountQuery.data?.sensorId}</span>
+          </label>
+          <input
+            type="text"
+            id="sensorId"
+            value={sensorId}
+            onChange={(e) => setSensorId(e.target.value)}
+            className="input input-bordered w-full max-w-xs border border-white"
+            placeholder="Sensor ID"
+          />
+
+          <label htmlFor="latitude" className="block text-sm font-medium text-white">
+            Latitude: <span className="text-gray-300">{accountQuery.data?.latitude}</span>
+          </label>
+          <input
+            type="number"
+            id="latitude"
+            value={latitude}
+            onChange={(e) => setLatitude(Number(e.target.value))}
+            className="input input-bordered w-full max-w-xs border border-white"
+            placeholder="Latitude"
+          />
+
+          <label htmlFor="longitude" className="block text-sm font-medium text-white">
+            Longitude: <span className="text-gray-300">{accountQuery.data?.longitude}</span>
+          </label>
+          <input
+            type="number"
+            id="longitude"
+            value={longitude}
+            onChange={(e) => setLongitude(Number(e.target.value))}
+            className="input input-bordered w-full max-w-xs border border-white"
+            placeholder="Longitude"
+          />
+
+          <label htmlFor="additionalInfo" className="block text-sm font-medium text-white">
+            Additional Info: <span className="text-gray-300">{accountQuery.data?.additionalInfo}</span>
+          </label>
+          <textarea
+            id="additionalInfo"
+            value={additionalInfo}
+            onChange={(e) => setAdditionalInfo(e.target.value)}
+            className="textarea textarea-bordered w-full max-w-xs border border-white"
+            placeholder="Additional Info"
+          />
+
+          <label htmlFor="email" className="block text-sm font-medium text-white">
+            Email: <span className="text-gray-300">{accountQuery.data?.email}</span>
+          </label>
+          <input
+            type="email"
+            id="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="input input-bordered w-full max-w-xs border border-white"
+            placeholder="Email"
+          />
+
+          <label htmlFor="phone" className="block text-sm font-medium text-white">
+            Phone: <span className="text-gray-300">{accountQuery.data?.phone}</span>
+          </label>
+          <input
+            type="tel"
+            id="phone"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            className="input input-bordered w-full max-w-xs border border-white"
+            placeholder="Phone"
+          />
+        </div>
+
+
+
           <div className="card-actions justify-around">
-            <textarea
-              placeholder="Update message here"
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              className="textarea textarea-bordered w-full max-w-xs"
-            />
+           
             <button
-              className="btn btn-xs lg:btn-md btn-primary"
-              onClick={handleSubmit}
-              disabled={updateListing.isPending || !isFormValid}
-            >
-              Update Journal Entry {updateListing.isPending && "..."}
-            </button>
+    className="bg-blue-500 text-white border-2 border-blue-700 hover:bg-blue-600 hover:border-blue-800 transition-all duration-300 ease-in-out px-6 py-3 rounded-lg shadow-lg"
+    onClick={handleSubmit}
+    disabled={updateListing.isPending || !isFormValid}
+  >
+    Update Listing {updateListing.isPending && "..."}
+  </button>
           </div>
+
           <div className="text-center space-y-4">
             <p>
               <ExplorerLink
@@ -332,7 +425,7 @@ function ListingCard({ account }: { account: PublicKey }) {
                 }
                 const title = accountQuery.data?.address;
                 if (title) {
-                  return deleteListing.mutateAsync(title);
+                  return deleteListing.mutateAsync();
                 }
               }}
               disabled={deleteListing.isPending}
@@ -345,3 +438,4 @@ function ListingCard({ account }: { account: PublicKey }) {
     </div>
   );
 }
+
