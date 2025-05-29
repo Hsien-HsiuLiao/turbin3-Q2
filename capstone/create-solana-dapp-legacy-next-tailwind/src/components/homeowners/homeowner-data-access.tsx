@@ -234,18 +234,28 @@ let marketplaceBump;
       toast.error(`Failed to update listing: ${error.message}`);
     },
   });
+// Define the input type for the mutation function
+interface DeleteListingInput {
+  homeowner1: PublicKey; // Adjust the type based on your actual data structure
+}
 
   const deleteListing = useMutation({
     mutationKey: ["journal", "deleteEntry", { cluster, account }],
-    mutationFn: (homeowner1) =>
-      program.methods.deleteListing()
+    mutationFn: async ({homeowner1}:DeleteListingInput) => {
+      const listing = PublicKey.findProgramAddressSync(
+        [marketplace.toBuffer(), homeowner1.toBuffer()],
+        program.programId
+      )[0];
+
+      return program.methods.deleteListing()
     .accountsPartial({
       maker: homeowner1, //
       marketplace: marketplace,
-     // listing: listing,
-      owner: homeowner1 //
+      listing: listing,
+ //     owner: homeowner1 //
     })
-    .rpc(),
+    .rpc()
+  },
     onSuccess: (tx) => {
       transactionToast(tx);
       return accounts.refetch();
