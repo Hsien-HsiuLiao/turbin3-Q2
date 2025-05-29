@@ -15,7 +15,7 @@ import {
 import { useWallet } from "@solana/wallet-adapter-react";
 //import { useWalletUi } from '@wallet-ui/react';
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export function ListingCreate() {
   const { createListing } = useMarketplaceProgram();
@@ -68,136 +68,160 @@ export function ListingCreate() {
   }
 
   return (
-    <div>
-      <label htmlFor="address" className="block text-sm font-medium text-white">
-        Home Address to rent out
-      </label>
-      <input
-        type="text"
-        id="address"
-        placeholder="Home Address to rent out"
-        value={address}
-        onChange={(e) => setAddress(e.target.value)}
-        className="input input-bordered w-full max-w-xs border border-white" // Added border class
-      />
-      <p className="mt-2 text-sm text-gray-300">
-        Get latitude and longitude from <a href="https://www.gps-coordinates.net/" className="text-blue-400 underline" target="_blank" rel="noopener noreferrer">https://www.gps-coordinates.net/</a>
-      </p>
-      <label htmlFor="rentalRate" className="block text-sm font-medium text-white">
-        Rental Rate per hour
-      </label>
-      <input
-        type="number"
-        id="rentalRate"
-        placeholder="Rental Rate"
-        value={rentalRate}
-        onChange={(e) => setRentalRate(Number(e.target.value))} // Convert to number
-        className="input input-bordered w-full max-w-xs border border-white" // Added border class
-      />
+    /* This is the create listing form */
+<div className="max-w-lg mx-auto p-6 bg-white rounded-lg shadow-lg">
+  <h2 className="text-2xl font-semibold text-gray-800 mb-4">Create a New Listing</h2>
 
-      <label htmlFor="sensorId" className="block text-sm font-medium text-white">
-        Sensor ID
-      </label>
-      <input
-        type="text"
-        id="sensorId"
-        placeholder="Sensor ID"
-        value={sensorId}
-        onChange={(e) => setSensorId(e.target.value)}
-        className="input input-bordered w-full max-w-xs border border-white" // Added border class
-      />
+  <div className="relative mb-4">
+    <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-1 text-left">
+      Home Address to Rent Out
+      <span className="inline-flex items-center justify-center w-5 h-5 ml-1 text-gray-500 bg-gray-200 rounded-full cursor-pointer" title="Enter the full address of the property you want to rent out.">
+        ?
+      </span>
+    </label>
+    <input
+      type="text"
+      id="address"
+      placeholder="Enter the address of your property"
+      value={address}
+      onChange={(e) => setAddress(e.target.value)}
+      className="input input-bordered w-full border border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200"
+    />
+  </div>
 
-      <label htmlFor="latitude" className="block text-sm font-medium text-white">
-        Latitude
-      </label>
-      <input
-        type="number"
-        id="latitude"
-        placeholder="Latitude"
-        value={latitude}
-        onChange={(e) => setLatitude(Number(e.target.value))} // Convert to number
-        className="input input-bordered w-full max-w-xs border border-white" // Added border class
-      />
+  <div className="relative mb-4">
+    <label htmlFor="rentalRate" className="block text-sm font-medium text-gray-700 mb-1 text-left">
+      Rental Rate per Hour
+      <span className="inline-flex items-center justify-center w-5 h-5 ml-1 text-gray-500 bg-gray-200 rounded-full cursor-pointer" title="Specify the hourly rental rate for your property.">
+        ?
+      </span>
+    </label>
+    <input
+      type="number"
+      id="rentalRate"
+      placeholder="e.g., 50"
+      value={rentalRate}
+      onChange={(e) => setRentalRate(Number(e.target.value))}
+      className="input input-bordered w-full border border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200"
+    />
+  </div>
 
-      <label htmlFor="longitude" className="block text-sm font-medium text-white">
-        Longitude
-      </label>
-      <input
-        type="number"
-        id="longitude"
-        placeholder="Longitude"
-        value={longitude}
-        onChange={(e) => setLongitude(Number(e.target.value))} // Convert to number
-        className="input input-bordered w-full max-w-xs border border-white" // Added border class
-      />
+  <div className="relative mb-4">
+    <label htmlFor="sensorId" className="block text-sm font-medium text-gray-700 mb-1 text-left">
+      Sensor ID
+      <span className="inline-flex items-center justify-center w-5 h-5 ml-1 text-gray-500 bg-gray-200 rounded-full cursor-pointer" title="Enter the unique ID for your sensor.">
+        ?
+      </span>
+    </label>
+    <input
+      type="text"
+      id="sensorId"
+      placeholder="Enter your sensor ID"
+      value={sensorId}
+      onChange={(e) => setSensorId(e.target.value)}
+      className="input input-bordered w-full border border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200"
+    />
+  </div>
 
-      <label htmlFor="additionalInfo" className="block text-sm font-medium text-white">
-        Additional Info
-      </label>
-      <textarea
-        id="additionalInfo"
-        placeholder="Additional Info"
-        value={additionalInfo}
-        onChange={(e) => setAdditionalInfo(e.target.value)}
-        className="textarea textarea-bordered w-full max-w-xs border border-white" // Added border class
-      />
+  <div className="relative mb-4">
+    <label htmlFor="latitude" className="block text-sm font-medium text-gray-700 mb-1 text-left">
+      Latitude
+      <span className="inline-flex items-center justify-center w-5 h-5 ml-1 text-gray-500 bg-gray-200 rounded-full cursor-pointer" title="Enter the latitude coordinate of your property.">
+        ?
+      </span>
+    </label>
+    <input
+      type="number"
+      id="latitude"
+      placeholder="e.g., 37.7749"
+      value={latitude}
+      onChange={(e) => setLatitude(Number(e.target.value))}
+      className="input input-bordered w-full border border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200"
+    />
+  </div>
 
-      {/* <label htmlFor="availabilityStart" className="block text-sm font-medium text-white">
-    Availability Start
-</label>
-<input
-    type="number"
-    id="availabilityStart"
-    placeholder="Availability Start"
-    value={availabilityStart.toString()}
-    onChange={(e) => setAvailabilityStart(new anchor.BN(e.target.value))} // Convert to number
-    className="input input-bordered w-full max-w-xs border border-white" // Added border class
-/>
+  <div className="relative mb-4">
+    <label htmlFor="longitude" className="block text-sm font-medium text-gray-700 mb-1 text-left">
+      Longitude
+      <span className="inline-flex items-center justify-center w-5 h-5 ml-1 text-gray-500 bg-gray-200 rounded-full cursor-pointer" title="Enter the longitude coordinate of your property.">
+        ?
+      </span>
+    </label>
+    <input
+      type="number"
+      id="longitude"
+      placeholder="e.g., -122.4194"
+      value={longitude}
+      onChange={(e) => setLongitude(Number(e.target.value))}
+      className="input input-bordered w-full border border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200"
+    />
+  </div>
 
-<label htmlFor="availabilityEnd" className="block text-sm font-medium text-white">
-    Availability End
-</label>
-<input
-    type="number"
-    id="availabilityEnd"
-    placeholder="Availability End"
-    value={availabilityEnd.toString()}
-    onChange={(e) => setAvailabilityEnd(new anchor.BN(e.target.value))} // Convert to number
-    className="input input-bordered w-full max-w-xs border border-white" // Added border class
-/>
- */}
-      <label htmlFor="email" className="block text-sm font-medium text-white">
-        Email
-      </label>
-      <input
-        type="email"
-        id="email"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        className="input input-bordered w-full max-w-xs border border-white" // Added border class
-      />
-      <label htmlFor="phone" className="block text-sm font-medium text-white">
-        Phone
-      </label>
-      <input
-        type="tel"
-        id="phone"
-        placeholder="Phone"
-        value={phone}
-        onChange={(e) => setPhone(e.target.value)}
-        className="input input-bordered w-full max-w-xs border border-white" // Added border class
-      />
+  <div className="relative mb-4">
+    <label htmlFor="additionalInfo" className="block text-sm font-medium text-gray-700 mb-1 text-left">
+      Additional Info
+      <span className="inline-flex items-center justify-center w-5 h-5 ml-1 text-gray-500 bg-gray-200 rounded-full cursor-pointer" title="Provide any additional information about your listing.">
+        ?
+      </span>
+    </label>
+    <textarea
+      id="additionalInfo"
+      placeholder="Provide any additional information about your listing"
+      value={additionalInfo}
+      onChange={(e) => setAdditionalInfo(e.target.value)}
+      className="textarea textarea-bordered w-full border border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200"
+    />
+  </div>
 
-      <br></br>
-      <button
-        className="bg-blue-500 text-white border-2 border-blue-700 hover:bg-blue-600 hover:border-blue-800 transition-all duration-300 ease-in-out px-6 py-3 rounded-lg shadow-lg"
-        onClick={handleSubmit}
-        disabled={createListing.isPending || !isFormValid}
-      >
-        Create A Listing {createListing.isPending && "..."}
-      </button>
-    </div>
+  <div className="relative mb-4">
+    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1 text-left">
+      Email
+      <span className="inline-flex items-center justify-center w-5 h-5 ml-1 text-gray-500 bg-gray-200 rounded-full cursor-pointer" title="Enter your email address for contact.">
+        ?
+      </span>
+    </label>
+    <input
+      type="email"
+      id="email"
+      placeholder="you@example.com"
+      value={email}
+      onChange={(e) => setEmail(e.target.value)}
+      className="input input-bordered w-full border border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200"
+    />
+  </div>
+
+  <div className="relative mb-4">
+    <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1 text-left">
+      Phone
+      <span className="inline-flex items-center justify-center w-5 h-5 ml-1 text-gray-500 bg-gray-200 rounded-full cursor-pointer" title="Enter your phone number for contact.">
+        ?
+      </span>
+    </label>
+    <input
+      type="tel"
+      id="phone"
+      placeholder="(123) 456-7890"
+      value={phone}
+      onChange={(e) => setPhone(e.target.value)}
+      className="input input-bordered w-full border border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200"
+    />
+  </div>
+  
+  
+
+  <button
+    className="bg-blue-500 text-white border-2 border-blue-700 hover:bg-blue-600 hover:border-blue-800 transition-all duration-300 ease-in-out px-6 py-3 rounded-lg shadow-lg w-full"
+    onClick={handleSubmit}
+    disabled={createListing.isPending || !isFormValid}
+  >
+    Create A Listing {createListing.isPending && "..."}
+  </button>
+</div>
+
+
+
+        /* End create listing form */
+
   );
 }
 
@@ -249,6 +273,9 @@ function ListingCard({ account }: { account: PublicKey }) {
 
   // State variables for listing fields
   const [address, setAddress] = useState("");
+  //use current value
+  //const [address, setAddress] = useState(accountQuery.data?.address  );
+
   const [rentalRate, setRentalRate] = useState(0);
   const [sensorId, setSensorId] = useState("");
   const [latitude, setLatitude] = useState(0);
@@ -258,6 +285,22 @@ function ListingCard({ account }: { account: PublicKey }) {
   const [availabilityEnd, setAvailabilityEnd] = useState(new anchor.BN(0));
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
+
+  // Update state when accountQuery.data changes
+  useEffect(() => {
+    if (accountQuery.data) {
+      setAddress(accountQuery.data.address);
+      setRentalRate(accountQuery.data.rentalRate);
+      setSensorId(accountQuery.data.sensorId);
+      setLatitude(accountQuery.data.latitude);
+      setLongitude(accountQuery.data.longitude);
+      setAdditionalInfo(accountQuery.data.additionalInfo|| "") ;
+      setAvailabilityStart(accountQuery.data.availabiltyStart);
+      setAvailabilityEnd(accountQuery.data.availabiltyEnd);
+      setEmail(accountQuery.data.email);
+      setPhone(accountQuery.data.phone);
+    }
+  }, [accountQuery.data]);
 
   // Load data from accountQuery
   const title = accountQuery.data?.address;
@@ -425,7 +468,7 @@ function ListingCard({ account }: { account: PublicKey }) {
                 }
                 const title = accountQuery.data?.address;
                 if (title) {
-                  return deleteListing.mutateAsync();
+                  return deleteListing.mutateAsync({homeowner1:publicKey});
                 }
               }}
               disabled={deleteListing.isPending}
