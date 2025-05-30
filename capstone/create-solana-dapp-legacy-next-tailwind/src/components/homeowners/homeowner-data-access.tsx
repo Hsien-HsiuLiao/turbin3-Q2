@@ -8,7 +8,7 @@ import { AnchorProvider } from '@coral-xyz/anchor';
 import { AnchorWallet, useConnection, useWallet } from "@solana/wallet-adapter-react";
 //import { useConnect } from '@wallet-ui/react'; //instead of useConnection?
 
-import { Cluster, PublicKey } from "@solana/web3.js";
+import { Cluster, LAMPORTS_PER_SOL, PublicKey } from "@solana/web3.js";
 import { useMutation, useQuery } from "@tanstack/react-query";
 //import toast from "react-hot-toast";
 import { toast } from 'sonner'
@@ -209,7 +209,7 @@ let marketplaceBump;
     )[0];
 
       return program.methods.updateListing( address,            // string
-        rentalRate,         // number
+        rentalRate * LAMPORTS_PER_SOL,         // number
         sensorId,           // string
         latitude,           // number
         longitude,          // number
