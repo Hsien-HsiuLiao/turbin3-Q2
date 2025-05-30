@@ -49,7 +49,13 @@ export default function HomeownerFeature() {
     <div className="max-w-4xl mx-auto">
       <div className="hero py-[64px]">
         <div className="hero-content text-center">
-          Before you can continue, please connect a wallet to create a listing
+        <AppHero
+        title="Welcome Homeowners"
+        subtitle={
+          'Before you can continue, please connect a wallet to create a listing'
+        }
+      >
+      </AppHero>
           <WalletButton />
         </div>
       </div>
