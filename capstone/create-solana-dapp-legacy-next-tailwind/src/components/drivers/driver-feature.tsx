@@ -1,7 +1,7 @@
 'use client'
 
 import { ParkingSpaceList } from './driver-ui';
-import { useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 
 
 export default function DriverFeature() {
@@ -10,7 +10,7 @@ export default function DriverFeature() {
   const [searchTerm, setSearchTerm] = useState('');
 
   // Function to handle input change
-  const handleSearchChange = (event) => {
+  const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
   };
 
