@@ -1907,26 +1907,26 @@ dependencies = [
 
 [[package]]
 name = "shuttle-axum"
-version = "0.1.0"
-dependencies = [
- "axum",
- "serde",
- "shuttle-axum 0.55.0",
- "shuttle-runtime",
- "shuttle-shared-db",
- "sqlx",
- "tokio",
- "tower-http 0.5.2",
-]
-
-[[package]]
-name = "shuttle-axum"
 version = "0.55.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "abf1e9636f7f77bb6d1eb9e0e19352eb8cbaf11109fdbf5148cabd8d28190161"
 dependencies = [
  "axum",
  "shuttle-runtime",
+]
+
+[[package]]
+name = "shuttle-axum-restapi"
+version = "0.1.0"
+dependencies = [
+ "axum",
+ "serde",
+ "shuttle-axum",
+ "shuttle-runtime",
+ "shuttle-shared-db",
+ "sqlx",
+ "tokio",
+ "tower-http 0.5.2",
 ]
 
 [[package]]
