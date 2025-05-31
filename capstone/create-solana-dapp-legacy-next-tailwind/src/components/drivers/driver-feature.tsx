@@ -32,7 +32,10 @@ export default function DriverFeature() {
       </div>
 
       <div className="flex flex-col items-center">
-        <ParkingSpaceList searchTerm={searchTerm} />
+        {/*         <ParkingSpaceList searchTerm={searchTerm} />
+ */}
+        <ParkingSpaceList />
+
       </div>
     </div>
   );
