@@ -9,11 +9,9 @@ import { ExplorerLink } from "../cluster/cluster-ui";
 import {
 
   useMarketplaceProgram,
-  //useJournalProgramAccount,
   useMarketplaceProgramAccount
 } from "./driver-data-access";
 import { useWallet } from "@solana/wallet-adapter-react";
-//import { useWalletUi } from '@wallet-ui/react';
 
 import { useEffect, useState } from "react";
 
@@ -59,16 +57,24 @@ export function ParkingSpaceList() {
 }
 
 function ListingCard({ account }: { account: PublicKey }) {
-  const { accountQuery } = useMarketplaceProgramAccount({
+  const { accountQuery, listingsQuery } = useMarketplaceProgramAccount({
     account,
   });
+  let listing;
+
+  if (listingsQuery.data) {
+    console.log("listingsquery", listingsQuery.data[0].account.address);
+    listing = listingsQuery.data[0];
+
+  }
   const { publicKey } = useWallet();
 
-  if (!publicKey) {
+  /* if (!publicKey) {
     return <p className="text-center">Connect your wallet</p>;
-  }
+  } */
 
-  return accountQuery.isLoading ? (
+  // return accountQuery.isLoading ? (
+  return listingsQuery.isLoading ? (
     <span className="loading loading-spinner loading-lg"></span>
   ) : (
     <div className="bg-white shadow-lg rounded-lg overflow-hidden mx-auto w-full max-w-md transition-transform transform hover:scale-105">
@@ -77,51 +83,64 @@ function ListingCard({ account }: { account: PublicKey }) {
         <span className="text-gray-500">Image Placeholder</span>
       </div>
       <div className="p-6">
-        
+
         <div className="space-y-2">
           <div className="text-lg font-medium text-gray-700">
-            <span className="font-semibold">Home Address:</span> 
-            <span className="text-gray-500"> {accountQuery.data?.address}</span>
+            <span className="font-semibold">Home Address:</span>
+            <span className="text-gray-500"> {listing?.account.address}</span>
+            {/*             <span className="text-gray-500"> {listingsQuery.data?.}</span>
+ */}          </div>
+          <div className="text-lg font-medium text-gray-700">
+            <span className="font-semibold">Rental Rate:</span>
+            <span className="text-gray-500"> {listing?.account.rentalRate} SOL</span>
           </div>
           <div className="text-lg font-medium text-gray-700">
-            <span className="font-semibold">Rental Rate:</span> 
-            <span className="text-gray-500"> {accountQuery.data?.rentalRate} SOL</span>
+            <span className="font-semibold">Sensor ID:</span>
+            <span className="text-gray-500"> {listing?.account.sensorId}</span>
           </div>
           <div className="text-lg font-medium text-gray-700">
-            <span className="font-semibold">Sensor ID:</span> 
-            <span className="text-gray-500"> {accountQuery.data?.sensorId}</span>
+            <span className="font-semibold">Latitude:</span>
+            <span className="text-gray-500"> {listing?.account.latitude}</span>
           </div>
           <div className="text-lg font-medium text-gray-700">
-            <span className="font-semibold">Latitude:</span> 
-            <span className="text-gray-500"> {accountQuery.data?.latitude}</span>
+            <span className="font-semibold">Longitude:</span>
+            <span className="text-gray-500"> {listing?.account.longitude}</span>
           </div>
           <div className="text-lg font-medium text-gray-700">
-            <span className="font-semibold">Longitude:</span> 
-            <span className="text-gray-500"> {accountQuery.data?.longitude}</span>
+            <span className="font-semibold">Additional Info:</span>
+            <span className="text-gray-500"> {listing?.account.additionalInfo}</span>
           </div>
           <div className="text-lg font-medium text-gray-700">
-            <span className="font-semibold">Additional Info:</span> 
-            <span className="text-gray-500"> {accountQuery.data?.additionalInfo}</span>
+            <span className="font-semibold">Email:</span>
+            <span className="text-gray-500"> {listing?.account.email}</span>
           </div>
           <div className="text-lg font-medium text-gray-700">
-            <span className="font-semibold">Email:</span> 
-            <span className="text-gray-500"> {accountQuery.data?.email}</span>
-          </div>
-          <div className="text-lg font-medium text-gray-700">
-            <span className="font-semibold">Phone:</span> 
-            <span className="text-gray-500"> {accountQuery.data?.phone}</span>
+            <span className="font-semibold">Phone:</span>
+            <span className="text-gray-500"> {listing?.account.phone}</span>
           </div>
         </div>
         <div className="mt-4">
-          <button
-            className="w-full bg-green-500 text-white font-semibold py-2 rounded-lg shadow-md hover:bg-green-600 transition duration-200"
-            onClick={() => {
-              // Handle reservation logic here
-              alert(`Reserved ${accountQuery.data?.address}`);
-            }}
-          >
-            Reserve
-          </button>
+        {publicKey ? (
+      <button
+        className="w-full bg-green-500 text-white font-semibold py-2 rounded-lg shadow-md hover:bg-green-600 transition duration-200"
+        onClick={() => {
+          // Handle reservation logic here
+          alert(`Reserved`);
+        }}
+      >
+        Reserve
+      </button>
+    ) : (
+      <button
+        className="w-full bg-blue-500 text-white font-semibold py-2 rounded-lg shadow-md hover:bg-blue-600 transition duration-200"
+        onClick={() => {
+          // Handle wallet connection logic here
+          alert(`Connect your wallet`);
+        }}
+      >
+        Connect Wallet to reserve
+      </button>
+    )}
         </div>
       </div>
     </div>
