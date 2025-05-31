@@ -38,6 +38,11 @@ pub struct UpdateRecord {
     age: Option<i32>
 }
 
+#[derive(Serialize)]
+struct MockDriverResponse {
+    message: String,
+}
+
 #[shuttle_runtime::main]
 async fn main(
     #[shuttle_shared_db::Postgres] conn_string: String 
@@ -56,6 +61,8 @@ async fn main(
 
     let router = Router::new()
         .route("/", get(hello_world))
+        .route("/mock_driver_leaves", get(mock_driver_leaves))
+        .route("/mock_driver_arrives", get(mock_driver_arrives))
         .route("/users", get(retrieve_all_records).post(create_record))
         .route("/users/:id", get(retrieve_record_by_id)
                .put(update_record_by_id)
@@ -63,6 +70,20 @@ async fn main(
         .with_state(state);
 
     Ok(router.into())
+}
+
+async fn mock_driver_leaves() -> impl IntoResponse {
+    let response = MockDriverResponse {
+        message: "Driver has left.".to_string(),
+    };
+    (StatusCode::OK, Json(response))
+}
+
+async fn mock_driver_arrives() -> impl IntoResponse {
+    let response = MockDriverResponse {
+        message: "Driver has arrived.".to_string(),
+    };
+    (StatusCode::OK, Json(response))
 }
 
 async fn retrieve_all_records(
