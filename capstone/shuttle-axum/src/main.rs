@@ -4,6 +4,9 @@ use sqlx::{PgPool, postgres::PgPoolOptions};
 use sqlx::Executor;
 use serde::{Deserialize, Serialize};
 
+mod handlers;
+
+
 async fn hello_world() -> &'static str {
     "Hello, world!"
 }
@@ -61,8 +64,8 @@ async fn main(
 
     let router = Router::new()
         .route("/", get(hello_world))
-        .route("/mock_driver_leaves", get(mock_driver_leaves))
-        .route("/mock_driver_arrives", get(mock_driver_arrives))
+        .route("/mock_driver_leaves", get(handlers::mock_driver_leaves))
+        .route("/mock_driver_arrives", get(handlers::mock_driver_arrives))
         .route("/users", get(retrieve_all_records).post(create_record))
         .route("/users/:id", get(retrieve_record_by_id)
                .put(update_record_by_id)
