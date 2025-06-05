@@ -27,9 +27,15 @@ export function AccountBalance({ address }: { address: PublicKey }) {
   const query = useGetBalance({ address })
 
   return (
-    <h1 className="text-5xl font-bold cursor-pointer" onClick={() => query.refetch()}>
-      {query.data ? <BalanceSol balance={query.data} /> : '...'} SOL
-    </h1>
+    <div>
+      <h1 className="text-5xl font-bold cursor-pointer" onClick={() => query.refetch()}>
+        {query.data ? <BalanceSol balance={query.data} /> : '...'} SOL
+      </h1>
+      <a href='https://faucet.solana.com/'
+        target="_blank"
+        rel="noopener noreferrer"
+      ><h2>Faucet</h2></a>
+    </div>
   )
 }
 
