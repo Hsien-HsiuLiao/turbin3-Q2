@@ -85,16 +85,16 @@ function ListingCard({ account }: { account: PublicKey }) {
       <div className="p-6">
 
         <div className="space-y-2">
-          <div className="text-lg font-medium text-gray-700">
-            <span className="font-semibold">Home Address:</span>
-            <span className="text-gray-500"> {listing?.account.address}</span>
+          <div className="font-medium text-gray-700">
+            <span className="font-semibold text-lg ">Home Address:</span>
+            <span className="text-gray-500"> {accountQuery.data?.address}</span>
             {/*             <span className="text-gray-500"> {listingsQuery.data?.}</span>
  */}          </div>
-          <div className="text-lg font-medium text-gray-700">
-            <span className="font-semibold">Rental Rate:</span>
-            <span className="text-gray-500"> {listing?.account.rentalRate} SOL</span>
+          <div className="font-medium text-gray-700">
+            <span className="font-semibold text-xl">Rental Rate:</span>
+            <span className="text-gray-500"> {(accountQuery.data?.rentalRate ?? 0)/LAMPORTS_PER_SOL} SOL</span>
           </div>
-          <div className="text-lg font-medium text-gray-700">
+   {/*        <div className="text-lg font-medium text-gray-700">
             <span className="font-semibold">Sensor ID:</span>
             <span className="text-gray-500"> {listing?.account.sensorId}</span>
           </div>
@@ -105,18 +105,18 @@ function ListingCard({ account }: { account: PublicKey }) {
           <div className="text-lg font-medium text-gray-700">
             <span className="font-semibold">Longitude:</span>
             <span className="text-gray-500"> {listing?.account.longitude}</span>
+          </div> */}
+          <div className="font-medium text-gray-700">
+            <span className="font-semibold text-lg ">Additional Info:</span>
+            <span className="text-gray-500"> {accountQuery.data?.additionalInfo}</span>
           </div>
-          <div className="text-lg font-medium text-gray-700">
-            <span className="font-semibold">Additional Info:</span>
-            <span className="text-gray-500"> {listing?.account.additionalInfo}</span>
+          <div className="font-medium text-gray-700">
+            <span className="font-semibold text-lg ">Email:</span>
+            <span className="text-gray-500"> {accountQuery.data?.email}</span>
           </div>
-          <div className="text-lg font-medium text-gray-700">
-            <span className="font-semibold">Email:</span>
-            <span className="text-gray-500"> {listing?.account.email}</span>
-          </div>
-          <div className="text-lg font-medium text-gray-700">
-            <span className="font-semibold">Phone:</span>
-            <span className="text-gray-500"> {listing?.account.phone}</span>
+          <div className="font-medium text-gray-700">
+            <span className="font-semibold text-lg ">Phone:</span>
+            <span className="text-gray-500"> {accountQuery.data?.phone}</span>
           </div>
         </div>
         <div className="mt-4">
