@@ -68,7 +68,7 @@ export function ListingCreate() {
   }
 
   return (
-    /* This is the create listing form */
+    /* This is the create listing form. user can add picture either https://filecoin.io/ or https://arweave.org/ */
     <div className="max-w-lg mx-auto p-6 bg-white rounded-lg shadow-lg">
       <h2 className="text-2xl font-semibold text-gray-800 mb-4">Create a New Listing</h2>
 
@@ -94,7 +94,7 @@ export function ListingCreate() {
           Rental Rate per Hour
           <span className="inline-flex items-center justify-center w-5 h-5 ml-1 text-gray-500 bg-gray-200 rounded-full cursor-pointer" title="Specify the hourly rental rate (in SOL, for ex 0.0345)">
             ?
-          </span>
+          </span> https://www.coinbase.com/converter/sol/usd
         </label>
         <input
           type="number"
