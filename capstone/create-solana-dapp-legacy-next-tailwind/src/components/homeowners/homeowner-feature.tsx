@@ -16,12 +16,12 @@ export default function HomeownerFeature() {
     <div className="flex">
       <nav className="sidebar fixed w-64 bg-gray-800 text-white h-screen p-4">
         <h2 className="text-lg font-bold mb-4">Navigation</h2>
-        <ul>
+        <ul className="list-disc pl-5">
           <li className="mb-2">
-            <a href="#create-listing" className="text-white hover:underline">Create Listing</a>
+            <a href="#create-listing" className="text-white hover:underline">Create Parking Space Listing</a>
           </li>
           <li>
-            <a href="#parking-space-list" className="text-white hover:underline">Parking Space List</a>
+            <a href="#parking-space-list" className="text-white hover:underline">Manage Parking Space Listing</a>
           </li>
         </ul>
       </nav>
@@ -40,7 +40,7 @@ export default function HomeownerFeature() {
             <ListingCreate />
           </div>
           <div id="parking-space-list" className="mt-8 ">
-          <h2 className="text-xl font-bold mb-4">Manage Listing (Update or Delete)</h2>
+            <h2 className="text-xl font-bold mb-4">Manage Listing (Update or Delete)</h2>
 
             <ParkingSpaceList />
           </div>
