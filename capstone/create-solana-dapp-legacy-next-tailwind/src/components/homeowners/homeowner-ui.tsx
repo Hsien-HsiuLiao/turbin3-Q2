@@ -69,7 +69,7 @@ export function ListingCreate() {
 
   return (
     /* This is the create listing form. user can add picture either https://filecoin.io/ or https://arweave.org/ */
-    <div className="max-w-lg mx-auto p-6 bg-white rounded-lg shadow-lg">
+    <div className="max-w-lg mx-auto p-6 bg-green-300 rounded-lg shadow-lg">
       <h2 className="text-2xl font-semibold text-gray-800 mb-4">Create a New Listing</h2>
 
       <div className="relative mb-4">
@@ -329,7 +329,9 @@ export function ParkingSpaceList() {
     </div>
   );
 }
-//shows current listing and update button
+
+//Manage Listing
+//shows current listing and update/delete button
 function ListingCard({ account }: { account: PublicKey }) {
   const { accountQuery, updateListing, deleteListing } = useMarketplaceProgramAccount({
     account,
@@ -399,8 +401,8 @@ function ListingCard({ account }: { account: PublicKey }) {
   return accountQuery.isLoading ? (
     <span className="loading loading-spinner loading-lg"></span>
   ) : (
-    <div className="card card-bordered border-base-300 border-4 text-neutral-content">
-      <div className="card-body items-center text-center">
+    <div className="card card-bordered border-base-300 border-4 text-neutral-content bg-blue-500">
+      <div className="card-body items-center text-center bg-blue-200">
         <div className="space-y-6">
           <h2 className="card-title justify-center text-3xl cursor-pointer text-black" onClick={() => accountQuery.refetch()}>
             {accountQuery.data?.address}
