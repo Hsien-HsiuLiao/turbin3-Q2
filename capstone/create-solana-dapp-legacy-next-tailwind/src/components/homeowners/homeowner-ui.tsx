@@ -301,11 +301,14 @@ export function ParkingSpaceList() {
     );
   }
   return (
-    <div className={"space-y-6"}>
+/*     <div className={"space-y-6"}>
+ */    <div className="max-w-lg mx-auto p-6 bg-white rounded-lg shadow-lg">
       {accounts.isLoading ? (
         <span className="loading loading-spinner loading-lg"></span>
       ) : accounts.data?.length && currentAccountListing ? (
-        <div className="grid gap-4 md:grid-cols-2 ">
+        /*  <div className="grid gap-4 md:grid-cols-2 "> */
+        <div className="grid gap-4 ">
+
           {/*    {accounts.data?.map((account) => (
             <ListingCard
               key={account.publicKey.toString()}
@@ -399,102 +402,102 @@ function ListingCard({ account }: { account: PublicKey }) {
     <div className="card card-bordered border-base-300 border-4 text-neutral-content">
       <div className="card-body items-center text-center">
         <div className="space-y-6">
-          <h2 className="card-title justify-center text-3xl cursor-pointer" onClick={() => accountQuery.refetch()}>
+          <h2 className="card-title justify-center text-3xl cursor-pointer text-black" onClick={() => accountQuery.refetch()}>
             {accountQuery.data?.address}
           </h2>
           <div className="space-y-4">
-            <label htmlFor="address" className="block text-sm font-medium text-white">
-              Home Address: <span className="text-gray-300">{accountQuery.data?.address}</span>
+            <label htmlFor="address" className="block text-sm font-medium text-black">
+              Home Address: <span className="text-black-300">{accountQuery.data?.address}</span>
             </label>
             <input
               type="text"
               id="address"
               value={address}
               onChange={(e) => setAddress(e.target.value)}
-              className="input input-bordered w-full max-w-xs border border-white"
+              className="input input-bordered w-full max-w-xs border border-black text-black"
               placeholder="Home Address"
             />
 
-            <label htmlFor="rentalRate" className="block text-sm font-medium text-white">
-              Rental Rate: <span className="text-gray-300">{accountQuery.data?.rentalRate}</span>
+            <label htmlFor="rentalRate" className="block text-sm font-medium text-black">
+              Rental Rate: <span className="text-black-300">{accountQuery.data?.rentalRate}</span>
             </label>
             <input
               type="number"
               id="rentalRate"
               value={rentalRate}
               onChange={(e) => setRentalRate(Number(e.target.value))}
-              className="input input-bordered w-full max-w-xs border border-white"
+              className="input input-bordered w-full max-w-xs border border-black text-black"
               placeholder="Rental Rate"
             />
 
-            <label htmlFor="sensorId" className="block text-sm font-medium text-white">
-              Sensor ID: <span className="text-gray-300">{accountQuery.data?.sensorId}</span>
+            <label htmlFor="sensorId" className="block text-sm font-medium text-black">
+              Sensor ID: <span className="text-black-300">{accountQuery.data?.sensorId}</span>
             </label>
             <input
               type="text"
               id="sensorId"
               value={sensorId}
               onChange={(e) => setSensorId(e.target.value)}
-              className="input input-bordered w-full max-w-xs border border-white"
+              className="input input-bordered w-full max-w-xs border border-black text-black"
               placeholder="Sensor ID"
             />
 
-            <label htmlFor="latitude" className="block text-sm font-medium text-white">
-              Latitude: <span className="text-gray-300">{accountQuery.data?.latitude}</span>
+            <label htmlFor="latitude" className="block text-sm font-medium text-black">
+              Latitude: <span className="text-black-300">{accountQuery.data?.latitude}</span>
             </label>
             <input
               type="number"
               id="latitude"
               value={latitude}
               onChange={(e) => setLatitude(Number(e.target.value))}
-              className="input input-bordered w-full max-w-xs border border-white"
+              className="input input-bordered w-full max-w-xs border border-black text-black"
               placeholder="Latitude"
             />
 
-            <label htmlFor="longitude" className="block text-sm font-medium text-white">
-              Longitude: <span className="text-gray-300">{accountQuery.data?.longitude}</span>
+            <label htmlFor="longitude" className="block text-sm font-medium text-black">
+              Longitude: <span className="text-black-300">{accountQuery.data?.longitude}</span>
             </label>
             <input
               type="number"
               id="longitude"
               value={longitude}
               onChange={(e) => setLongitude(Number(e.target.value))}
-              className="input input-bordered w-full max-w-xs border border-white"
+              className="input input-bordered w-full max-w-xs border border-black text-black"
               placeholder="Longitude"
             />
 
-            <label htmlFor="additionalInfo" className="block text-sm font-medium text-white">
-              Additional Info: <span className="text-gray-300">{accountQuery.data?.additionalInfo}</span>
+            <label htmlFor="additionalInfo" className="block text-sm font-medium text-black">
+              Additional Info: <span className="text-black-300">{accountQuery.data?.additionalInfo}</span>
             </label>
             <textarea
               id="additionalInfo"
               value={additionalInfo}
               onChange={(e) => setAdditionalInfo(e.target.value)}
-              className="textarea textarea-bordered w-full max-w-xs border border-white"
+              className="textarea textarea-bordered w-full max-w-xs border border-black text-black"
               placeholder="Additional Info"
             />
 
-            <label htmlFor="email" className="block text-sm font-medium text-white">
-              Email: <span className="text-gray-300">{accountQuery.data?.email}</span>
+            <label htmlFor="email" className="block text-sm font-medium text-black">
+              Email: <span className="text-black-300">{accountQuery.data?.email}</span>
             </label>
             <input
               type="email"
               id="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="input input-bordered w-full max-w-xs border border-white"
+              className="input input-bordered w-full max-w-xs border border-black text-black"
               placeholder="Email"
             />
 
-            <label htmlFor="phone" className="block text-sm font-medium text-white">
-              Phone: <span className="text-gray-300">{accountQuery.data?.phone}</span>
+            <label htmlFor="phone" className="block text-sm font-medium text-black">
+              Phone: <span className="text-black-300">{accountQuery.data?.phone}</span>
             </label>
             <input
               type="tel"
               id="phone"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              className="input input-bordered w-full max-w-xs border border-white"
+              className="input input-bordered w-full max-w-xs border border-black text-black"
               placeholder="Phone"
             />
           </div>
@@ -520,7 +523,7 @@ function ListingCard({ account }: { account: PublicKey }) {
               />
             </p>
             <button
-              className="btn btn-xs btn-secondary btn-outline"
+              className="bg-red-500 btn btn-xs btn-secondary btn-outline"
               onClick={() => {
                 if (
                   !window.confirm(
@@ -536,7 +539,7 @@ function ListingCard({ account }: { account: PublicKey }) {
               }}
               disabled={deleteListing.isPending}
             >
-              Close
+              Delete Listing
             </button>
           </div>
         </div>
