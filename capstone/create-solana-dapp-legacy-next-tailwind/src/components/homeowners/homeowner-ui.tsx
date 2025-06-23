@@ -271,16 +271,21 @@ export function ParkingSpaceList() {
   let currentAccountListing;
 
   if (accounts.data) {
-    for (let i = 0; i < accounts.data.length; i++) {
-      console.log("Checking account:", accounts.data[i].account.maker.toString(), publicKey.toString());
+    if (publicKey) { // Check if publicKey is not null
+      for (let i = 0; i < accounts.data.length; i++) {
+        console.log("Checking account:", accounts.data[i].account.maker.toString(), publicKey.toString());
 
-      if (accounts.data[i].account.maker.toString() === publicKey.toString()) {
-        console.log("Match found at index:", i);
-        currentAccountListing = accounts.data[i];
-        break; // Exit the loop if a match is found
+        if (accounts.data[i].account.maker.toString() === publicKey.toString()) {
+          console.log("Match found at index:", i);
+          currentAccountListing = accounts.data[i];
+          break; // Exit the loop if a match is found
+        }
       }
+    } else {
+      console.error("publicKey is null");
     }
   }
+
 
   if (getProgramAccount.isLoading) {
     return <span className="loading loading-spinner loading-lg"></span>;
@@ -301,16 +306,16 @@ export function ParkingSpaceList() {
         <span className="loading loading-spinner loading-lg"></span>
       ) : accounts.data?.length ? (
         <div className="grid gap-4 md:grid-cols-2 ">
-       {/*    {accounts.data?.map((account) => (
+          {/*    {accounts.data?.map((account) => (
             <ListingCard
               key={account.publicKey.toString()}
               account={account.publicKey}
             />
           ))} */}
-           <ListingCard
-              key={currentAccountListing.publicKey.toString()}
-              account={currentAccountListing.publicKey}
-            />
+          <ListingCard
+            key={currentAccountListing.publicKey.toString()}
+            account={currentAccountListing.publicKey}
+          />
         </div>
       ) : (
         <div className="text-center">
