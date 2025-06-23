@@ -177,38 +177,38 @@ export function ListingCreate() {
       </div>
 
       <div className="relative mb-4">
-  <label htmlFor="availabilityStart" className="block text-sm font-medium text-gray-700 mb-1 text-left">
-    Availability Start
-    <span className="inline-flex items-center justify-center w-5 h-5 ml-1 text-gray-500 bg-gray-200 rounded-full cursor-pointer" title="Enter the start time of availability.">
-      ?
-    </span>
-  </label>
-  <input
-    type="number"
-    id="availabilityStart"
-    placeholder="Availability Start"
-    value={availabilityStart.toString()}
-    onChange={(e) => setAvailabilityStart(new anchor.BN(e.target.value))} // Convert to number
-    className="input input-bordered w-full border border-gray-300 rounded-md text-black focus:border-blue-500 focus:ring focus:ring-blue-200"
-  />
-</div>
+        <label htmlFor="availabilityStart" className="block text-sm font-medium text-gray-700 mb-1 text-left">
+          Availability Start
+          <span className="inline-flex items-center justify-center w-5 h-5 ml-1 text-gray-500 bg-gray-200 rounded-full cursor-pointer" title="Enter the start time of availability.">
+            ?
+          </span>
+        </label>
+        <input
+          type="number"
+          id="availabilityStart"
+          placeholder="Availability Start"
+          value={availabilityStart.toString()}
+          onChange={(e) => setAvailabilityStart(new anchor.BN(e.target.value))} // Convert to number
+          className="input input-bordered w-full border border-gray-300 rounded-md text-black focus:border-blue-500 focus:ring focus:ring-blue-200"
+        />
+      </div>
 
-<div className="relative mb-4">
-  <label htmlFor="availabilityEnd" className="block text-sm font-medium text-gray-700 mb-1 text-left">
-    Availability End
-    <span className="inline-flex items-center justify-center w-5 h-5 ml-1 text-gray-500 bg-gray-200 rounded-full cursor-pointer" title="Enter the end time of availability.">
-      ?
-    </span>
-  </label>
-  <input
-    type="number"
-    id="availabilityEnd"
-    placeholder="Availability End"
-    value={availabilityEnd.toString()}
-    onChange={(e) => setAvailabilityEnd(new anchor.BN(e.target.value))} // Convert to number
-    className="input input-bordered w-full border border-gray-300 rounded-md text-black focus:border-blue-500 focus:ring focus:ring-blue-200"
-  />
-</div>
+      <div className="relative mb-4">
+        <label htmlFor="availabilityEnd" className="block text-sm font-medium text-gray-700 mb-1 text-left">
+          Availability End
+          <span className="inline-flex items-center justify-center w-5 h-5 ml-1 text-gray-500 bg-gray-200 rounded-full cursor-pointer" title="Enter the end time of availability.">
+            ?
+          </span>
+        </label>
+        <input
+          type="number"
+          id="availabilityEnd"
+          placeholder="Availability End"
+          value={availabilityEnd.toString()}
+          onChange={(e) => setAvailabilityEnd(new anchor.BN(e.target.value))} // Convert to number
+          className="input input-bordered w-full border border-gray-300 rounded-md text-black focus:border-blue-500 focus:ring focus:ring-blue-200"
+        />
+      </div>
 
 
       <div className="relative mb-4">
@@ -264,7 +264,23 @@ export function ListingCreate() {
 }
 
 export function ParkingSpaceList() {
-  const { accounts, getProgramAccount } = useMarketplaceProgram();
+  const {/* currentAccountListing, */ accounts, getProgramAccount } = useMarketplaceProgram();
+
+  const { publicKey } = useWallet();
+
+  let currentAccountListing;
+
+  if (accounts.data) {
+    for (let i = 0; i < accounts.data.length; i++) {
+      console.log("Checking account:", accounts.data[i].account.maker.toString(), publicKey.toString());
+
+      if (accounts.data[i].account.maker.toString() === publicKey.toString()) {
+        console.log("Match found at index:", i);
+        currentAccountListing = accounts.data[i];
+        break; // Exit the loop if a match is found
+      }
+    }
+  }
 
   if (getProgramAccount.isLoading) {
     return <span className="loading loading-spinner loading-lg"></span>;
@@ -284,13 +300,17 @@ export function ParkingSpaceList() {
       {accounts.isLoading ? (
         <span className="loading loading-spinner loading-lg"></span>
       ) : accounts.data?.length ? (
-        <div className="grid gap-4 md:grid-cols-2">
-          {accounts.data?.map((account) => (
+        <div className="grid gap-4 md:grid-cols-2 ">
+       {/*    {accounts.data?.map((account) => (
             <ListingCard
               key={account.publicKey.toString()}
               account={account.publicKey}
             />
-          ))}
+          ))} */}
+           <ListingCard
+              key={currentAccountListing.publicKey.toString()}
+              account={currentAccountListing.publicKey}
+            />
         </div>
       ) : (
         <div className="text-center">
