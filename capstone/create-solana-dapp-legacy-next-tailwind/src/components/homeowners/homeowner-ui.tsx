@@ -304,7 +304,7 @@ export function ParkingSpaceList() {
     <div className={"space-y-6"}>
       {accounts.isLoading ? (
         <span className="loading loading-spinner loading-lg"></span>
-      ) : accounts.data?.length ? (
+      ) : accounts.data?.length && currentAccountListing ? (
         <div className="grid gap-4 md:grid-cols-2 ">
           {/*    {accounts.data?.map((account) => (
             <ListingCard
