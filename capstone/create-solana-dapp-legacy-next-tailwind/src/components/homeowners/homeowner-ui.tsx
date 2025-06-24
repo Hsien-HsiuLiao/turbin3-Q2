@@ -9,18 +9,15 @@ import { ExplorerLink } from "../cluster/cluster-ui";
 import {
 
   useMarketplaceProgram,
-  //useJournalProgramAccount,
   useMarketplaceProgramAccount
 } from "./homeowner-data-access";
 import { useWallet } from "@solana/wallet-adapter-react";
-//import { useWalletUi } from '@wallet-ui/react';
 
 import { useEffect, useState } from "react";
 
 export function ListingCreate() {
   const { createListing } = useMarketplaceProgram();
   const { publicKey } = useWallet();
-  // const { account } = useWalletUi();
 
   const [address, setAddress] = useState("");              // Address (String)
   const [rentalRate, setRentalRate] = useState(0);        // Rental rate (u32)
@@ -263,8 +260,8 @@ export function ListingCreate() {
   );
 }
 
-export function ParkingSpaceList() {
-  const {/* currentAccountListing, */ accounts, getProgramAccount } = useMarketplaceProgram();
+export function ListingUpdateDelete() {
+  const { accounts, getProgramAccount } = useMarketplaceProgram();
 
   const { publicKey } = useWallet();
 
@@ -278,7 +275,7 @@ export function ParkingSpaceList() {
         if (accounts.data[i].account.maker.toString() === publicKey.toString()) {
           console.log("Match found at index:", i);
           currentAccountListing = accounts.data[i];
-          break; // Exit the loop if a match is found
+          break; 
         }
       }
     } else {
