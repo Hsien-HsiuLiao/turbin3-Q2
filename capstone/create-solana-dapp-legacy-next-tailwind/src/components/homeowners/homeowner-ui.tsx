@@ -406,7 +406,7 @@ function ListingCard({ account }: { account: PublicKey }) {
           </h2>
           <div className="space-y-4">
             <label htmlFor="address" className="block text-sm font-medium text-black">
-              Home Address: <span className="text-black-300">{accountQuery.data?.address}</span>
+              Home Address: <span className="text-black-300">{/* {accountQuery.data?.address} */}</span>
             </label>
             <input
               type="text"
@@ -418,7 +418,7 @@ function ListingCard({ account }: { account: PublicKey }) {
             />
 
             <label htmlFor="rentalRate" className="block text-sm font-medium text-black">
-              Rental Rate: <span className="text-black-300">{accountQuery.data?.rentalRate}</span>
+              Rental Rate: <span className="text-black-300">{/* {accountQuery.data?.rentalRate} */}</span>
             </label>
             <input
               type="number"
@@ -430,7 +430,7 @@ function ListingCard({ account }: { account: PublicKey }) {
             />
 
             <label htmlFor="sensorId" className="block text-sm font-medium text-black">
-              Sensor ID: <span className="text-black-300">{accountQuery.data?.sensorId}</span>
+              Sensor ID: <span className="text-black-300">{/* {accountQuery.data?.sensorId} */}</span>
             </label>
             <input
               type="text"
@@ -442,7 +442,7 @@ function ListingCard({ account }: { account: PublicKey }) {
             />
 
             <label htmlFor="latitude" className="block text-sm font-medium text-black">
-              Latitude: <span className="text-black-300">{accountQuery.data?.latitude}</span>
+              Latitude: <span className="text-black-300">{/* {accountQuery.data?.latitude} */}</span>
             </label>
             <input
               type="number"
@@ -454,7 +454,7 @@ function ListingCard({ account }: { account: PublicKey }) {
             />
 
             <label htmlFor="longitude" className="block text-sm font-medium text-black">
-              Longitude: <span className="text-black-300">{accountQuery.data?.longitude}</span>
+              Longitude: <span className="text-black-300">{/* {accountQuery.data?.longitude} */}</span>
             </label>
             <input
               type="number"
@@ -466,7 +466,7 @@ function ListingCard({ account }: { account: PublicKey }) {
             />
 
             <label htmlFor="additionalInfo" className="block text-sm font-medium text-black">
-              Additional Info: <span className="text-black-300">{accountQuery.data?.additionalInfo}</span>
+              Additional Info: <span className="text-black-300">{/* {accountQuery.data?.additionalInfo} */}</span>
             </label>
             <textarea
               id="additionalInfo"
@@ -477,7 +477,7 @@ function ListingCard({ account }: { account: PublicKey }) {
             />
 
             <label htmlFor="email" className="block text-sm font-medium text-black">
-              Email: <span className="text-black-300">{accountQuery.data?.email}</span>
+              Email: <span className="text-black-300">{/* {accountQuery.data?.email} */}</span>
             </label>
             <input
               type="email"
@@ -489,7 +489,7 @@ function ListingCard({ account }: { account: PublicKey }) {
             />
 
             <label htmlFor="phone" className="block text-sm font-medium text-black">
-              Phone: <span className="text-black-300">{accountQuery.data?.phone}</span>
+              Phone: <span className="text-black-300">{/* {accountQuery.data?.phone} */}</span>
             </label>
             <input
               type="tel"
