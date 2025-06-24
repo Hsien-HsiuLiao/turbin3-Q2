@@ -6,7 +6,7 @@ import { AppHero } from '../app-hero';
 import { ellipsify } from '@/lib/utils';
 import { ExplorerLink } from '../cluster/cluster-ui';
 import { useMarketplaceProgram } from './homeowner-data-access';
-import { ListingCreate, ParkingSpaceList } from './homeowner-ui';
+import { ListingCreate, ListingUpdateDelete } from './homeowner-ui';
 
 export default function HomeownerFeature() {
   const { publicKey } = useWallet();
@@ -42,7 +42,7 @@ export default function HomeownerFeature() {
           <div id="parking-space-list" className="mt-8 ">
             <h2 className="text-xl font-bold mb-4">Manage Listing (Update or Delete)</h2>
 
-            <ParkingSpaceList />
+            <ListingUpdateDelete />
           </div>
         </AppHero>
       </main>
