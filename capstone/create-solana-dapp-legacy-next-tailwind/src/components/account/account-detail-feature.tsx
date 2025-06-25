@@ -11,8 +11,8 @@ import { ellipsify } from '@/lib/utils'
 export default function AccountDetailFeature() {
   const params = useParams()
   const address = useMemo(() => {
-    if (!params.address || typeof params.address !== 'string') {
-      return
+    if (!params || !params.address) {
+      return;
     }
     try {
       return new PublicKey(params.address)
