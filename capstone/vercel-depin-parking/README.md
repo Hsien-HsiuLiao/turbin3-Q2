@@ -1,3 +1,5 @@
+create-solana-dapp next-tailwind is WIP, use legacy instead
+
 CRUD dApp example - https://solana.com/developers/guides/dapps/journal#connecting-a-solana-program-to-a-ui
 
 https://youtu.be/amAq-WHAFs8?si=wRf48qbInjDaixSk&t=10592
