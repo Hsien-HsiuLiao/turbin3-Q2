@@ -2,6 +2,14 @@
 
 https://turbin3.com/
 
+[Capstone](/capstone/) - (DePIN) Panorama Parking
+- [Pitch Deck](https://www.figma.com/deck/gtZUQsVuayE8rkslaf0TgN/Pitch-Deck---Panorama-Parking?node-id=1-2&t=HvLJNwTA0zH9xR0c-1)
+- [Featured project Q2 Builders](https://x.com/00shoe/status/1936163027851808995)
+
+
+
+
+
 week 1 
 - Account model (https://solanahowitworks.xyz/#chapter6), 
 Programs, Rent, Compute, IDL, PDA, CPI, 
