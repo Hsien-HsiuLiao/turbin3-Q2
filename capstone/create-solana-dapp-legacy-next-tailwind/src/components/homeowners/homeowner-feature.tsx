@@ -28,7 +28,7 @@ export default function HomeownerFeature() {
       <main className="flex-grow ml-64 p-4">
         <AppHero
           title="Welcome Homeowners"
-          subtitle={'Create your parking space listing here!'}
+          subtitle={'Rent out your driveway and make money!'}
         >
           <p className="mb-6">
             <ExplorerLink
@@ -40,8 +40,6 @@ export default function HomeownerFeature() {
             <ListingCreate />
           </div>
           <div id="parking-space-list" className="mt-8 ">
-            <h2 className="text-xl font-bold mb-4">Manage Listing (Update or Delete)</h2>
-
             <ListingUpdateDelete />
           </div>
         </AppHero>
