@@ -15,8 +15,11 @@ week 1
 Programs, Rent, Compute, IDL, PDA, CPI, 
 [@solana/spl-token library](https://spl.solana.com/) 
 ([create mint account and ATA](/solana-starter/ts/cluster1/spl_notes.md))
+
 - [Metaplex](https://developers.metaplex.com/token-metadata), Master Edition, Collections, UMI, 
-[create token metadata with umi and transfer token](/solana-starter/ts/cluster1/spl_notes.md)
+[create token metadata with umi and transfer token](/solana-starter/ts/cluster1/spl_notes.md), 
+Creating Mint and Metadata accounts https://developers.metaplex.com/token-metadata/mint
+
 - [Create and mint NFT with UMI](/solana-starter/ts/cluster1/nft_notes.md)
 
 week 2
