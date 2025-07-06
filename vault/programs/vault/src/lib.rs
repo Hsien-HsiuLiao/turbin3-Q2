@@ -32,24 +32,26 @@ pub mod vault {//instructions go here
 #[derive(Accounts)] //custom derive macro, - augments struct,does not alter  , adds impl, ex #[derive(Debug)]
 pub struct Initialize<'info> {
     #[account(mut)]
-    pub signer: Signer<'info>,
+    pub signer: Signer<'info>,      //signs transaction, mut pays for creation of state account
     #[account(
         seeds = [b"vault", vault_state.key().as_ref()],
         bump,
     )]
-    pub vault: SystemAccount<'info>,
+    pub vault: SystemAccount<'info>,        //PDA, will hold funds, SystemAccount owned by SystemProgram and this program will be signer fo vault
+                                            //vault is only derived, no changes made yet, so mut is not needed
     #[account(
-        init,
+        init,                               //init implies mut
         payer = signer,
         seeds = [b"state", signer.key().as_ref()],
         bump,
-        space = 8 + VaultState::INIT_SPACE,
+        space = 8 + VaultState::INIT_SPACE, //Anchor discriminator, 8 byte  string lets anchor find account
     )]
-    pub vault_state: Account<'info, VaultState>,
+    pub vault_state: Account<'info, VaultState>,    //PDA, stores bumps
+
     pub system_program: Program<'info, System>
 }
 
-impl<'info> Initialize<'info> {
+impl<'info> Initialize<'info> { //storing bumps saves cost, CU
     pub fn initialize(&mut self, bumps: &InitializeBumps) -> Result<()> {
         self.vault_state.state_bump = bumps.vault_state;
         self.vault_state.vault_bump = bumps.vault;
@@ -195,5 +197,5 @@ pub struct VaultState {
 }
 
 impl Space for VaultState {
-    const INIT_SPACE: usize = 1 + 1;
+    const INIT_SPACE: usize = 1 + 1; //vault_bump is 1 byte, state_bump 1 byte
 }
