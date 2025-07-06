@@ -39,6 +39,9 @@ pub struct Initialize<'info> {
     )]
     pub vault: SystemAccount<'info>,        //PDA, will hold funds, SystemAccount owned by SystemProgram and this program will be signer fo vault
                                             //vault is only derived, no changes made yet, so mut is not needed
+                                            //will be used to transfer SOL in and out
+                                            //initialization will be when you send SOL to it
+                                            //no data, so init not needed
     #[account(
         init,                               //init implies mut
         payer = signer,
@@ -46,7 +49,7 @@ pub struct Initialize<'info> {
         bump,
         space = 8 + VaultState::INIT_SPACE, //Anchor discriminator, 8 byte  string lets anchor find account
     )]
-    pub vault_state: Account<'info, VaultState>,    //PDA, stores bumps
+    pub vault_state: Account<'info, VaultState>,    //PDA, stores bumps, 'our' Account, it uses Account struct
 
     pub system_program: Program<'info, System>
 }
@@ -69,6 +72,7 @@ pub struct Deposit<'info> {
         bump = vault_state.vault_bump,
     )]
     pub vault: SystemAccount<'info>,//vault balance will increase due to deposit, so must be mutable
+
     #[account(
         seeds = [b"state", signer.key().as_ref()],
         bump = vault_state.state_bump,
@@ -80,15 +84,17 @@ pub struct Deposit<'info> {
 impl<'info> Deposit<'info> {
     pub fn deposit(&mut self, amount: u64) -> Result<()> {
 
+        //when depositing from Signer, need to ask System program, so we need to setup system program context
         let cpi_program = self.system_program.to_account_info();
 
+        //then we need accounts
         let cpi_account = Transfer {
             from: self.signer.to_account_info(),
             to: self.vault.to_account_info()
         };
 
         let cpi_ctx = CpiContext::new(cpi_program, cpi_account);
-
+        //when Deposit ix called, it is signed and the signature carries through
         transfer(cpi_ctx, amount)?;
 
         Ok(())
