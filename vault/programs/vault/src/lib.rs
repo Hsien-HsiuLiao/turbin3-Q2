@@ -139,6 +139,8 @@ impl<'info> Withdraw<'info> {
             &[self.vault_state.vault_bump]
         ];
         let signer_seeds = &[&pda_signing_seeds[..]];
+        //new_with_signer since we are sending SOL back to signer
+        //need to setup seeds to sign with the seeds
         let cpi_ctx = CpiContext::new_with_signer(cpi_program, cpi_account, signer_seeds);
 
         transfer(cpi_ctx, amount)?;
