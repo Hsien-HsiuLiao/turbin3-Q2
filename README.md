@@ -21,11 +21,12 @@ Programs, Rent, Compute, IDL, PDA, CPI,
 Creating Mint and Metadata accounts https://developers.metaplex.com/token-metadata/mint
 
 - [Create and mint NFT with UMI](/solana-starter/ts/cluster1/nft_notes.md)
+- https://www.walrus.xyz/
 
 week 2
 - Vault
 - Escrow
-- AMM
+- AMM https://www.infect3d.xyz/blog/Exploring-AMMs#amm-security-considerations
 
 week 3 
 - NFT Marketplace
