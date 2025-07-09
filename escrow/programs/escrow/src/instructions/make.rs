@@ -46,7 +46,9 @@ associated_token::token_program = token_program,
         associated_token::authority = escrow, 
         associated_token::token_program = token_program
     )]
-    pub vault: InterfaceAccount<'info, TokenAccount>,
+    pub vault: InterfaceAccount<'info, TokenAccount>,   //vault holds tokens for trade, need TokenAccount for tokens
+                                                        //vault is ata, derived from mint_a
+
     pub associated_token_program: Program<'info, AssociatedToken>,
     pub token_program: Interface<'info, TokenInterface>,
     pub system_program: Program<'info, System>
