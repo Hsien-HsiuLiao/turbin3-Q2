@@ -13,7 +13,7 @@ import {
 import { useWallet } from "@solana/wallet-adapter-react";
 
 import { useEffect, useState } from "react";
-
+import dayjs from 'dayjs';
 
 
 //Manage Listing
@@ -35,8 +35,8 @@ export function ListingCard({ account }: { account: PublicKey }) {
   const [latitude, setLatitude] = useState(0);
   const [longitude, setLongitude] = useState(0);
   const [additionalInfo, setAdditionalInfo] = useState("");
-  const [availabilityStart, setAvailabilityStart] = useState(new anchor.BN(0));
-  const [availabilityEnd, setAvailabilityEnd] = useState(new anchor.BN(0));
+  const [availabilityStart, setAvailabilityStart] = useState('');
+  const [availabilityEnd, setAvailabilityEnd] = useState('');
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
 
@@ -49,8 +49,8 @@ export function ListingCard({ account }: { account: PublicKey }) {
       setLatitude(accountQuery.data.latitude);
       setLongitude(accountQuery.data.longitude);
       setAdditionalInfo(accountQuery.data.additionalInfo || "");
-      setAvailabilityStart(accountQuery.data.availabiltyStart);
-      setAvailabilityEnd(accountQuery.data.availabiltyEnd);
+      setAvailabilityStart(dayjs.unix(Number(accountQuery.data.availabiltyStart)).format('YYYY-MM-DDTHH:mm'));
+      setAvailabilityEnd(dayjs.unix(Number(accountQuery.data.availabiltyEnd)).format('YYYY-MM-DDTHH:mm'));
       setEmail(accountQuery.data.email);
       setPhone(accountQuery.data.phone);
     }
@@ -71,8 +71,8 @@ export function ListingCard({ account }: { account: PublicKey }) {
         latitude,
         longitude,
         additionalInfo,
-        availabilityStart,
-        availabilityEnd,
+        availabilityStart: new anchor.BN(Math.floor(new Date(availabilityStart).getTime() / 1000)),
+        availabilityEnd: new anchor.BN(Math.floor(new Date(availabilityEnd).getTime() / 1000)),
         email,
         phone,
         homeowner1: publicKey
@@ -84,9 +84,15 @@ export function ListingCard({ account }: { account: PublicKey }) {
     return <p>Connect your wallet</p>;
   }
 
-  return accountQuery.isLoading ? (
-    <span className="loading loading-spinner loading-lg"></span>
-  ) : (
+  // Before rendering the card content, check if accountQuery is loading or has no data
+  if (accountQuery.isLoading) {
+    return <div className="max-w-lg mx-auto p-6 bg-white rounded-lg shadow-lg text-gray-700 text-center">Loading card...</div>;
+  }
+  if (!accountQuery.data) {
+    return <div className="max-w-lg mx-auto p-6 bg-white rounded-lg shadow-lg text-gray-700 text-center">Unable to load card data. Please try refreshing the page.</div>;
+  }
+
+  return (
     <div className="card card-bordered border-base-300 border-4 text-neutral-content bg-blue-500">
       <div className="card-body items-center text-center bg-blue-200">
         <div className="space-y-6">
@@ -166,6 +172,32 @@ export function ListingCard({ account }: { account: PublicKey }) {
               placeholder="Additional Info"
             />
 
+            {/* Availability Start/End */}
+            <div className="mb-4 flex flex-col items-center">
+              <label className="block text-sm font-medium text-gray-700 mb-1 text-center w-full max-w-xs">
+                Availability Start
+              </label>
+              <input
+                type="datetime-local"
+                id="availabilityStart"
+                placeholder="Availability Start"
+                value={availabilityStart}
+                onChange={e => setAvailabilityStart(e.target.value)}
+                className="input input-bordered w-full max-w-xs border border-black text-black mx-auto"
+              />
+              <label className="block text-sm font-medium text-gray-700 mb-1 text-center w-full max-w-xs mt-2">
+                Availability End
+              </label>
+              <input
+                type="datetime-local"
+                id="availabilityEnd"
+                placeholder="Availability End"
+                value={availabilityEnd}
+                onChange={e => setAvailabilityEnd(e.target.value)}
+                className="input input-bordered w-full max-w-xs border border-black text-black mx-auto"
+              />
+            </div>
+
             <label htmlFor="email" className="block text-sm font-medium text-black">
               Email: <span className="text-black-300">{/* {accountQuery.data?.email} */}</span>
             </label>
@@ -212,7 +244,7 @@ export function ListingCard({ account }: { account: PublicKey }) {
               />
             </p>
             <button
-              className="bg-red-500 btn btn-xs btn-secondary btn-outline"
+              className="bg-red-500 border border-red-700 rounded-md px-4 py-2 text-black hover:bg-red-600 transition"
               onClick={() => {
                 if (
                   !window.confirm(

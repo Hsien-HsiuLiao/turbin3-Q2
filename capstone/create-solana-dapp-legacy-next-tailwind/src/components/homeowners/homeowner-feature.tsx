@@ -6,7 +6,8 @@ import { AppHero } from '../app-hero';
 import { ellipsify } from '@/lib/utils';
 import { ExplorerLink } from '../cluster/cluster-ui';
 import { useMarketplaceProgram } from './homeowner-data-access';
-import { ListingCreate, ListingUpdateDelete } from './homeowner-ui';
+import { ListingCreate } from './homeowner-ui-create';
+import { ListingUpdateDelete } from './homeowner-ui-update-delete';
 
 export default function HomeownerFeature() {
   const { publicKey } = useWallet();

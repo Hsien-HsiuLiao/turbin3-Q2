@@ -11,7 +11,7 @@ import { ExplorerLink } from '../cluster/cluster-ui';
 import { useMarketplaceProgram } from './homeowner-data-access';
 
 //import { JournalCreate, JournalList } from './journal-ui';
-import {ListingCreate} from './homeowner-ui';
+import {ListingCreate} from './homeowner-ui-create';
 //import { useWalletUiCluster } from '@wallet-ui/react';
 
 
