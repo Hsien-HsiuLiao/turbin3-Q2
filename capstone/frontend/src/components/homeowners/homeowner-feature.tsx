@@ -8,14 +8,23 @@ import { ExplorerLink } from '../cluster/cluster-ui';
 import { useMarketplaceProgram } from './homeowner-data-access';
 import { ListingCreate } from './homeowner-ui-create';
 import { ListingUpdateDelete } from './homeowner-ui-update-delete';
+import { useEffect, useState } from 'react';
 
 export default function HomeownerFeature() {
   const { publicKey } = useWallet();
-  const { programId } = useMarketplaceProgram();
+  const { programId, accounts } = useMarketplaceProgram();
+  const [currentAccountListing, setCurrentAccountListing] = useState(null);
+
+  useEffect(() => {
+    if (accounts.data && publicKey) {
+      const found = accounts.data.find(acc => acc.account.maker.toString() === publicKey.toString());
+      setCurrentAccountListing(found || null);
+    }
+  }, [accounts.data, publicKey]);
 
   return publicKey ? (
     <div className="flex">
-      <nav className="sidebar fixed w-64 bg-gray-800 text-white h-screen p-4">
+      {/* <nav className="sidebar fixed w-64 bg-gray-800 text-white h-screen p-4">
         <h2 className="text-lg font-bold mb-4">Navigation</h2>
         <ul className="list-disc pl-5">
           <li className="mb-2">
@@ -25,7 +34,7 @@ export default function HomeownerFeature() {
             <a href="#parking-space-list" className="text-white hover:underline">Manage Parking Space Listing</a>
           </li>
         </ul>
-      </nav>
+      </nav> */}
       <main className="flex-grow ml-64 p-4">
         <AppHero
           title="Welcome Homeowners"
@@ -37,12 +46,15 @@ export default function HomeownerFeature() {
               label={ellipsify(programId.toString())}
             />
           </p>
-          <div id="create-listing">
-            <ListingCreate />
-          </div>
-          <div id="parking-space-list" className="mt-8 ">
-            <ListingUpdateDelete />
-          </div>
+          {!currentAccountListing ? (
+            <div id="create-listing">
+              <ListingCreate />
+            </div>
+          ) : (
+            <div id="parking-space-list" className="mt-8 ">
+              <ListingUpdateDelete />
+            </div>
+          )}
         </AppHero>
       </main>
     </div>
