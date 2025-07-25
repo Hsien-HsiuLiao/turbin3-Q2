@@ -9,10 +9,9 @@ export function toUnixTime(dateString: string): anchor.BN {
 }
 
 // Helper to convert SOL to lamports
-export function solToLamports(sol: string): number {
-  const num = Number(sol);
-  if (isNaN(num)) return 0;
-  return Math.round(num * 1_000_000_000);
+export function solToLamports(sol: number): number {
+  if (isNaN(sol)) return 0;
+  return Math.round(sol * 1_000_000_000);
 }
 
 export function isFormValid({
@@ -28,7 +27,7 @@ export function isFormValid({
   phone,
 }: {
   address: string;
-  rentalRate: string;
+  rentalRate: number;
   sensorId: string;
   latitude: string;
   longitude: string;
