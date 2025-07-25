@@ -133,7 +133,7 @@ export function useMarketplaceProgram() {
       accounts.refetch();
     },
     onError: (error) => {
-      toast.error(`Failed to create journal entry: ${error.message}`);
+      toast.error(`Failed to create a new listing: ${error.message}`);
     },
   });
 
