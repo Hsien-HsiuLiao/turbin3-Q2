@@ -29,8 +29,8 @@ export function isFormValid({
   address: string;
   rentalRate: number;
   sensorId: string;
-  latitude: string;
-  longitude: string;
+  latitude: number;
+  longitude: number;
   additionalInfo?: string;
   availabilityStart: string;
   availabilityEnd: string;
