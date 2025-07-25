@@ -17,7 +17,7 @@ import { useEffect, useState } from "react";
 
 import {ListingCard} from "./homeowner-ui-card";
 import dayjs from 'dayjs';
-import { toUnixTime, solToLamports } from './helpers';
+import { toUnixTime, solToLamports, isFormValid } from './helpers';
 
 export function ListingCreate() {
   const { createListing } = useMarketplaceProgram();
@@ -34,20 +34,21 @@ export function ListingCreate() {
   const [email, setEmail] = useState("");                  // Email (String)
   const [phone, setPhone] = useState("");                  // Phone (String)
 
-  const isFormValid =
-    address.trim() !== "" &&
-    rentalRate > 0 && // Assuming rentalRate should be greater than 0
-    sensorId.trim() !== "" &&
-    latitude !== 0 && // Assuming latitude should not be 0 (or you can adjust this based on your requirements)
-    longitude !== 0 && // Assuming longitude should not be 0 (or you can adjust this based on your requirements)
-    additionalInfo.trim() !== "" && // Optional, but you can check if it's not empty if needed
-    //     availabilityStart > new anchor.BN(0) && // Assuming availabilityStart should be a positive number
-    //  availabilityEnd > new anchor.BN(0) && // Assuming availabilityEnd should be a positive number
-    email.trim() !== "" &&
-    phone.trim() !== "";
+  const formValid = isFormValid({
+    address,
+    rentalRate,
+    sensorId,
+    latitude: String(latitude),
+    longitude: String(longitude),
+    additionalInfo,
+    availabilityStart: String(availabilityStart),
+    availabilityEnd: String(availabilityEnd),
+    email,
+    phone,
+  });
 
   const handleSubmit = async () => {
-    if (publicKey && isFormValid) {
+    if (publicKey && formValid) {
       await createListing.mutateAsync({
         address,
         rentalRate,
@@ -251,7 +252,7 @@ export function ListingCreate() {
       <button
         className="bg-blue-500 text-white border-2 border-blue-700 hover:bg-blue-600 hover:border-blue-800 transition-all duration-300 ease-in-out px-6 py-3 rounded-lg shadow-lg w-full"
         onClick={handleSubmit}
-        disabled={createListing.isPending || !isFormValid}
+        disabled={createListing.isPending || !formValid}
       >
         Create A Listing {createListing.isPending && "..."}
       </button>
