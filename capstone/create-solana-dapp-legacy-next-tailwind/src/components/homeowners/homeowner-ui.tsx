@@ -24,22 +24,22 @@ export function ListingCreate() {
   const { publicKey } = useWallet();
 
   const [address, setAddress] = useState("");              // Address (String)
-  const [rentalRate, setRentalRate] = useState(0);        // Rental rate (u32)
+  const [rentalRate, setRentalRate] = useState('');        // Rental rate (string, input)
   const [sensorId, setSensorId] = useState("");            // Sensor ID (String)
   const [latitude, setLatitude] = useState(0);             // Latitude (f64)
   const [longitude, setLongitude] = useState(0);           // Longitude (f64)
   const [additionalInfo, setAdditionalInfo] = useState(""); // Additional information (Option<String>)
-  const [availabilityStart, setAvailabilityStart] = useState(new anchor.BN(0)); // Availability start (i64)
-  const [availabilityEnd, setAvailabilityEnd] = useState(new anchor.BN(0));     // Availability end (i64)
+  const [availabilityStart, setAvailabilityStart] = useState(""); // Availability start (string)
+  const [availabilityEnd, setAvailabilityEnd] = useState("");     // Availability end (string)
   const [email, setEmail] = useState("");                  // Email (String)
   const [phone, setPhone] = useState("");                  // Phone (String)
 
   const formValid = isFormValid({
     address,
-    rentalRate,
+    rentalRate: rentalRate === '' ? 0 : Number(rentalRate),
     sensorId,
-    latitude: String(latitude),
-    longitude: String(longitude),
+    latitude: latitude,
+    longitude: longitude,
     additionalInfo,
     availabilityStart: String(availabilityStart),
     availabilityEnd: String(availabilityEnd),
@@ -51,13 +51,13 @@ export function ListingCreate() {
     if (publicKey && formValid) {
       await createListing.mutateAsync({
         address,
-        rentalRate,
+        rentalRate: solToLamports(rentalRate === '' ? 0 : Number(rentalRate)),
         sensorId,
         latitude,
         longitude,
         additionalInfo,
-        availabilityStart,
-        availabilityEnd,
+        availabilityStart: toUnixTime(availabilityStart),
+        availabilityEnd: toUnixTime(availabilityEnd),
         email,
         phone,
         homeowner1: publicKey
@@ -106,11 +106,11 @@ export function ListingCreate() {
             id="rentalRate"
             placeholder="e.g., 0.0345"
             value={rentalRate}
-            onChange={(e) => setRentalRate(e.target.value)}
+            onChange={e => setRentalRate(e.target.value)}
             className="input input-bordered w-1/4 border border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 text-black text-left"
           />
           <span className="text-gray-700 ml-4">USD</span>
-          <span className="text-gray-900 font-semibold">${(Number(rentalRate) * 200).toFixed(2)}</span>
+          <span className="text-gray-900 font-semibold">${(rentalRate === '' ? '0.00' : (Number(rentalRate) * 200).toFixed(2))}</span>
         </div>
       </div>
 
@@ -192,18 +192,30 @@ export function ListingCreate() {
       </div>
 
       <div className="relative mb-4">
-        <label htmlFor="availabilityStart" className="block text-sm font-medium text-gray-700 mb-1 text-left">
+        <label htmlFor="availabilityStart" className="block text-sm font-medium text-gray-700 mb-1 text-left flex items-center gap-2">
           Availability Start
-          <span className="inline-flex items-center justify-center w-5 h-5 ml-1 text-gray-500 bg-gray-200 rounded-full cursor-pointer" title="Enter the start time of availability.">
+          <span className="inline-flex items-center justify-center w-5 h-5 ml-1 text-gray-500 bg-gray-200 rounded-full cursor-pointer" title="Enter the start date and time of availability.">
             ?
           </span>
+          <button
+            type="button"
+            className="ml-2 px-4 py-1 bg-blue-100 text-blue-700 rounded-full border border-blue-300 hover:bg-blue-200 text-xs"
+            onClick={() => {
+              const now = new Date();
+              const pad = (n: number) => n.toString().padStart(2, '0');
+              const formatted = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())}`;
+              setAvailabilityStart(formatted);
+            }}
+          >
+            Current Date/Time
+          </button>
         </label>
         <input
-          type="number"
+          type="datetime-local"
           id="availabilityStart"
           placeholder="Availability Start"
-          value={availabilityStart.toString()}
-          onChange={(e) => setAvailabilityStart(new anchor.BN(e.target.value))} // Convert to number
+          value={availabilityStart}
+          onChange={(e) => setAvailabilityStart(e.target.value)}
           className="input input-bordered w-full border border-gray-300 rounded-md text-black focus:border-blue-500 focus:ring focus:ring-blue-200"
         />
       </div>
@@ -211,16 +223,16 @@ export function ListingCreate() {
       <div className="relative mb-4">
         <label htmlFor="availabilityEnd" className="block text-sm font-medium text-gray-700 mb-1 text-left">
           Availability End
-          <span className="inline-flex items-center justify-center w-5 h-5 ml-1 text-gray-500 bg-gray-200 rounded-full cursor-pointer" title="Enter the end time of availability.">
+          <span className="inline-flex items-center justify-center w-5 h-5 ml-1 text-gray-500 bg-gray-200 rounded-full cursor-pointer" title="Enter the end date and time of availability.">
             ?
           </span>
         </label>
         <input
-          type="number"
+          type="datetime-local"
           id="availabilityEnd"
           placeholder="Availability End"
-          value={availabilityEnd.toString()}
-          onChange={(e) => setAvailabilityEnd(new anchor.BN(e.target.value))} // Convert to number
+          value={availabilityEnd}
+          onChange={(e) => setAvailabilityEnd(e.target.value)}
           className="input input-bordered w-full border border-gray-300 rounded-md text-black focus:border-blue-500 focus:ring focus:ring-blue-200"
         />
       </div>
