@@ -115,11 +115,18 @@ export function ListingCreate() {
       </div>
 
       <div className="relative mb-4">
-        <label htmlFor="sensorId" className="block text-sm font-medium text-gray-700 mb-1 text-left">
+        <label htmlFor="sensorId" className="block text-sm font-medium text-gray-700 mb-1 text-left flex items-center gap-2">
           Sensor ID
           <span className="inline-flex items-center justify-center w-5 h-5 ml-1 text-gray-500 bg-gray-200 rounded-full cursor-pointer" title="Enter the unique ID for your sensor.">
             ?
           </span>
+          <button
+            type="button"
+            className="ml-2 px-4 py-1 bg-blue-100 text-blue-700 rounded-full border border-blue-300 hover:bg-blue-200 text-xs"
+            onClick={() => setSensorId('70B3D57ED0001A2B')}
+          >
+            Generate ID (for testing only)
+          </button>
         </label>
         <input
           type="text"
@@ -170,7 +177,7 @@ export function ListingCreate() {
 
       <div className="relative mb-4">
         <label htmlFor="additionalInfo" className="block text-sm font-medium text-gray-700 mb-1 text-left">
-          Additional Info
+          Additional Info (optional)
           <span className="inline-flex items-center justify-center w-5 h-5 ml-1 text-gray-500 bg-gray-200 rounded-full cursor-pointer" title="Provide any additional information about your listing.">
             ?
           </span>
