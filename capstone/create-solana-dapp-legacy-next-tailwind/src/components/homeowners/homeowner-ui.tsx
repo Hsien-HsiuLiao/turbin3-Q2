@@ -98,14 +98,20 @@ export function ListingCreate() {
             ?
           </span> https://www.coinbase.com/converter/sol/usd
         </label>
-        <input
-          type="number"
-          id="rentalRate"
-          placeholder="e.g., 50"
-          value={rentalRate || ''}
-          onChange={(e) => setRentalRate(Number(e.target.value))}
-          className="input input-bordered w-full border border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 text-black"
-        />
+        <div className="flex items-center justify-start gap-2">
+          <label htmlFor="rentalRate" className="text-gray-700">SOL</label>
+          <input
+            type="number"
+            step="any"
+            id="rentalRate"
+            placeholder="e.g., 0.0345"
+            value={rentalRate}
+            onChange={(e) => setRentalRate(e.target.value)}
+            className="input input-bordered w-1/4 border border-gray-300 rounded-md focus:border-blue-500 focus:ring focus:ring-blue-200 text-black text-left"
+          />
+          <span className="text-gray-700 ml-4">USD</span>
+          <span className="text-gray-900 font-semibold">${(Number(rentalRate) * 200).toFixed(2)}</span>
+        </div>
       </div>
 
       <div className="relative mb-4">
