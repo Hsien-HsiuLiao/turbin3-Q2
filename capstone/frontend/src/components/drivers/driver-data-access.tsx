@@ -17,7 +17,12 @@ import { useTransactionToast } from '../use-transaction-toast'
 
 import { useMemo } from "react";
 
-
+interface ReserveArgs {
+  startTime: anchor.BN;
+  endTime: anchor.BN;
+  renter: PublicKey;
+  maker: PublicKey;
+}
 
 export function useMarketplaceProgram() {
     const { connection } = useConnection();
@@ -50,16 +55,47 @@ export function useMarketplaceProgram() {
         queryFn: () => connection.getParsedAccountInfo(programId),
     });
 
-   
-    
-    
+    const marketplace_name = "DePIN PANORAMA PARKING";
+    let marketplace: PublicKey;
+    let marketplaceBump;
+    [marketplace, marketplaceBump] = PublicKey.findProgramAddressSync(
+      [Buffer.from("marketplace"), Buffer.from(marketplace_name)],
+      program.programId
+    );
+
+    const reserve = useMutation<string, Error, ReserveArgs>({
+      mutationKey: ["reserve", "create", { cluster }],
+      mutationFn: async ({ startTime, endTime, renter, maker }) => {
+        const listingPDA = PublicKey.findProgramAddressSync(
+          [marketplace.toBuffer(), maker.toBuffer()],
+          program.programId
+        )[0];
+        
+        return program.methods.reserve(startTime, endTime)
+          .accounts({
+            renter: renter,
+            maker: maker,
+            marketplace: marketplace,
+            listing: listingPDA,
+            systemProgram: anchor.web3.SystemProgram.programId,
+          })
+          .rpc();
+      },
+      onSuccess: (signature) => {
+        transactionToast(signature);
+        accounts.refetch();
+      },
+      onError: (error) => {
+        toast.error(`Failed to reserve parking space: ${error.message}`);
+      },
+    });
 
 return {
     program,
     programId,
     accounts,
     getProgramAccount,
-    
+    reserve,
 };
 }
 
