@@ -15,7 +15,7 @@ import { useWallet } from "@solana/wallet-adapter-react";
 import { useEffect, useState } from "react";
 import dayjs from 'dayjs';
 import { SensorChangeButton } from './homeowner-sensor-change';
-import { SimulateLeavingButton } from './homeowner-simulate-leaving';
+import { SimulateLeavingButton } from './homeowner-simulate-driver-leaving';
 
 
 //Manage Listing
@@ -223,6 +223,49 @@ export function ListingCard({ account }: { account: PublicKey }) {
               className="input input-bordered w-full max-w-xs border border-black text-black"
               placeholder="Phone"
             />
+
+            {/* Parking Space Status */}
+            <div className="block text-sm font-medium text-black">
+              <span className="font-semibold">Parking Space Status: </span>
+              <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                accountQuery.data?.parkingSpaceStatus && 'available' in accountQuery.data.parkingSpaceStatus 
+                  ? 'bg-green-100 text-green-800' 
+                  : accountQuery.data?.parkingSpaceStatus && 'reserved' in accountQuery.data.parkingSpaceStatus
+                  ? 'bg-yellow-100 text-yellow-800'
+                  : accountQuery.data?.parkingSpaceStatus && 'occupied' in accountQuery.data.parkingSpaceStatus
+                  ? 'bg-red-100 text-red-800'
+                  : 'bg-gray-100 text-gray-800'
+              }`}>
+                {accountQuery.data?.parkingSpaceStatus && 'available' in accountQuery.data.parkingSpaceStatus 
+                  ? 'Available' 
+                  : accountQuery.data?.parkingSpaceStatus && 'reserved' in accountQuery.data.parkingSpaceStatus
+                  ? 'Reserved'
+                  : accountQuery.data?.parkingSpaceStatus && 'occupied' in accountQuery.data.parkingSpaceStatus
+                  ? 'Occupied'
+                  : 'Unknown'
+                }
+              </span>
+            </div>
+            
+            {/* Reserved By Information */}
+            {accountQuery.data?.parkingSpaceStatus && 'reserved' in accountQuery.data.parkingSpaceStatus && accountQuery.data?.reservedBy && (
+              <div className="block text-sm font-medium text-black">
+                <span className="font-semibold">Reserved By: </span>
+                <span className="text-gray-600 font-mono text-xs">
+                  {ellipsify(accountQuery.data.reservedBy.toString())}
+                </span>
+              </div>
+            )}
+            
+            {/* Occupied By Information */}
+            {accountQuery.data?.parkingSpaceStatus && 'occupied' in accountQuery.data.parkingSpaceStatus && accountQuery.data?.reservedBy && (
+              <div className="block text-sm font-medium text-black">
+                <span className="font-semibold">Occupied By: </span>
+                <span className="text-gray-600 font-mono text-xs">
+                  {ellipsify(accountQuery.data.reservedBy.toString())}
+                </span>
+              </div>
+            )}
           </div>
 
 
