@@ -15,6 +15,8 @@ import { useWallet } from "@solana/wallet-adapter-react";
 
 import { useEffect, useState } from "react";
 import dayjs from 'dayjs';
+import { ConfirmArrivalButton } from './driver-confirm-arrival';
+import { SensorChangeButton } from './driver-sensor-change';
 
 
 function DebugTable({ accounts }: { accounts: any[] }) {
@@ -386,6 +388,22 @@ function ListingCard({ account, userHasReservations, setUserHasReservations }: {
               </>
             )}
           </div>
+        )}
+        {publicKey && hasReservation && (
+          <>
+            <div className="text-lg font-semibold text-gray-700 mb-2">Step 1 (Homeowner calls this ix)</div>
+            <SensorChangeButton 
+              account={account} 
+              maker={accountQuery.data?.maker || new PublicKey('11111111111111111111111111111111')}
+              feed={new PublicKey("9jfL52Gmudwee1RK8yuNguoZET7DMDqKSR6DePBJNXot")}
+            />
+            <div className="text-lg font-semibold text-gray-700 mb-2 mt-4">Step 2</div>
+            <ConfirmArrivalButton 
+              account={account} 
+              maker={accountQuery.data?.maker || new PublicKey('11111111111111111111111111111111')}
+              sensorId={accountQuery.data?.sensorId || ''}
+            />
+          </>
         )}
       </div>
     </div>
