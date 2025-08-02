@@ -7,14 +7,25 @@ export function AdminFeedManagement() {
   const feedManagement = useFeedManagement()
   const addFeed = useAddFeed()
   const [newFeedAddress, setNewFeedAddress] = useState('')
+  const [newMakerAddress, setNewMakerAddress] = useState('')
+  const [error, setError] = useState<string | null>(null)
 
   const handleAddFeed = () => {
-    if (newFeedAddress) {
+    if (newFeedAddress && newMakerAddress) {
+      setError(null) // Clear previous errors
       addFeed.mutate({
         feedAddress: newFeedAddress,
+        makerAddress: newMakerAddress,
         description: 'Added via admin dashboard'
+      }, {
+        onSuccess: () => {
+          setNewFeedAddress('')
+          setNewMakerAddress('')
+        },
+        onError: (error) => {
+          setError(error.message)
+        }
       })
-      setNewFeedAddress('')
     }
   }
 
@@ -30,15 +41,30 @@ export function AdminFeedManagement() {
           placeholder="Feed Address"
           value={newFeedAddress}
           onChange={(e) => setNewFeedAddress(e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-700"
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-700 text-gray-900"
+        />
+        <input
+          type="text"
+          placeholder="Maker Address"
+          value={newMakerAddress}
+          onChange={(e) => setNewMakerAddress(e.target.value)}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-700 text-gray-900"
         />
         <button
           className="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors disabled:opacity-50"
           onClick={handleAddFeed}
-          disabled={addFeed.isPending || !newFeedAddress}
+          disabled={addFeed.isPending || !newFeedAddress || !newMakerAddress}
         >
           {addFeed.isPending ? 'Adding...' : 'Add New Feed'}
         </button>
+        
+        {/* Error Display */}
+        {error && (
+          <div className="mt-3 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+            <p className="text-sm font-medium">Error:</p>
+            <p className="text-sm">{error}</p>
+          </div>
+        )}
       </div>
 
       {/* Current Feeds */}

@@ -2,7 +2,8 @@
 
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { PublicKey } from '@solana/web3.js'
+import { PublicKey, SystemProgram } from '@solana/web3.js'
+import { useMarketplaceProgram } from '../homeowners/homeowner-data-access'
 
 // Admin wallet address
 const ADMIN_WALLET = 'Coop1aAuEqbN3Pm9TzohXvS3kM4zpp3pJZ9D4M2uWXH2'
@@ -95,24 +96,76 @@ export function useFeedManagement() {
 // Hook to add new feed
 export function useAddFeed() {
   const queryClient = useQueryClient()
+  const { program } = useMarketplaceProgram()
+  const { publicKey } = useWallet()
   
   return useMutation({
-    mutationFn: async ({ feedAddress, description }: { feedAddress: string, description: string }) => {
-      // TODO: Implement actual feed addition logic
-      console.log('Adding feed:', feedAddress, description)
-      
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
-      return {
-        success: true,
-        feedAddress,
-        description
+    mutationFn: async ({ feedAddress, makerAddress, description }: { feedAddress: string, makerAddress: string, description: string }) => {
+      if (!program || !publicKey) {
+        throw new Error('Program or wallet not available')
+      }
+
+      try {
+        // Convert addresses to PublicKey
+        const feedPubkey = new PublicKey(feedAddress)
+        const makerPubkey = new PublicKey(makerAddress)
+        
+        // Get marketplace account
+        const [marketplacePda] = PublicKey.findProgramAddressSync(
+          [Buffer.from('marketplace'), Buffer.from('DePIN PANORAMA PARKING')],
+          program.programId
+        )
+        
+        // Check if marketplace exists
+        const marketplaceAccount = await program.account.marketplace.fetch(marketplacePda).catch(() => null)
+        if (!marketplaceAccount) {
+          throw new Error('Marketplace not initialized. Please initialize the marketplace first.')
+        }
+        
+        // Get listing PDA
+        const [listingPda] = PublicKey.findProgramAddressSync(
+          [marketplacePda.toBuffer(), makerPubkey.toBuffer()],
+          program.programId
+        )
+        
+        // Check if listing exists
+        const listingAccount = await program.account.listing.fetch(listingPda).catch(() => null)
+        if (!listingAccount) {
+          throw new Error('Listing not found for the specified maker address.')
+        }
+        
+        // Call the addFeedToListing instruction
+        const tx = await program.methods
+          .addFeedToListing(feedPubkey)
+          .accountsPartial({
+            marketplace: marketplacePda,
+            maker: makerPubkey,
+            listing: listingPda,
+            admin: publicKey,
+          })
+          .rpc()
+        
+        console.log('Feed added successfully:', tx)
+        
+        return {
+          success: true,
+          feedAddress,
+          makerAddress,
+          description,
+          tx
+        }
+      } catch (error) {
+        console.error('Error adding feed:', error)
+        if (error instanceof Error) {
+          throw new Error(`Failed to add feed: ${error.message}`)
+        }
+        throw new Error('Failed to add feed: Unknown error')
       }
     },
     onSuccess: () => {
       // Invalidate and refetch feed management data
       queryClient.invalidateQueries({ queryKey: ['feed-management'] })
+      queryClient.invalidateQueries({ queryKey: ['admin-listings'] })
     }
   })
 }
