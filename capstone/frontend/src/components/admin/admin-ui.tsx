@@ -75,11 +75,31 @@ export function AdminDashboard() {
                 ) : listingsQuery.data && listingsQuery.data.length > 0 ? (
                   listingsQuery.data.map((listing, index) => {
                     const status = listing.account.parkingSpaceStatus
-                    const statusText = status ? JSON.stringify(status).replace(/"/g, '') : 'Unknown'
+                    const isReserved = status && typeof status === 'object' && 'reserved' in status
+                    const isAvailable = status && typeof status === 'object' && 'available' in status
+                    const isOccupied = status && typeof status === 'object' && 'occupied' in status
+                    
+                    let statusText = 'Unknown'
+                    if (isAvailable) statusText = 'Available'
+                    else if (isReserved) statusText = 'Reserved'
+                    else if (isOccupied) statusText = 'Occupied'
+                    
                     const statusColor = statusText === 'Available' ? 'bg-green-100 text-green-800' : 
                                       statusText === 'Reserved' ? 'bg-yellow-100 text-yellow-800' : 
                                       statusText === 'Occupied' ? 'bg-red-100 text-red-800' : 
                                       'bg-gray-100 text-gray-800'
+                    
+                    // Get reservedBy directly from the listing account
+                    const reservedBy = listing.account.reservedBy
+                    
+                    // Debug logging
+                    console.log('Listing status debug:', {
+                      status,
+                      statusText,
+                      isReserved,
+                      reservedBy: reservedBy?.toString(),
+                      hasReservedBy: !!reservedBy
+                    })
                     
                     return (
                       <tr key={listing.publicKey.toString()} className="hover:bg-gray-50">
@@ -119,9 +139,20 @@ export function AdminDashboard() {
                           )}
                         </td>
                         <td className="border border-gray-300 px-4 py-2">
-                          <span className={`px-2 py-1 ${statusColor} rounded-full text-xs`}>
-                            {statusText}
-                          </span>
+                          <div className="space-y-1">
+                            <span className={`px-2 py-1 ${statusColor} rounded-full text-xs`}>
+                              {statusText}
+                            </span>
+                            {statusText === 'Reserved' && reservedBy && (
+                              <div className="text-xs text-gray-600">
+                                Reserved by: {ellipsify(reservedBy.toString())}
+                              </div>
+                            )}
+                            {/* Debug info */}
+                            <div className="text-xs text-gray-400">
+                              Debug: {statusText} | Has reservedBy: {!!reservedBy}
+                            </div>
+                          </div>
                         </td>
                       </tr>
                     )
