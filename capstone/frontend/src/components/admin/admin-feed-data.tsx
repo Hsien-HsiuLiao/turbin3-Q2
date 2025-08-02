@@ -301,8 +301,8 @@ export function FeedAccountData() {
   }, []);
 
   return (
-    <div className="text-center space-y-4">
-      <h3 className="text-lg font-semibold text-gray-900">Feed Account Data</h3>
+    <div className="bg-white p-6 rounded-lg shadow-md border">
+      <h3 className="text-lg font-semibold text-gray-900 mb-4">Feed Account Data</h3>
       <div className="bg-gray-100 p-4 rounded-lg">
         {loading ? (
           <div className="text-sm text-gray-800">Loading feed data...</div>
