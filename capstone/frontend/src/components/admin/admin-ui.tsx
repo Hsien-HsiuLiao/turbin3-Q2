@@ -3,33 +3,40 @@
 import { useWallet } from '@solana/wallet-adapter-react'
 import { 
   useSystemStatus, 
-  useFeedManagement, 
-  useAddFeed, 
   useSystemHealthCheck, 
   useEmergencyPause 
 } from './admin-data-access'
 import { useState } from 'react'
 import { FeedAccountData } from './admin-feed-data'
+import { AdminFeedManagement } from './admin-feed-management'
+import { useMarketplaceProgram } from '../homeowners/homeowner-data-access'
+import { useQuery } from '@tanstack/react-query'
+import { ellipsify } from '@/lib/utils'
+import { Copy, Check } from 'lucide-react'
 
 export function AdminDashboard() {
   const { publicKey } = useWallet()
   const systemStatus = useSystemStatus()
-  const feedManagement = useFeedManagement()
-  const addFeed = useAddFeed()
   const healthCheck = useSystemHealthCheck()
   const emergencyPause = useEmergencyPause()
   
-  const [newFeedAddress, setNewFeedAddress] = useState('')
-  const [newFeedDescription, setNewFeedDescription] = useState('')
+  const [copiedAddress, setCopiedAddress] = useState<string | null>(null)
+  
+  // Fetch all listings from the marketplace program
+  const { program } = useMarketplaceProgram()
+  const listingsQuery = useQuery({
+    queryKey: ['admin-listings'],
+    queryFn: () => program.account.listing.all(),
+    enabled: !!program
+  })
 
-  const handleAddFeed = () => {
-    if (newFeedAddress && newFeedDescription) {
-      addFeed.mutate({
-        feedAddress: newFeedAddress,
-        description: newFeedDescription
-      })
-      setNewFeedAddress('')
-      setNewFeedDescription('')
+  const handleCopyAddress = async (address: string) => {
+    try {
+      await navigator.clipboard.writeText(address)
+      setCopiedAddress(address)
+      setTimeout(() => setCopiedAddress(null), 2000)
+    } catch (err) {
+      console.error('Failed to copy address:', err)
     }
   }
 
@@ -38,55 +45,90 @@ export function AdminDashboard() {
       <div className="max-w-4xl mx-auto">
         <h1 className="text-3xl font-bold mb-8 text-white">Admin Dashboard</h1>
         
+        {/* All Listings Table */}
+        <div className="bg-white p-6 rounded-lg shadow-md border mb-8">
+          <h2 className="text-xl font-semibold mb-4 text-gray-900">All Listings</h2>
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse border border-gray-300">
+              <thead>
+                <tr className="bg-gray-50">
+                  <th className="border border-gray-300 px-4 py-2 text-left text-gray-900 font-semibold">Maker</th>
+                  <th className="border border-gray-300 px-4 py-2 text-left text-gray-900 font-semibold">Home Address</th>
+                  <th className="border border-gray-300 px-4 py-2 text-left text-gray-900 font-semibold">Sensor ID</th>
+                  <th className="border border-gray-300 px-4 py-2 text-left text-gray-900 font-semibold">Feed</th>
+                  <th className="border border-gray-300 px-4 py-2 text-left text-gray-900 font-semibold">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {listingsQuery.isLoading ? (
+                  <tr>
+                    <td colSpan={5} className="border border-gray-300 px-4 py-2 text-center text-gray-600">
+                      Loading listings...
+                    </td>
+                  </tr>
+                ) : listingsQuery.error ? (
+                  <tr>
+                    <td colSpan={5} className="border border-gray-300 px-4 py-2 text-center text-red-600">
+                      Error loading listings: {listingsQuery.error.message}
+                    </td>
+                  </tr>
+                ) : listingsQuery.data && listingsQuery.data.length > 0 ? (
+                  listingsQuery.data.map((listing, index) => {
+                    const status = listing.account.parkingSpaceStatus
+                    const statusText = status ? JSON.stringify(status).replace(/"/g, '') : 'Unknown'
+                    const statusColor = statusText === 'Available' ? 'bg-green-100 text-green-800' : 
+                                      statusText === 'Reserved' ? 'bg-yellow-100 text-yellow-800' : 
+                                      statusText === 'Occupied' ? 'bg-red-100 text-red-800' : 
+                                      'bg-gray-100 text-gray-800'
+                    
+                    return (
+                      <tr key={listing.publicKey.toString()} className="hover:bg-gray-50">
+                        <td className="border border-gray-300 px-4 py-2 text-gray-900 font-mono text-sm">
+                          <button
+                            onClick={() => handleCopyAddress(listing.account.maker.toString())}
+                            className="flex items-center gap-2 hover:bg-gray-100 px-2 py-1 rounded transition-colors"
+                            title="Click to copy full address"
+                          >
+                            <span>{ellipsify(listing.account.maker.toString())}</span>
+                            {copiedAddress === listing.account.maker.toString() ? (
+                              <Check className="h-3 w-3 text-green-600" />
+                            ) : (
+                              <Copy className="h-3 w-3 text-gray-400 hover:text-gray-600" />
+                            )}
+                          </button>
+                        </td>
+                        <td className="border border-gray-300 px-4 py-2 text-gray-900">
+                          {listing.account.address || 'No address'}
+                        </td>
+                        <td className="border border-gray-300 px-4 py-2 text-gray-900">
+                          {listing.account.sensorId || 'No sensor ID'}
+                        </td>
+                        <td className="border border-gray-300 px-4 py-2 text-gray-900 font-mono text-sm">
+                          {listing.account.feed ? listing.account.feed.toString() : 'No feed assigned'}
+                        </td>
+                        <td className="border border-gray-300 px-4 py-2">
+                          <span className={`px-2 py-1 ${statusColor} rounded-full text-xs`}>
+                            {statusText}
+                          </span>
+                        </td>
+                      </tr>
+                    )
+                  })
+                ) : (
+                  <tr>
+                    <td colSpan={5} className="border border-gray-300 px-4 py-2 text-center text-gray-600">
+                      No listings found
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {/* Feed Management Section */}
-          <div className="bg-white p-6 rounded-lg shadow-md border">
-            <h2 className="text-xl font-semibold mb-4 text-gray-900">Feed Management</h2>
-            <p className="text-gray-800 mb-4">Manage Switchboard oracle feeds for the parking marketplace.</p>
-            
-            {/* Add New Feed Form */}
-            <div className="space-y-3 mb-4">
-              <input
-                type="text"
-                placeholder="Feed Address"
-                value={newFeedAddress}
-                onChange={(e) => setNewFeedAddress(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-700"
-              />
-              <input
-                type="text"
-                placeholder="Description"
-                value={newFeedDescription}
-                onChange={(e) => setNewFeedDescription(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-700"
-              />
-              <button
-                className="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors disabled:opacity-50"
-                onClick={handleAddFeed}
-                disabled={addFeed.isPending || !newFeedAddress || !newFeedDescription}
-              >
-                {addFeed.isPending ? 'Adding...' : 'Add New Feed'}
-              </button>
-            </div>
-
-            {/* Current Feeds */}
-            {feedManagement.data && (
-              <div className="mt-4">
-                <h3 className="font-semibold mb-2 text-gray-900">Current Feeds:</h3>
-                <div className="space-y-2">
-                  {feedManagement.data.feeds.map((feed, index) => (
-                    <div key={index} className="text-sm p-2 bg-gray-50 rounded">
-                      <div className="font-mono text-xs text-gray-900">{feed.address}</div>
-                      <div className="text-gray-800">{feed.description}</div>
-                      <div className={`text-xs ${feed.status === 'active' ? 'text-green-600' : 'text-red-600'}`}>
-                        {feed.status}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
+          <AdminFeedManagement />
           
           {/* System Status */}
           <div className="bg-white p-6 rounded-lg shadow-md border">
