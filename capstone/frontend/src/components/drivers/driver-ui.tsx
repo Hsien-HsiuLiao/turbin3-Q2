@@ -16,7 +16,6 @@ import { useWallet } from "@solana/wallet-adapter-react";
 import { useEffect, useState } from "react";
 import dayjs from 'dayjs';
 import { ConfirmArrivalButton } from './driver-confirm-arrival';
-import { SensorChangeButton } from './driver-sensor-change';
 
 
 function DebugTable({ accounts }: { accounts: any[] }) {
@@ -27,7 +26,7 @@ function DebugTable({ accounts }: { accounts: any[] }) {
         <table className="min-w-full bg-white border border-gray-300 text-black">
           <thead>
             <tr className="bg-gray-50">
-              <th className="px-4 py-2 border text-left text-black">Account</th>
+              <th className="px-4 py-2 border text-left text-black">Created by</th>
               <th className="px-4 py-2 border text-left text-black">Address</th>
               <th className="px-4 py-2 border text-left text-black">Status</th>
               <th className="px-4 py-2 border text-left text-black">Reserved By</th>
@@ -61,10 +60,11 @@ function DebugTableRow({ account }: { account: PublicKey }) {
   const status = accountQuery.data?.parkingSpaceStatus ? JSON.stringify(accountQuery.data.parkingSpaceStatus) : 'No status';
   const address = accountQuery.data?.address || 'No address';
   const reservedBy = accountQuery.data?.reservedBy ? ellipsify(accountQuery.data.reservedBy.toString()) : 'Not reserved';
+  const createdBy = accountQuery.data?.maker ? ellipsify(accountQuery.data.maker.toString()) : 'Unknown';
   
   return (
     <tr className="hover:bg-gray-50">
-      <td className="px-4 py-2 border text-sm font-mono">{ellipsify(account.toString())}</td>
+      <td className="px-4 py-2 border text-sm font-mono">{createdBy}</td>
       <td className="px-4 py-2 border text-sm">{address}</td>
       <td className="px-4 py-2 border text-sm font-mono">{status}</td>
       <td className="px-4 py-2 border text-sm font-mono">{reservedBy}</td>
@@ -268,8 +268,8 @@ function ListingCard({ account, userHasReservations, setUserHasReservations }: {
 
         <div className="space-y-2">
           <div className="font-medium text-gray-700">
-            <span className="font-semibold text-lg">Account:</span>
-            <span className="text-gray-500"> {ellipsify(account.toString())}</span>
+            <span className="font-semibold text-lg">Created by:</span>
+            <span className="text-gray-500"> {accountQuery.data?.maker ? ellipsify(accountQuery.data.maker.toString()) : 'Unknown'}</span>
           </div>
           <div className="font-medium text-gray-700">
             <span className="font-semibold text-lg ">Home Address:</span>
@@ -391,13 +391,7 @@ function ListingCard({ account, userHasReservations, setUserHasReservations }: {
         )}
         {publicKey && hasReservation && (
           <>
-            <div className="text-lg font-semibold text-gray-700 mb-2">Step 1 (Homeowner calls this ix)</div>
-            <SensorChangeButton 
-              account={account} 
-              maker={accountQuery.data?.maker || new PublicKey('11111111111111111111111111111111')}
-              feed={new PublicKey("9jfL52Gmudwee1RK8yuNguoZET7DMDqKSR6DePBJNXot")}
-            />
-            <div className="text-lg font-semibold text-gray-700 mb-2 mt-4">Step 2</div>
+            <div className="text-lg font-semibold text-gray-700 mb-2">Step 2</div>
             <ConfirmArrivalButton 
               account={account} 
               maker={accountQuery.data?.maker || new PublicKey('11111111111111111111111111111111')}

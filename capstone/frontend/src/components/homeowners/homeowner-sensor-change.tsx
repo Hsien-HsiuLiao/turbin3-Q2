@@ -1,5 +1,5 @@
 import { PublicKey } from "@solana/web3.js";
-import { useMarketplaceProgram } from "./driver-data-access";
+import { useMarketplaceProgram } from "../drivers/driver-data-access";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useTransactionToast } from '../use-transaction-toast';
 import { toast } from 'sonner';
