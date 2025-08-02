@@ -181,24 +181,24 @@ export function ConfirmArrivalButton({ account, maker, sensorId }: ConfirmArriva
     } catch (error) {
       console.error('Confirm parking failed:', error);
       // Log more detailed error information
-      if ((error as any).logs) {
-        console.error('Transaction logs:', (error as any).logs);
+      if (error && typeof error === 'object' && 'logs' in error) {
+        console.error('Transaction logs:', (error as { logs: unknown }).logs);
       }
-      if ((error as any).error) {
-        console.error('Error details:', (error as any).error);
+      if (error && typeof error === 'object' && 'error' in error) {
+        console.error('Error details:', (error as { error: unknown }).error);
       }
       // Try to get more detailed error information
       console.error('Full error object:', {
-        message: (error as any).message,
-        name: (error as any).name,
-        stack: (error as any).stack,
-        transactionMessage: (error as any).transactionMessage,
-        transactionLogs: (error as any).transactionLogs,
-        programErrorStack: (error as any).programErrorStack,
-        errorLogs: (error as any).errorLogs,
+        message: error instanceof Error ? error.message : 'Unknown error',
+        name: error instanceof Error ? error.name : 'Unknown',
+        stack: error instanceof Error ? error.stack : 'No stack trace',
+        transactionMessage: error && typeof error === 'object' && 'transactionMessage' in error ? (error as { transactionMessage: unknown }).transactionMessage : 'N/A',
+        transactionLogs: error && typeof error === 'object' && 'transactionLogs' in error ? (error as { transactionLogs: unknown }).transactionLogs : 'N/A',
+        programErrorStack: error && typeof error === 'object' && 'programErrorStack' in error ? (error as { programErrorStack: unknown }).programErrorStack : 'N/A',
+        errorLogs: error && typeof error === 'object' && 'errorLogs' in error ? (error as { errorLogs: unknown }).errorLogs : 'N/A',
         fullError: error
       });
-      toast.error(`Failed to confirm parking: ${(error as any).message}`);
+      toast.error(`Failed to confirm parking: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   };
 

@@ -7,7 +7,7 @@ import {
   useEmergencyPause 
 } from './admin-data-access'
 import { useState } from 'react'
-import { FeedAccountData } from './admin-feed-data'
+// import { FeedAccountData } from './admin-feed-data'
 import { AdminFeedManagement } from './admin-feed-management'
 import { useMarketplaceProgram } from '../homeowners/homeowner-data-access'
 import { useQuery } from '@tanstack/react-query'
@@ -262,7 +262,7 @@ export function AdminDashboard() {
         
         {/* Feed Account Data */}
         <div className="mt-8">
-          <FeedAccountData />
+          {/* <FeedAccountData /> */}
         </div>
         
         {/* Admin Info */}

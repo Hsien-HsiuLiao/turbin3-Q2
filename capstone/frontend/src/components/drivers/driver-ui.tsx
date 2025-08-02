@@ -19,7 +19,7 @@ import { ConfirmArrivalButton } from './driver-confirm-arrival';
 import { GpsNavigationButton } from './driver-gps-navigation';
 
 
-function DebugTable({ accounts }: { accounts: any[] }) {
+function DebugTable({ accounts }: { accounts: { publicKey: PublicKey; account: unknown }[] }) {
   return (
     <div className="mb-8 p-4 bg-gray-100 rounded-lg">
       <h3 className="text-lg font-semibold mb-4 text-black">Debug: All Listings Status</h3>
@@ -247,9 +247,9 @@ function ListingCard({ account, userHasReservations, setUserHasReservations }: {
     } catch (error) {
       console.error('Reservation failed:', error);
       console.error('Error details:', {
-        message: (error as any).message,
-        name: (error as any).name,
-        stack: (error as any).stack,
+        message: error instanceof Error ? error.message : 'Unknown error',
+        name: error instanceof Error ? error.name : 'Unknown',
+        stack: error instanceof Error ? error.stack : 'No stack trace',
         fullError: error
       });
       alert('Reservation failed. Please try again.');

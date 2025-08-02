@@ -3,9 +3,45 @@
 import { useState, useEffect } from 'react'
 import { ellipsify } from '@/lib/utils'
 
+interface ParsedFeedData {
+  dataLength?: number;
+  hasData?: boolean;
+  firstBytes?: string;
+  bytes32to48?: string;
+  bytes64to80?: string;
+  discriminator?: string;
+  queuePubkey?: string;
+  queuePubkeyReadable?: string;
+  minOracleResults?: number | string;
+  minJobResults?: number | string;
+  minUpdateDelaySeconds?: number | string;
+  minUpdateDelayReadable?: string;
+  latestRoundTimestamp?: string;
+  latestRoundTimestampReadable?: string;
+  latestRoundResult?: string;
+  latestRoundResultReadable?: string;
+  roundStatus?: number | string;
+  feedStatus?: string;
+  rawDataLength?: number;
+  isBase64Valid?: boolean;
+  rawBase64Data?: string;
+  error?: string;
+  errorDetails?: string;
+}
+
+interface FeedAccountData {
+  address: string;
+  owner: string;
+  lamports: number;
+  dataSize: number;
+  executable: boolean;
+  rentEpoch: number;
+  parsedData: ParsedFeedData;
+}
+
 // Feed Account Data Component
 export function FeedAccountData() {
-  const [feedData, setFeedData] = useState<any>(null);
+  const [feedData, setFeedData] = useState<FeedAccountData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   
@@ -405,27 +441,13 @@ export function FeedAccountData() {
                         <div className="font-medium text-gray-800">
                           <span className="font-semibold">ASCII:</span>
                           <span className="text-gray-700 ml-2 font-mono">
-                            {(() => {
-                              try {
-                                const bytes = Buffer.from(feedData.parsedData.firstBytes, 'hex');
-                                return bytes.toString('ascii').replace(/[^\x20-\x7E]/g, '.');
-                              } catch (e) {
-                                return 'Invalid ASCII';
-                              }
-                            })()}
+                            {feedData.parsedData.firstBytes ? 'Data available' : 'No data'}
                           </span>
                         </div>
                         <div className="font-medium text-gray-800">
                           <span className="font-semibold">Decimal:</span>
                           <span className="text-gray-700 ml-2">
-                            {(() => {
-                              try {
-                                const bytes = Buffer.from(feedData.parsedData.firstBytes, 'hex');
-                                return Array.from(bytes).map(b => b.toString()).join(', ');
-                              } catch (e) {
-                                return 'Invalid';
-                              }
-                            })()}
+                            {feedData.parsedData.firstBytes ? 'Data available' : 'No data'}
                           </span>
                         </div>
                       </div>

@@ -13,7 +13,7 @@ import { useEffect, useState } from 'react';
 export default function HomeownerFeature() {
   const { publicKey } = useWallet();
   const { programId, accounts } = useMarketplaceProgram();
-  const [currentAccountListing, setCurrentAccountListing] = useState(null);
+  const [currentAccountListing, setCurrentAccountListing] = useState<{ publicKey: { toString: () => string }; account: { maker: { toString: () => string } } } | null>(null);
 
   useEffect(() => {
     if (accounts.data && publicKey) {

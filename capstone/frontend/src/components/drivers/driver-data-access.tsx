@@ -72,7 +72,7 @@ export function useMarketplaceProgram() {
         )[0];
         
         return program.methods.reserve(startTime, endTime)
-          .accounts({
+          .accountsPartial({
             renter: renter,
             maker: maker,
             marketplace: marketplace,
