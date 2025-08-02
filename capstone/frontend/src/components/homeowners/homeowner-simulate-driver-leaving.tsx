@@ -4,6 +4,7 @@ import { useWallet } from '@solana/wallet-adapter-react'
 import { PublicKey } from '@solana/web3.js'
 import { useMarketplaceProgram } from './homeowner-data-access'
 import { useTransactionToast } from '../use-transaction-toast'
+import { ellipsify } from '@/lib/utils'
 
 interface SimulateLeavingButtonProps {
   account: PublicKey
@@ -13,7 +14,7 @@ interface SimulateLeavingButtonProps {
 
 export function SimulateLeavingButton({ account, maker, sensorId }: SimulateLeavingButtonProps) {
   const { program } = useMarketplaceProgram()
-  const { publicKey } = useWallet()
+  const { publicKey, signTransaction } = useWallet()
   const transactionToast = useTransactionToast()
 
   const handleSimulateLeaving = async () => {
@@ -46,29 +47,87 @@ export function SimulateLeavingButton({ account, maker, sensorId }: SimulateLeav
         program.programId
       )
 
+      // Get the listing data to find the renter
+      const listingAccount = await program.account.listing.fetch(listing)
+      const renter = listingAccount.reservedBy
+
+      if (!renter) {
+        console.error('No renter found for this listing')
+        alert('No renter found for this listing. The parking space must be reserved or occupied.')
+        return
+      }
+
       console.log('PDAs derived:', {
         marketplace: marketplace.toString(),
-        listing: listing.toString()
+        listing: listing.toString(),
+        renter: renter.toString()
       })
 
-      // Call the sensorChange instruction to simulate driver leaving
-      const signature = await program.methods
+      // Create the transaction with sensorChange instruction
+      const transaction = await program.methods
         .sensorChange()
         .accountsPartial({
-          feed: new PublicKey("9jfL52Gmudwee1RK8yuNguoZET7DMDqKSR6DePBJNXot"), // Switchboard feed
+          feed: new PublicKey("9jfL52Gmudwee1RK8yuNguoZET7DMDqKSR6DePBJNXot"),
           marketplace: marketplace,
           maker: maker,
           listing: listing,
-          renter: new PublicKey("11111111111111111111111111111111"), // Placeholder - will be filled by program
+          renter: renter,
         })
-        .rpc()
+        .transaction()
 
-      console.log('Simulate leaving transaction successful:', signature)
+      // Set the fee payer to the maker
+      transaction.feePayer = maker
+
+      // Get latest blockhash
+      const { blockhash } = await program.provider.connection.getLatestBlockhash()
+      transaction.recentBlockhash = blockhash
+
+      // Sign the transaction with the maker's wallet
+      if (!signTransaction) {
+        throw new Error('Wallet cannot sign transactions')
+      }
+      
+      const signedTransaction = await signTransaction(transaction)
+
+      console.log('Transaction signed by maker')
+
+      // Serialize the signed transaction
+      const serializedTransaction = signedTransaction.serialize({
+        requireAllSignatures: false,
+        verifySignatures: false
+      })
+
+      // Send the transaction to the network
+      const signature = await program.provider.connection.sendRawTransaction(
+        serializedTransaction,
+        {
+          skipPreflight: false,
+          preflightCommitment: 'confirmed'
+        }
+      )
+
+      console.log('Transaction sent to network:', signature)
+
+      // Wait for confirmation
+      const confirmation = await program.provider.connection.confirmTransaction(
+        signature,
+        'confirmed'
+      )
+
+      if (confirmation.value.err) {
+        throw new Error(`Transaction failed: ${confirmation.value.err}`)
+      }
+
+      console.log('Transaction confirmed successfully')
       transactionToast(signature)
+
+      // Show success message
+      alert(`Driver leaving simulation successful!\n\nTransaction signature: ${ellipsify(signature)}\n\nStatus: ${JSON.stringify(listingAccount.parkingSpaceStatus)}`)
 
     } catch (error) {
       console.error('Simulate leaving failed:', error)
       console.error('Error details:', error)
+      alert('Failed to simulate driver leaving. Please check the console for details.')
     }
   }
 
