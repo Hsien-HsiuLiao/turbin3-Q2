@@ -16,6 +16,7 @@ import { useWallet } from "@solana/wallet-adapter-react";
 import { useEffect, useState } from "react";
 import dayjs from 'dayjs';
 import { ConfirmArrivalButton } from './driver-confirm-arrival';
+import { GpsNavigationButton } from './driver-gps-navigation';
 
 
 function DebugTable({ accounts }: { accounts: any[] }) {
@@ -331,6 +332,27 @@ function ListingCard({ account, userHasReservations, setUserHasReservations }: {
             <span className="text-gray-500"> {accountQuery.data?.address}</span>
           </div>
           <div className="font-medium text-gray-700">
+            <span className="font-semibold text-lg">Parking Space Status: </span>
+            <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+              accountQuery.data?.parkingSpaceStatus && 'available' in accountQuery.data.parkingSpaceStatus 
+                ? 'bg-green-100 text-green-800' 
+                : accountQuery.data?.parkingSpaceStatus && 'reserved' in accountQuery.data.parkingSpaceStatus
+                ? 'bg-yellow-100 text-yellow-800'
+                : accountQuery.data?.parkingSpaceStatus && 'occupied' in accountQuery.data.parkingSpaceStatus
+                ? 'bg-red-100 text-red-800'
+                : 'bg-gray-100 text-gray-800'
+            }`}>
+              {accountQuery.data?.parkingSpaceStatus && 'available' in accountQuery.data.parkingSpaceStatus 
+                ? 'Available' 
+                : accountQuery.data?.parkingSpaceStatus && 'reserved' in accountQuery.data.parkingSpaceStatus
+                ? 'Reserved'
+                : accountQuery.data?.parkingSpaceStatus && 'occupied' in accountQuery.data.parkingSpaceStatus
+                ? 'Occupied'
+                : 'Unknown'
+              }
+            </span>
+          </div>
+          <div className="font-medium text-gray-700">
             <span className="font-semibold text-xl">Rental Rate:</span>
             <span className="text-gray-500"> {(accountQuery.data?.rentalRate ?? 0)/LAMPORTS_PER_SOL} SOL</span>
           </div>
@@ -446,7 +468,13 @@ function ListingCard({ account, userHasReservations, setUserHasReservations }: {
         )}
         {publicKey && hasReservation && (
           <>
-            <div className="text-lg font-semibold text-gray-700 mb-2">Step 2</div>
+            <div className="text-lg font-semibold text-gray-700 mb-2">Step 2: Navigate to Location</div>
+            <GpsNavigationButton 
+              address={accountQuery.data?.address || ''}
+              latitude={accountQuery.data?.latitude || 0}
+              longitude={accountQuery.data?.longitude || 0}
+            />
+            <div className="text-lg font-semibold text-gray-700 mb-2 mt-4">Step 3: Confirm Arrival</div>
             <ConfirmArrivalButton 
               account={account} 
               maker={accountQuery.data?.maker || new PublicKey('11111111111111111111111111111111')}
@@ -475,7 +503,7 @@ function ListingCard({ account, userHasReservations, setUserHasReservations }: {
         
         {publicKey && isOccupied && (
           <>
-            <div className="text-lg font-semibold text-gray-700 mb-2 mt-4">Step 3</div>
+            <div className="text-lg font-semibold text-gray-700 mb-2 mt-4">Step 4: Driver Left</div>
             <div className="text-center p-4 bg-yellow-50 border border-yellow-200 rounded">
               <p className="text-yellow-800 font-medium">Driver has left the parking space</p>
               <p className="text-yellow-600 text-sm mt-1">The homeowner will simulate the sensor change</p>
