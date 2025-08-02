@@ -35,13 +35,13 @@ export function AdminDashboard() {
   return (
     <div className="container mx-auto p-6">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold mb-8">Admin Dashboard</h1>
+        <h1 className="text-3xl font-bold mb-8 text-gray-900">Admin Dashboard</h1>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {/* Feed Management Section */}
           <div className="bg-white p-6 rounded-lg shadow-md border">
-            <h2 className="text-xl font-semibold mb-4">Feed Management</h2>
-            <p className="text-gray-600 mb-4">Manage Switchboard oracle feeds for the parking marketplace.</p>
+            <h2 className="text-xl font-semibold mb-4 text-gray-900">Feed Management</h2>
+            <p className="text-gray-800 mb-4">Manage Switchboard oracle feeds for the parking marketplace.</p>
             
             {/* Add New Feed Form */}
             <div className="space-y-3 mb-4">
@@ -50,14 +50,14 @@ export function AdminDashboard() {
                 placeholder="Feed Address"
                 value={newFeedAddress}
                 onChange={(e) => setNewFeedAddress(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-700"
               />
               <input
                 type="text"
                 placeholder="Description"
                 value={newFeedDescription}
                 onChange={(e) => setNewFeedDescription(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-700"
               />
               <button
                 className="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors disabled:opacity-50"
@@ -71,12 +71,12 @@ export function AdminDashboard() {
             {/* Current Feeds */}
             {feedManagement.data && (
               <div className="mt-4">
-                <h3 className="font-semibold mb-2">Current Feeds:</h3>
+                <h3 className="font-semibold mb-2 text-gray-900">Current Feeds:</h3>
                 <div className="space-y-2">
                   {feedManagement.data.feeds.map((feed, index) => (
                     <div key={index} className="text-sm p-2 bg-gray-50 rounded">
-                      <div className="font-mono text-xs">{feed.address}</div>
-                      <div className="text-gray-600">{feed.description}</div>
+                      <div className="font-mono text-xs text-gray-900">{feed.address}</div>
+                      <div className="text-gray-800">{feed.description}</div>
                       <div className={`text-xs ${feed.status === 'active' ? 'text-green-600' : 'text-red-600'}`}>
                         {feed.status}
                       </div>
@@ -89,13 +89,13 @@ export function AdminDashboard() {
           
           {/* System Status */}
           <div className="bg-white p-6 rounded-lg shadow-md border">
-            <h2 className="text-xl font-semibold mb-4">System Status</h2>
+            <h2 className="text-xl font-semibold mb-4 text-gray-900">System Status</h2>
             {systemStatus.isLoading ? (
-              <div className="text-gray-600">Loading...</div>
+              <div className="text-gray-800">Loading...</div>
             ) : systemStatus.data ? (
               <div className="space-y-3">
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Status:</span>
+                  <span className="text-gray-800">Status:</span>
                   <span className={`font-semibold ${
                     systemStatus.data.status === 'operational' ? 'text-green-600' : 'text-red-600'
                   }`}>
@@ -103,26 +103,26 @@ export function AdminDashboard() {
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Connected Wallet:</span>
-                  <span className="font-mono text-sm">{publicKey?.toString()}</span>
+                  <span className="text-gray-800">Connected Wallet:</span>
+                  <span className="font-mono text-sm text-gray-900">{publicKey?.toString()}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Admin Status:</span>
+                  <span className="text-gray-800">Admin Status:</span>
                   <span className="text-green-600 font-semibold">✓ Authorized</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Last Check:</span>
-                  <span className="text-sm">{new Date(systemStatus.data.lastCheck).toLocaleString()}</span>
+                  <span className="text-gray-800">Last Check:</span>
+                  <span className="text-sm text-gray-900">{new Date(systemStatus.data.lastCheck).toLocaleString()}</span>
                 </div>
                 
                 {/* System Stats */}
                 <div className="mt-4 pt-4 border-t">
-                  <h4 className="font-semibold mb-2">System Stats:</h4>
+                  <h4 className="font-semibold mb-2 text-gray-900">System Stats:</h4>
                   <div className="grid grid-cols-2 gap-2 text-sm">
-                    <div>Feeds: {systemStatus.data.feeds.total}</div>
-                    <div>Active: {systemStatus.data.feeds.active}</div>
-                    <div>Listings: {systemStatus.data.listings.total}</div>
-                    <div>Reserved: {systemStatus.data.listings.reserved}</div>
+                    <div className="text-gray-900">Feeds: {systemStatus.data.feeds.total}</div>
+                    <div className="text-gray-900">Active: {systemStatus.data.feeds.active}</div>
+                    <div className="text-gray-900">Listings: {systemStatus.data.listings.total}</div>
+                    <div className="text-gray-900">Reserved: {systemStatus.data.listings.reserved}</div>
                   </div>
                 </div>
               </div>
@@ -133,7 +133,7 @@ export function AdminDashboard() {
           
           {/* Quick Actions */}
           <div className="bg-white p-6 rounded-lg shadow-md border">
-            <h2 className="text-xl font-semibold mb-4">Quick Actions</h2>
+            <h2 className="text-xl font-semibold mb-4 text-gray-900">Quick Actions</h2>
             <div className="space-y-3">
               <button
                 className="w-full bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition-colors disabled:opacity-50"
@@ -158,11 +158,11 @@ export function AdminDashboard() {
             {/* Health Check Results */}
             {healthCheck.data && (
               <div className="mt-4 p-3 bg-gray-50 rounded">
-                <h4 className="font-semibold mb-2">Last Health Check:</h4>
+                <h4 className="font-semibold mb-2 text-gray-900">Last Health Check:</h4>
                 <div className="space-y-1 text-sm">
                   {Object.entries(healthCheck.data.checks).map(([check, status]) => (
                     <div key={check} className="flex justify-between">
-                      <span className="capitalize">{check}:</span>
+                      <span className="capitalize text-gray-900">{check}:</span>
                       <span className={status === 'ok' ? 'text-green-600' : 'text-yellow-600'}>
                         {status}
                       </span>
@@ -176,23 +176,23 @@ export function AdminDashboard() {
         
         {/* Admin Info */}
         <div className="mt-8 bg-gray-50 p-6 rounded-lg">
-          <h2 className="text-xl font-semibold mb-4">Admin Information</h2>
+          <h2 className="text-xl font-semibold mb-4 text-gray-900">Admin Information</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
             <div>
-              <span className="font-semibold">Admin Wallet:</span>
-              <span className="font-mono ml-2">{publicKey?.toString()}</span>
+              <span className="font-semibold text-gray-900">Admin Wallet:</span>
+              <span className="font-mono ml-2 text-gray-900">{publicKey?.toString()}</span>
             </div>
             <div>
-              <span className="font-semibold">Network:</span>
-              <span className="ml-2">Devnet</span>
+              <span className="font-semibold text-gray-900">Network:</span>
+              <span className="ml-2 text-gray-900">Devnet</span>
             </div>
             <div>
-              <span className="font-semibold">Access Level:</span>
+              <span className="font-semibold text-gray-900">Access Level:</span>
               <span className="ml-2 text-green-600">Full Admin</span>
             </div>
             <div>
-              <span className="font-semibold">Last Login:</span>
-              <span className="ml-2">{new Date().toLocaleString()}</span>
+              <span className="font-semibold text-gray-900">Last Login:</span>
+              <span className="ml-2 text-gray-900">{new Date().toLocaleString()}</span>
             </div>
           </div>
         </div>
