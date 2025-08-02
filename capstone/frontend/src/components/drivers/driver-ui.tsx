@@ -182,6 +182,41 @@ function ListingCard({ account, userHasReservations, setUserHasReservations }: {
       alert('This parking space is not available for reservation.');
       return;
     }
+
+    // Validate that input date/time is within availability window
+    if (!startTime || !endTime) {
+      alert('Please select both start and end times for your reservation.');
+      return;
+    }
+
+    const reservationStart = new Date(startTime).getTime() / 1000; // Convert to Unix timestamp
+    const reservationEnd = new Date(endTime).getTime() / 1000;
+    const listingAvailabilityStart = Number(accountQuery.data.availabiltyStart);
+    const listingAvailabilityEnd = Number(accountQuery.data.availabiltyEnd);
+
+    console.log('Availability validation:', {
+      reservationStart: new Date(reservationStart * 1000).toISOString(),
+      reservationEnd: new Date(reservationEnd * 1000).toISOString(),
+      listingAvailabilityStart: new Date(listingAvailabilityStart * 1000).toISOString(),
+      listingAvailabilityEnd: new Date(listingAvailabilityEnd * 1000).toISOString()
+    });
+
+    // Check if reservation is within availability window
+    if (reservationStart < listingAvailabilityStart) {
+      alert(`Reservation start time must be after ${new Date(listingAvailabilityStart * 1000).toLocaleString()}`);
+      return;
+    }
+
+    if (reservationEnd > listingAvailabilityEnd) {
+      alert(`Reservation end time must be before ${new Date(listingAvailabilityEnd * 1000).toLocaleString()}`);
+      return;
+    }
+
+    // Check if reservation duration is valid (end time after start time)
+    if (reservationEnd <= reservationStart) {
+      alert('Reservation end time must be after start time.');
+      return;
+    }
     
     console.log('Attempting to reserve listing:', {
       account: account.toString(),
@@ -230,11 +265,17 @@ function ListingCard({ account, userHasReservations, setUserHasReservations }: {
   const isAvailable = accountQuery.data?.parkingSpaceStatus && 
     'available' in accountQuery.data.parkingSpaceStatus;
   
+  // Check if this listing is occupied by the current user
+  const isOccupied = accountQuery.data?.parkingSpaceStatus && 
+    'occupied' in accountQuery.data.parkingSpaceStatus && 
+    accountQuery.data.reservedBy?.toString() === publicKey?.toString();
+  
   // Debug: Log the filtering logic
   console.log('Filtering debug for account:', account.toString(), {
     userHasReservations,
     hasReservation,
     isAvailable,
+    isOccupied,
     status: accountQuery.data?.parkingSpaceStatus,
     reservedBy: accountQuery.data?.reservedBy?.toString(),
     publicKey: publicKey?.toString(),
@@ -246,15 +287,29 @@ function ListingCard({ account, userHasReservations, setUserHasReservations }: {
     return null;
   }
   
-  // If user has reservations, only show their reserved listings
-  if ((userHasReservations || hasReservation) && !hasReservation) {
+  // Debug: Log what's happening with filtering
+  console.log('Card filtering for account:', account.toString(), {
+    userHasReservations,
+    hasReservation,
+    isOccupied,
+    isAvailable,
+    willRender: !((userHasReservations || hasReservation) && !hasReservation && !isOccupied) && 
+                !(!userHasReservations && !hasReservation && !isAvailable)
+  });
+  
+  // If user has reservations, only show their reserved or occupied listings
+  if ((userHasReservations || hasReservation) && !hasReservation && !isOccupied) {
+    console.log('Filtering out - not reserved or occupied by user');
     return null;
   }
   
   // If user has no reservations, only show available listings
-  if (!userHasReservations && !hasReservation && !isAvailable) {
+  if (!userHasReservations && !hasReservation && !isAvailable && !isOccupied) {
+    console.log('Filtering out - not available/occupied and user has no reservations');
     return null;
   }
+  
+  console.log('Card will render for account:', account.toString());
 
   return listingsQuery.isLoading ? (
     <span className="loading loading-spinner loading-lg"></span>
@@ -397,6 +452,34 @@ function ListingCard({ account, userHasReservations, setUserHasReservations }: {
               maker={accountQuery.data?.maker || new PublicKey('11111111111111111111111111111111')}
               sensorId={accountQuery.data?.sensorId || ''}
             />
+          </>
+        )}
+        {/* Debug info for button visibility */}
+        <div className="mt-2 p-2 bg-gray-100 rounded text-xs">
+          <div>Debug - hasReservation: {hasReservation ? 'true' : 'false'}</div>
+          <div>Debug - isOccupied: {isOccupied ? 'true' : 'false'}</div>
+          <div>Debug - Status: {JSON.stringify(accountQuery.data?.parkingSpaceStatus)}</div>
+          <div>Debug - ReservedBy: {accountQuery.data?.reservedBy?.toString()}</div>
+          <div>Debug - PublicKey: {publicKey?.toString()}</div>
+        </div>
+        
+        {/* Debug: Check if we reach the occupied button section */}
+        {(() => {
+          console.log('Checking occupied button for account:', account.toString(), {
+            publicKey: !!publicKey,
+            isOccupied,
+            willShowButton: publicKey && isOccupied
+          });
+          return null;
+        })()}
+        
+        {publicKey && isOccupied && (
+          <>
+            <div className="text-lg font-semibold text-gray-700 mb-2 mt-4">Step 3</div>
+            <div className="text-center p-4 bg-yellow-50 border border-yellow-200 rounded">
+              <p className="text-yellow-800 font-medium">Driver has left the parking space</p>
+              <p className="text-yellow-600 text-sm mt-1">The homeowner will simulate the sensor change</p>
+            </div>
           </>
         )}
       </div>
