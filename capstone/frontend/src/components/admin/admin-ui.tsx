@@ -104,7 +104,19 @@ export function AdminDashboard() {
                           {listing.account.sensorId || 'No sensor ID'}
                         </td>
                         <td className="border border-gray-300 px-4 py-2 text-gray-900 font-mono text-sm">
-                          {listing.account.feed ? listing.account.feed.toString() : 'No feed assigned'}
+                          {listing.account.feed ? (
+                            <a
+                              href={`https://ondemand.switchboard.xyz/solana/devnet/feed/${listing.account.feed.toString()}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-blue-600 hover:text-blue-800 hover:underline"
+                              title="View feed on Switchboard"
+                            >
+                              {ellipsify(listing.account.feed.toString())}
+                            </a>
+                          ) : (
+                            'No feed assigned'
+                          )}
                         </td>
                         <td className="border border-gray-300 px-4 py-2">
                           <span className={`px-2 py-1 ${statusColor} rounded-full text-xs`}>
