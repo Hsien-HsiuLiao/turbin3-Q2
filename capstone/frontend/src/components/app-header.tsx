@@ -7,10 +7,15 @@ import { Menu, X } from 'lucide-react'
 import { ThemeSelect } from '@/components/theme-select'
 import { ClusterUiSelect } from './cluster/cluster-ui'
 import { WalletButton } from '@/components/solana/solana-provider'
+import { useWallet } from '@solana/wallet-adapter-react'
 
 export function AppHeader({ links = [] }: { links: { label: string; path: string }[] }) {
   const pathname = usePathname()
   const [showMenu, setShowMenu] = useState(false)
+  const { publicKey } = useWallet()
+  
+  // Check if the connected wallet is the admin wallet
+  const isAdminWallet = publicKey?.toString() === 'Coop1aAuEqbN3Pm9TzohXvS3kM4zpp3pJZ9D4M2uWXH2'
 
   function isActive(path: string) {
     return path === '/' ? pathname === '/' : pathname.startsWith(path)
@@ -37,6 +42,16 @@ export function AppHeader({ links = [] }: { links: { label: string; path: string
                   </Link>
                 </li>
               ))}
+              {isAdminWallet && (
+                <li>
+                  <Link
+                    className={`hover:text-neutral-500 dark:hover:text-white ${isActive('/admin') ? 'text-neutral-500 dark:text-white' : ''}`}
+                    href="/admin"
+                  >
+                    Admin
+                  </Link>
+                </li>
+              )}
             </ul>
           </div>
         </div>
@@ -66,6 +81,17 @@ export function AppHeader({ links = [] }: { links: { label: string; path: string
                     </Link>
                   </li>
                 ))}
+                {isAdminWallet && (
+                  <li>
+                    <Link
+                      className={`hover:text-neutral-500 dark:hover:text-white block text-lg py-2  ${isActive('/admin') ? 'text-neutral-500 dark:text-white' : ''} `}
+                      href="/admin"
+                      onClick={() => setShowMenu(false)}
+                    >
+                      Admin
+                    </Link>
+                  </li>
+                )}
               </ul>
               <div className="flex flex-col gap-4">
                 <WalletButton />
