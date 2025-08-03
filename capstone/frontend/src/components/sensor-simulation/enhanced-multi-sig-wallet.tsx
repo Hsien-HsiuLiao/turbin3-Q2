@@ -21,6 +21,7 @@ interface PendingTransaction {
   createdAt: string
   signedBy: string[]
   requiredSigners: string[]
+  listingAddress: string
 }
 
 export function EnhancedMultiSigWallet({ account, maker, feed, onTransactionComplete }: EnhancedMultiSigWalletProps) {
@@ -35,15 +36,28 @@ export function EnhancedMultiSigWallet({ account, maker, feed, onTransactionComp
   // Load pending transactions from API
   const loadPendingTransactions = async () => {
     try {
+      console.log('Loading pending transactions...')
       const response = await fetch('/api/multi-sig-transaction', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'list' })
       })
       
+      console.log('Load response status:', response.status)
+      
       if (response.ok) {
         const data = await response.json()
-        setPendingTransactions(data.transactions || [])
+        console.log('Loaded transactions:', data.transactions)
+        
+        // Filter transactions to only show those for this specific listing
+        const filteredTransactions = (data.transactions || []).filter((tx: any) => {
+          return tx.listingAddress === account.toString()
+        })
+        
+        setPendingTransactions(filteredTransactions)
+      } else {
+        const error = await response.json()
+        console.error('Load error:', error)
       }
     } catch (error) {
       console.error('Failed to load pending transactions:', error)
@@ -111,6 +125,14 @@ export function EnhancedMultiSigWallet({ account, maker, feed, onTransactionComp
       const base64Transaction = serializedTransaction.toString('base64')
 
       // Send to backend API
+      console.log('Creating transaction with data:', {
+        action: 'create',
+        account: account.toString(),
+        maker: publicKey.toString(),
+        feed: feed?.toString(),
+        type
+      })
+
       const response = await fetch('/api/multi-sig-transaction', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -124,12 +146,16 @@ export function EnhancedMultiSigWallet({ account, maker, feed, onTransactionComp
         })
       })
 
+      console.log('API response status:', response.status)
+
       if (response.ok) {
         const data = await response.json()
+        console.log('API response data:', data)
         toast.success(data.message)
         loadPendingTransactions() // Refresh the list
       } else {
         const error = await response.json()
+        console.error('API error:', error)
         toast.error(error.error || 'Failed to create transaction')
       }
 
@@ -321,28 +347,30 @@ export function EnhancedMultiSigWallet({ account, maker, feed, onTransactionComp
           {pendingTransactions.map((tx) => (
             <div key={tx.id} className="bg-gray-700 text-white shadow-lg rounded-lg border-2 border-gray-600">
               <div className="p-6">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h5 className="font-semibold">
+                <div className="space-y-4">
+                  <div className="flex-1 min-w-0">
+                    <h5 className="font-semibold text-lg mb-2">
                       {tx.type === 'arrival' ? 'Car Arrival' : 'Driver Leaving'} Simulation
                     </h5>
-                    <p className="text-sm text-gray-300">
-                      Created: {new Date(tx.createdAt).toLocaleString()}
-                    </p>
-                    <p className="text-sm text-gray-300">
-                      Required Signers: {tx.requiredSigners.join(', ')}
-                    </p>
-                    <p className="text-sm text-gray-300">
-                      Signed By: {tx.signedBy.join(', ') || 'None'}
-                    </p>
+                    <div className="space-y-1">
+                      <p className="text-sm text-gray-300">
+                        Created: {new Date(tx.createdAt).toLocaleString()}
+                      </p>
+                      <p className="text-sm text-gray-300 break-all">
+                        Required Signers: {tx.requiredSigners.join(', ')}
+                      </p>
+                      <p className="text-sm text-gray-300 break-all">
+                        Signed By: {tx.signedBy.join(', ') || 'None'}
+                      </p>
+                    </div>
                   </div>
                   
-                  <div className="flex flex-col gap-2">
+                  <div className="flex flex-col gap-2 w-full">
                     {isAuthorizedSigner(tx) && !hasSigned(tx) && (
                       <button
                         onClick={() => signPendingTransaction(tx.id)}
                         disabled={isLoading}
-                        className="w-full px-4 py-3 text-base font-bold text-white bg-green-600 hover:bg-green-700 disabled:bg-green-800 disabled:cursor-not-allowed rounded-lg shadow-md hover:shadow-lg transition-all duration-200 border-2 border-green-500"
+                        className="w-full px-3 py-2 lg:px-4 lg:py-3 text-sm lg:text-base font-bold text-white bg-green-600 hover:bg-green-700 disabled:bg-green-800 disabled:cursor-not-allowed rounded-lg shadow-md hover:shadow-lg transition-all duration-200 border-2 border-green-500"
                       >
                         {isLoading ? (
                           <span className="flex items-center gap-2">
@@ -358,13 +386,15 @@ export function EnhancedMultiSigWallet({ account, maker, feed, onTransactionComp
                     )}
                     
                     {hasSigned(tx) && (
-                      <span className="px-3 py-1 text-sm font-bold text-white bg-green-600 rounded-full border-2 border-green-500">✅ Signed</span>
+                      <span className="px-3 py-1 text-sm font-bold text-white bg-green-600 rounded-full border-2 border-green-500">
+                        ✅ Signed {tx.signedBy.length}/{tx.requiredSigners.length}
+                      </span>
                     )}
                     
                     <button
                       onClick={() => removePendingTransaction(tx.id)}
                       disabled={isLoading}
-                      className="w-full px-4 py-3 text-base font-bold text-white bg-red-600 hover:bg-red-700 disabled:bg-red-800 disabled:cursor-not-allowed rounded-lg shadow-md hover:shadow-lg transition-all duration-200 border-2 border-red-500"
+                      className="w-full px-3 py-2 lg:px-4 lg:py-3 text-sm lg:text-base font-bold text-white bg-red-600 hover:bg-red-700 disabled:bg-red-800 disabled:cursor-not-allowed rounded-lg shadow-md hover:shadow-lg transition-all duration-200 border-2 border-red-500"
                     >
                       🗑️ Remove Transaction
                     </button>
