@@ -18,7 +18,7 @@ export function AppHeader({ links = [] }: { links: { label: string; path: string
   const isAdminWallet = publicKey?.toString() === 'Coop1aAuEqbN3Pm9TzohXvS3kM4zpp3pJZ9D4M2uWXH2'
 
   function isActive(path: string) {
-    return path === '/' ? pathname === '/' : pathname.startsWith(path)
+    return path === '/' ? pathname === '/' : pathname?.startsWith(path) || false
   }
 
   return (

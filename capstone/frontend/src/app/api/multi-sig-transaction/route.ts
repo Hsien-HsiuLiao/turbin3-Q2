@@ -3,6 +3,8 @@ import { Connection, PublicKey, Transaction } from '@solana/web3.js'
 import { getMarketplaceProgram } from '../../../util/marketplace-exports'
 import { AnchorProvider } from '@coral-xyz/anchor'
 
+
+
 // In-memory storage for pending transactions (in production, use a database)
 const pendingTransactions = new Map<string, {
   id: string
@@ -23,6 +25,7 @@ export async function POST(request: NextRequest) {
 
     // Initialize connection and program
     const connection = new Connection(process.env.NEXT_PUBLIC_RPC_URL || 'https://api.devnet.solana.com')
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const provider = new AnchorProvider(connection, {} as any, { commitment: 'confirmed' })
     const program = getMarketplaceProgram(provider)
 

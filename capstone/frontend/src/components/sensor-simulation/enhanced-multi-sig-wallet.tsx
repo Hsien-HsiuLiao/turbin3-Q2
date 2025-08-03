@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { PublicKey, Transaction } from '@solana/web3.js'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { useConnection } from '@solana/wallet-adapter-react'
@@ -34,7 +34,7 @@ export function EnhancedMultiSigWallet({ account, maker, feed, onTransactionComp
   const [isLoading, setIsLoading] = useState(false)
 
   // Load pending transactions from API
-  const loadPendingTransactions = async () => {
+  const loadPendingTransactions = useCallback(async () => {
     try {
       console.log('Loading pending transactions...')
       const response = await fetch('/api/multi-sig-transaction', {
@@ -50,7 +50,7 @@ export function EnhancedMultiSigWallet({ account, maker, feed, onTransactionComp
         console.log('Loaded transactions:', data.transactions)
         
         // Filter transactions to only show those for this specific listing
-        const filteredTransactions = (data.transactions || []).filter((tx: any) => {
+        const filteredTransactions = (data.transactions || []).filter((tx: PendingTransaction) => {
           return tx.listingAddress === account.toString()
         })
         
@@ -62,14 +62,14 @@ export function EnhancedMultiSigWallet({ account, maker, feed, onTransactionComp
     } catch (error) {
       console.error('Failed to load pending transactions:', error)
     }
-  }
+  }, [account])
 
   useEffect(() => {
     loadPendingTransactions()
     // Poll for updates every 10 seconds
     const interval = setInterval(loadPendingTransactions, 10000)
     return () => clearInterval(interval)
-  }, [])
+  }, [loadPendingTransactions])
 
   const createSensorChangeTransaction = async (type: 'arrival' | 'leaving') => {
     if (!publicKey || !signTransaction) {
