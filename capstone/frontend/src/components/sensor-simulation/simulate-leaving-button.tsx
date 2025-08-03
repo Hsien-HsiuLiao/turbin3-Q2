@@ -11,9 +11,10 @@ interface SimulateLeavingButtonProps {
   account: PublicKey
   maker: PublicKey
   feed: PublicKey | null
+  onTransactionCreated?: (base64Tx: string) => void
 }
 
-export function SimulateLeavingButton({ account, maker, feed }: SimulateLeavingButtonProps) {
+export function SimulateLeavingButton({ account, maker, feed, onTransactionCreated }: SimulateLeavingButtonProps) {
   const { publicKey, signTransaction } = useWallet()
   const { connection } = useConnection()
   const { program } = useSensorSimulationProgram()
@@ -81,19 +82,46 @@ export function SimulateLeavingButton({ account, maker, feed }: SimulateLeavingB
       const { blockhash } = await connection.getLatestBlockhash()
       transaction.recentBlockhash = blockhash
 
-      // Sign with the maker's wallet
+      // PARTIAL SIGNING IMPLEMENTATION
+      // Step 1: Maker partially signs the transaction
       if (!signTransaction) {
         toast.error('Wallet does not support signing transactions')
         return
       }
+      
+      // Use partialSign to add maker's signature without invalidating others
+      // We need to create a signer object from the wallet
       const signedTransaction = await signTransaction(transaction)
+      console.log('Transaction signed by maker')
+      console.log('Transaction partially signed by maker')
 
-      // Send the raw transaction
-      const signature = await connection.sendRawTransaction(signedTransaction.serialize())
+      // Step 2: Serialize the partially signed transaction
+      const serializedTransaction = transaction.serialize({
+        requireAllSignatures: false,
+        verifySignatures: false
+      })
 
-      console.log('Driver leaving simulation successful:', signature)
-      toast.success('Driver leaving simulated successfully!')
-      transactionToast(signature)
+      // Step 3: Convert to base64 for transmission (if needed for renter signing)
+      const base64Transaction = serializedTransaction.toString('base64')
+      console.log('Partially signed transaction serialized:', base64Transaction.substring(0, 50) + '...')
+
+      // Step 4: Call the callback with the base64 transaction for two-step signing
+      if (onTransactionCreated) {
+        onTransactionCreated(base64Transaction)
+        console.log('Transaction created and ready for second signature')
+      } else {
+        // Fallback: send the transaction directly (original behavior)
+        const signature = await connection.sendRawTransaction(
+          serializedTransaction,
+          {
+            skipPreflight: false,
+            preflightCommitment: 'confirmed'
+          }
+        )
+        console.log('Driver leaving simulation successful:', signature)
+        toast.success('Driver leaving simulated successfully!')
+        transactionToast(signature)
+      }
     } catch (error) {
       console.error('Driver leaving simulation failed:', error)
       if (error && typeof error === 'object' && 'logs' in error) {
@@ -130,7 +158,7 @@ export function SimulateLeavingButton({ account, maker, feed }: SimulateLeavingB
           : ''
       }`}
     >
-      {isLoading ? 'Simulating...' : 'Simulate Driver Leaving'}
+      {isLoading ? 'Simulating...' : 'Simulate Driver Leaving button'}
     </button>
   )
 } 

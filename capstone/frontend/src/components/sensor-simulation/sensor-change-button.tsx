@@ -11,10 +11,11 @@ interface SensorChangeButtonProps {
   account: PublicKey
   maker: PublicKey
   feed: PublicKey | null
+  onTransactionCreated?: (base64Tx: string) => void
 }
 
-export function SensorChangeButton({ account, maker, feed }: SensorChangeButtonProps) {
-  const { publicKey } = useWallet()
+export function SensorChangeButton({ account, maker, feed, onTransactionCreated }: SensorChangeButtonProps) {
+  const { publicKey, signTransaction } = useWallet()
   const { program } = useSensorSimulationProgram()
   const [isLoading, setIsLoading] = useState(false)
   const transactionToast = useTransactionToast()
@@ -51,7 +52,8 @@ export function SensorChangeButton({ account, maker, feed }: SensorChangeButtonP
       console.log('Feed:', feed.toString())
       console.log('Marketplace:', marketplace.toString())
 
-      const signature = await program.methods
+      // Create the transaction with sensorChange instruction
+      const transaction = await program.methods
         .sensorChange()
         .accountsPartial({
           feed,
@@ -60,12 +62,53 @@ export function SensorChangeButton({ account, maker, feed }: SensorChangeButtonP
           listing: account,
           renter: publicKey, // Renter is signer
         })
-        .signers([]) // No explicit signers here, relies on wallet adapter
-        .rpc()
+        .transaction()
 
-      console.log('Sensor change simulation successful:', signature)
-      toast.success('Sensor change simulated successfully!')
-      transactionToast(signature)
+      // Set the fee payer
+      transaction.feePayer = publicKey
+
+      // Get latest blockhash
+      const { blockhash } = await program.provider.connection.getLatestBlockhash()
+      transaction.recentBlockhash = blockhash
+
+
+
+      // PARTIAL SIGNING IMPLEMENTATION
+      // Step 1: Renter partially signs the transaction
+      if (!signTransaction) {
+        toast.error('Wallet does not support signing transactions')
+        return
+      }
+      const signedTransaction = await signTransaction(transaction)
+      console.log('Transaction partially signed by renter')
+
+      // Step 2: Serialize the partially signed transaction
+      const serializedTransaction = signedTransaction.serialize({
+        requireAllSignatures: false,
+        verifySignatures: false
+      })
+
+      // Step 3: Convert to base64 for transmission (if needed for maker signing)
+      const base64Transaction = serializedTransaction.toString('base64')
+      console.log('Partially signed transaction serialized:', base64Transaction.substring(0, 50) + '...')
+
+      // Step 4: Call the callback with the base64 transaction for two-step signing
+      if (onTransactionCreated) {
+        onTransactionCreated(base64Transaction)
+        console.log('Transaction created and ready for second signature')
+      } else {
+        // Fallback: send the transaction directly (original behavior)
+        const signature = await program.provider.connection.sendRawTransaction(
+          serializedTransaction,
+          {
+            skipPreflight: false,
+            preflightCommitment: 'confirmed'
+          }
+        )
+        console.log('Sensor change simulation successful:', signature)
+        toast.success('Sensor change simulated successfully!')
+        transactionToast(signature)
+      }
     } catch (error) {
       console.error('Sensor change simulation failed:', error)
       if (error && typeof error === 'object' && 'logs' in error) {
