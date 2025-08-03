@@ -1,5 +1,5 @@
 import { PublicKey } from "@solana/web3.js";
-import { useMarketplaceProgram } from "../drivers/driver-data-access";
+import { useSensorSimulationProgram } from "./sensor-simulation-data-access";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useTransactionToast } from '../use-transaction-toast';
 import { toast } from 'sonner';
@@ -11,7 +11,7 @@ interface SensorChangeButtonProps {
 }
 
 export function SensorChangeButton({ account, maker, feed }: SensorChangeButtonProps) {
-  const { program } = useMarketplaceProgram();
+  const { program } = useSensorSimulationProgram();
   const { publicKey } = useWallet();
   const transactionToast = useTransactionToast();
 

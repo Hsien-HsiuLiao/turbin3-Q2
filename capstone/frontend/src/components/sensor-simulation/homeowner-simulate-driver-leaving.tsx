@@ -2,7 +2,7 @@
 
 import { useWallet } from '@solana/wallet-adapter-react'
 import { PublicKey } from '@solana/web3.js'
-import { useMarketplaceProgram } from './homeowner-data-access'
+import { useSensorSimulationProgram } from './sensor-simulation-data-access'
 import { useTransactionToast } from '../use-transaction-toast'
 import { ellipsify } from '@/lib/utils'
 
@@ -13,7 +13,7 @@ interface SimulateLeavingButtonProps {
 }
 
 export function SimulateLeavingButton({ account, maker, sensorId }: SimulateLeavingButtonProps) {
-  const { program } = useMarketplaceProgram()
+  const { program } = useSensorSimulationProgram()
   const { publicKey, signTransaction } = useWallet()
   const transactionToast = useTransactionToast()
 

@@ -14,8 +14,7 @@ import { useWallet } from "@solana/wallet-adapter-react";
 
 import { useEffect, useState } from "react";
 import dayjs from 'dayjs';
-import { SensorChangeButton } from './homeowner-sensor-change';
-import { SimulateLeavingButton } from './homeowner-simulate-driver-leaving';
+
 
 
 //Manage Listing
@@ -285,25 +284,7 @@ export function ListingCard({ account }: { account: PublicKey }) {
 
        
 
-          {/* Sensor Change Button for Homeowners */}
-          <div className="text-center space-y-4">
-            <h3 className="text-lg font-semibold text-gray-700">Simulate Sensor Change (homeowner pays for transaction)</h3>
-            <SensorChangeButton 
-              account={account} 
-              maker={accountQuery.data?.maker || new PublicKey('11111111111111111111111111111111')}
-              feed={new PublicKey("9jfL52Gmudwee1RK8yuNguoZET7DMDqKSR6DePBJNXot")}
-            />
-          </div>
-          
-          {/* Simulate Driver Leaving Button for Homeowners */}
-          <div className="text-center space-y-4">
-            <h3 className="text-lg font-semibold text-gray-700">Simulate Driver Leaving (homeowner calls this ix)</h3>
-            <SimulateLeavingButton
-              account={account}
-              maker={accountQuery.data?.maker || new PublicKey('11111111111111111111111111111111')}
-              sensorId={accountQuery.data?.sensorId || ''}
-            />
-          </div>
+
 
           <div className="text-center space-y-4">
             <p>
